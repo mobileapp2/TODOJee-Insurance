@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.insurance.todojee.R;
@@ -40,7 +41,7 @@ public class GetClientListAdapter extends RecyclerView.Adapter<GetClientListAdap
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.list_row_twolines, parent, false);
+        View view = inflater.inflate(R.layout.list_row_client, parent, false);
         MyViewHolder myViewHolder = new MyViewHolder(view);
         return myViewHolder;
     }
@@ -51,11 +52,9 @@ public class GetClientListAdapter extends RecyclerView.Adapter<GetClientListAdap
         clientDetails = resultArrayList.get(position);
         final ClientMainListPojo finalClientDetails = clientDetails;
 
-        holder.tv_initletter.setText(String.valueOf(clientDetails.getFirst_name().trim().charAt(0)).toUpperCase());
-        holder.tv_name.setText(clientDetails.getFirst_name());
-        holder.tv_alias.setText(clientDetails.getAlias());
+        holder.tv_clientname.setText(clientDetails.getFirst_name());
 
-        holder.fl_mainframe.setOnClickListener(new View.OnClickListener() {
+        holder.ll_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ViewClientDetails_Activity.class);
@@ -64,77 +63,65 @@ public class GetClientListAdapter extends RecyclerView.Adapter<GetClientListAdap
             }
         });
 
-        holder.imv_more.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("RestrictedApi")
+        holder.imv_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(context, holder.imv_more);
-                popup.inflate(R.menu.list_menu);
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.menu_call:
-                                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
-                                        != PackageManager.PERMISSION_GRANTED) {
-                                    context.startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                            Uri.fromParts("package", context.getPackageName(), null)));
-                                    Utilities.showMessageString(context, "Please provide permission for making call");
-                                } else {
-                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                                    alertDialogBuilder.setTitle("Make a Call");
-                                    alertDialogBuilder.setIcon(R.drawable.icon_call_24dp);
-                                    alertDialogBuilder.setMessage("Are you sure you want to call " + finalClientDetails.getFirst_name() + " ?");
-                                    alertDialogBuilder.setCancelable(true);
-                                    alertDialogBuilder.setPositiveButton(
-                                            "Yes", new DialogInterface.OnClickListener() {
-                                                @SuppressLint("MissingPermission")
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.cancel();
-                                                    context.startActivity(new Intent(Intent.ACTION_CALL,
-                                                            Uri.parse("tel:" + finalClientDetails.getMobile())));
-                                                }
-                                            });
-                                    alertDialogBuilder.setNegativeButton(
-                                            "No", new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.cancel();
-                                                }
-                                            });
-                                    AlertDialog alert11 = alertDialogBuilder.create();
-                                    alert11.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-                                    alert11.show();
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    context.startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.fromParts("package", context.getPackageName(), null)));
+                    Utilities.showMessageString(context, "Please provide permission for making call");
+                } else {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                    alertDialogBuilder.setTitle("Make a Call");
+                    alertDialogBuilder.setIcon(R.drawable.icon_call_24dp);
+                    alertDialogBuilder.setMessage("Are you sure you want to call " + finalClientDetails.getFirst_name() + " ?");
+                    alertDialogBuilder.setCancelable(true);
+                    alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @SuppressLint("MissingPermission")
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    context.startActivity(new Intent(Intent.ACTION_CALL,
+                                            Uri.parse("tel:" + finalClientDetails.getMobile())));
                                 }
-                                break;
-                            case R.id.menu_sms:
-                                try {
-                                    Uri uri = Uri.parse("smsto:" + finalClientDetails.getMobile());
-                                    Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
-                                    intent.putExtra("sms_body", "");
-                                    context.startActivity(intent);
-                                } catch (Exception e) {
-                                    Utilities.showMessageString(context, "No application found to perfrom this activity");
+                            });
+                    alertDialogBuilder.setNegativeButton(
+                            "No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
                                 }
-                                break;
-                            case R.id.menu_whatsapp:
-                                if (!finalClientDetails.getWhats_app_no().equals("")) {
-                                    Uri uri = Uri.parse("smsto:" + finalClientDetails.getWhats_app_no());
-                                    Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
-                                    context.startActivity(Intent.createChooser(intent, "Select Whatsapp"));
-                                } else {
-                                    Utilities.showMessageString(context, "Please add Whatsapp number");
-                                }
+                            });
+                    AlertDialog alert11 = alertDialogBuilder.create();
+                    alert11.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+                    alert11.show();
+                }
+            }
+        });
 
-//                                context.startActivity(new Intent(Intent.ACTION_VIEW,
-//                                        Uri.parse(
-//                                                "https://api.whatsapp.com/send?phone=918149115089&text=I'm%20interested%20in%20your%20car%20for%20sale"
-//                                        )));
+        holder.imv_sms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Uri uri = Uri.parse("smsto:" + finalClientDetails.getMobile());
+                    Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+                    intent.putExtra("sms_body", "");
+                    context.startActivity(intent);
+                } catch (Exception e) {
+                    Utilities.showMessageString(context, "No application found to perfrom this activity");
+                }
+            }
+        });
 
-                        }
-                        return false;
-                    }
-                });
-                popup.show();
+        holder.imv_whatsapp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!finalClientDetails.getWhats_app_no().equals("")) {
+                    Uri uri = Uri.parse("smsto:" + finalClientDetails.getWhats_app_no());
+                    Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+                    context.startActivity(Intent.createChooser(intent, "Select Whatsapp"));
+                } else {
+                    Utilities.showMessageString(context, "Please add Whatsapp number");
+                }
             }
         });
     }
@@ -146,17 +133,17 @@ public class GetClientListAdapter extends RecyclerView.Adapter<GetClientListAdap
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tv_initletter, tv_alias, tv_name, tv_gstno;
-        private FrameLayout fl_mainframe;
-        private ImageView imv_more;
+        TextView tv_clientname;
+        private LinearLayout ll_mainlayout;
+        private ImageView imv_call, imv_sms, imv_whatsapp;
 
         public MyViewHolder(View view) {
             super(view);
-            tv_initletter = view.findViewById(R.id.tv_initletter);
-            tv_alias = view.findViewById(R.id.tv_alias);
-            tv_name = view.findViewById(R.id.tv_name);
-            imv_more = view.findViewById(R.id.imv_more);
-            fl_mainframe = view.findViewById(R.id.fl_mainframe);
+            tv_clientname = view.findViewById(R.id.tv_clientname);
+            imv_call = view.findViewById(R.id.imv_call);
+            imv_sms = view.findViewById(R.id.imv_sms);
+            imv_whatsapp = view.findViewById(R.id.imv_whatsapp);
+            ll_mainlayout = view.findViewById(R.id.ll_mainlayout);
         }
     }
 }

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -27,7 +28,6 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="2"
-            android:text="The following is a sample SOAP 1.2 request and response. The placeholders shown need to be replaced with actual values."
             android:textColor="@color/black"
             android:textSize="16sp" />
 

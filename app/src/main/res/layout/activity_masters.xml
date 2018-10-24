@@ -47,7 +47,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:onClick="openInsuranceCompany"
-                    card_view:cardBackgroundColor="@color/colorPrimaryLight"
+                    card_view:cardBackgroundColor="@color/colorAccent"
                     card_view:cardCornerRadius="5dp"
                     card_view:cardElevation="5dp"
                     card_view:cardUseCompatPadding="true">
@@ -90,7 +90,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:onClick="openPolicyType"
-                    card_view:cardBackgroundColor="@color/colorPrimaryLight"
+                    card_view:cardBackgroundColor="@color/colorAccent"
                     card_view:cardCornerRadius="5dp"
                     card_view:cardElevation="5dp"
                     card_view:cardUseCompatPadding="true">
@@ -143,7 +143,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:onClick="openNewPoducts"
-                    card_view:cardBackgroundColor="@color/colorPrimaryLight"
+                    card_view:cardBackgroundColor="@color/colorAccent"
                     card_view:cardCornerRadius="5dp"
                     card_view:cardElevation="5dp"
                     card_view:cardUseCompatPadding="true">
@@ -186,7 +186,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:onClick="openFamilyCode"
-                    card_view:cardBackgroundColor="@color/colorPrimaryLight"
+                    card_view:cardBackgroundColor="@color/colorAccent"
                     card_view:cardCornerRadius="5dp"
                     card_view:cardElevation="5dp"
                     card_view:cardUseCompatPadding="true">

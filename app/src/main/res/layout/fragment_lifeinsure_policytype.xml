@@ -2,41 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_parent"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <!--<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:id="@+id/card_view"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="@color/white"-->
-    <!--app:cardBackgroundColor="@android:color/white"-->
-    <!--app:cardElevation="5dp"-->
-    <!--app:cardUseCompatPadding="true">-->
-
-    <!--<android.support.design.widget.TextInputLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginLeft="5dp"-->
-    <!--android:layout_marginRight="5dp">-->
-
-    <!--<EditText-->
-    <!--android:id="@+id/edt_insurancecompany"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:drawableRight="@drawable/icon_dropdown"-->
-    <!--android:focusable="false"-->
-    <!--android:gravity="center_vertical"-->
-    <!--android:hint="Insurance Company"-->
-    <!--android:inputType="textCapWords|textNoSuggestions|textMultiLine"-->
-    <!--android:longClickable="false"-->
-    <!--android:padding="10dp"-->
-    <!--android:textColor="@color/black"-->
-    <!--android:textSize="14sp" />-->
-
-    <!--</android.support.design.widget.TextInputLayout>-->
-
-    <!--</android.support.v7.widget.CardView>-->
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -50,7 +18,9 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_policytypelist"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="80dp" />
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -85,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_margin="20dp"
+            android:layout_margin="10dp"
             android:src="@drawable/icon_add" />
 
         <include

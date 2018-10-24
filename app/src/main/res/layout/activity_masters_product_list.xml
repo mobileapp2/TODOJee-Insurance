@@ -4,6 +4,7 @@
     android:id="@+id/ll_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
@@ -32,7 +33,9 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_productlist"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="80dp" />
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -66,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_margin="20dp"
+            android:layout_margin="10dp"
             android:src="@drawable/icon_add" />
 
         <include
