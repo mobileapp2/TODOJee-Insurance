@@ -27,8 +27,7 @@
             android:layout_height="wrap_content"
             android:hint="Whatsapp Message"
             android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="16sp"/>
 
     </android.support.design.widget.TextInputLayout>
 

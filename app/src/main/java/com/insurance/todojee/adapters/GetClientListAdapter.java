@@ -54,7 +54,7 @@ public class GetClientListAdapter extends RecyclerView.Adapter<GetClientListAdap
 
         holder.tv_clientname.setText(clientDetails.getFirst_name());
 
-        holder.ll_mainlayout.setOnClickListener(new View.OnClickListener() {
+        holder.tv_clientname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ViewClientDetails_Activity.class);

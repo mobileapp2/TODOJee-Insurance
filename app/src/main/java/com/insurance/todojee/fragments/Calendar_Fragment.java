@@ -70,8 +70,8 @@ public class Calendar_Fragment extends Fragment {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFrag(new CalenderDay_Fragment(), "Day");
-        adapter.addFrag(new CalenderWeek_Fragment(), "Week");
+        adapter.addFrag(new CalenderMonthWise_Activity(), "Day");
+        adapter.addFrag(new CalenderWeekWise_Fragment(), "Week");
         viewPager.setAdapter(adapter);
     }
 

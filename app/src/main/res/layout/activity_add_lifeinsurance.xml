@@ -176,8 +176,6 @@
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:hint="Insurance Policy No"
-                            android:inputType="number"
-
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 

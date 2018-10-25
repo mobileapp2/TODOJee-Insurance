@@ -346,7 +346,7 @@ public class EditGeneralInsurance_Activity extends Activity {
 
         for (int i = 0; i < familyInsurerList.size(); i++) {
             if (!familyInsurerList.get(i).getRelation().trim().equals("")) {
-                arrayAdapter.add(familyInsurerList.get(i).getName() + " (" + familyInsurerList.get(i).getRelation() + ")");
+                arrayAdapter.add(familyInsurerList.get(i).getName()/* + " (" + familyInsurerList.get(i).getRelation() + ")"*/);
             } else {
                 arrayAdapter.add(familyInsurerList.get(i).getName());
             }

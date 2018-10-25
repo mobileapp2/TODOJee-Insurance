@@ -294,7 +294,7 @@ public class AddGeneralInsurance_Activity extends Activity {
 
         for (int i = 0; i < familyInsurerList.size(); i++) {
             if (!familyInsurerList.get(i).getRelation().trim().equals("")) {
-                arrayAdapter.add(familyInsurerList.get(i).getName() + " (" + familyInsurerList.get(i).getRelation() + ")");
+                arrayAdapter.add(familyInsurerList.get(i).getName()/* + " (" + familyInsurerList.get(i).getRelation() + ")"*/);
             } else {
                 arrayAdapter.add(familyInsurerList.get(i).getName());
             }
@@ -779,6 +779,21 @@ public class AddGeneralInsurance_Activity extends Activity {
         if (edt_frequency.getText().toString().trim().equals("")) {
             Utilities.showSnackBar(ll_parent, "Please Select Frequency");
             return;
+        }
+
+        if (edt_description.getText().toString().trim().equals("")) {
+
+            if (!companyAliasName.equals("") ||
+                    !edt_insurepolicyno.getText().toString().trim().equals("") ||
+                    !edt_insurername.getText().toString().trim().equals("")) {
+
+                edt_description.setText(companyAliasName
+                        + "/" + edt_insurepolicyno.getText().toString().trim()
+                        + "/" + edt_insurername.getText().toString().trim()
+                );
+                edt_description.setSelection(edt_description.getText().length());
+
+            }
         }
 
         if (rb_individual.isChecked()) {

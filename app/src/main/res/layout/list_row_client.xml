@@ -23,7 +23,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.7"
-            android:clickable="false"
             android:gravity="center_vertical"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
@@ -36,7 +35,7 @@
             android:layout_height="25dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.1"
-            android:clickable="false"
+            android:tint="@color/grey"
             android:src="@drawable/icon_call_24dp" />
 
         <ImageView
@@ -44,7 +43,7 @@
             android:layout_width="0dp"
             android:layout_height="25dp"
             android:layout_weight="0.1"
-            android:clickable="false"
+            android:tint="@color/grey"
             android:src="@drawable/icon_sms" />
 
         <ImageView
@@ -53,7 +52,7 @@
             android:layout_height="25dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.1"
-            android:clickable="false"
+            android:tint="@color/grey"
             android:src="@drawable/icon_whatsapp" />
 
     </LinearLayout>

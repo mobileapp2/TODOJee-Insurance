@@ -283,7 +283,7 @@ public class Anniversary_Fragment extends Fragment {
                                 BirthdayAnnivarsaryListPojo anniversaryMainObj = new BirthdayAnnivarsaryListPojo();
                                 JSONObject jsonObj = jsonarr.getJSONObject(i);
                                 anniversaryMainObj.setId(jsonObj.getString("id"));
-                                anniversaryMainObj.setName(jsonObj.getString("first_name"));
+                                anniversaryMainObj.setName(jsonObj.getString("client_name"));
                                 annivarsaryList.add(anniversaryMainObj);
                             }
                             if (annivarsaryList.size() == 0) {

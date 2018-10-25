@@ -593,7 +593,7 @@ public class EditLifeInsurance_Activity extends Activity {
 
         for (int i = 0; i < insurerList.size(); i++) {
             if (!insurerList.get(i).getRelation().trim().equals("")) {
-                arrayAdapter.add(insurerList.get(i).getName() + " (" + insurerList.get(i).getRelation() + ")");
+                arrayAdapter.add(insurerList.get(i).getName()/* + " (" + insurerList.get(i).getRelation() + ")"*/);
             } else {
                 arrayAdapter.add(insurerList.get(i).getName());
             }
@@ -924,6 +924,7 @@ public class EditLifeInsurance_Activity extends Activity {
 //        doc_image_uri = Uri.fromFile(imageFile);
     }
 
+    @SuppressLint("SetTextI18n")
     private void submitData() {
 
         if (edt_insurancecompany.getText().toString().trim().equals("")) {
@@ -941,11 +942,6 @@ public class EditLifeInsurance_Activity extends Activity {
             return;
         }
 
-//        if (edt_policytype.getText().toString().trim().equals("")) {
-//            Utilities.showSnackBar(ll_parent, "Please Select Policy Type");
-//            return;
-//        }
-
         if (edt_startdate.getText().toString().trim().equals("")) {
             Utilities.showSnackBar(ll_parent, "Please Select Start Date");
             return;
@@ -956,10 +952,20 @@ public class EditLifeInsurance_Activity extends Activity {
             return;
         }
 
-//        if (edt_policystatus.getText().toString().trim().equals("")) {
-//            Utilities.showSnackBar(ll_parent, "Please Select Policy Status");
-//            return;
-//        }
+        if (edt_description.getText().toString().trim().equals("")) {
+
+            if (!companyAliasName.equals("") ||
+                    !edt_insurepolicyno.getText().toString().trim().equals("") ||
+                    !edt_insurername.getText().toString().trim().equals("")) {
+
+                edt_description.setText(companyAliasName
+                        + " - " + edt_insurepolicyno.getText().toString().trim()
+                        + " - " + edt_insurername.getText().toString().trim());
+
+                edt_description.setSelection(edt_description.getText().length());
+
+            }
+        }
 
         ArrayList<LifeGeneralInsuranceMainListPojo.MaturityDatesListPojo> maturityDatesList = new ArrayList<>();
         for (int i = 0; i < maturityDatesLayoutsList.size(); i++) {
