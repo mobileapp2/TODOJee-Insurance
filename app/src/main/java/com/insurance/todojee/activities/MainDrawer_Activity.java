@@ -151,7 +151,7 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
 
         bottomNavigation.setTranslucentNavigationEnabled(true);
 
-        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.SHOW_WHEN_ACTIVE);
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
 
 //        bottomNavigation.setColored(true);
 
