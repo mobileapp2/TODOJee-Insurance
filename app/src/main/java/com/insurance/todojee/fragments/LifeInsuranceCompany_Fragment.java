@@ -160,12 +160,13 @@ public class LifeInsuranceCompany_Fragment extends Fragment {
                         if (jsonarr.length() > 0) {
                             for (int i = 0; i < jsonarr.length(); i++) {
 
-                                InsuranceCompanyListPojo clientMainObj = new InsuranceCompanyListPojo();
+                                InsuranceCompanyListPojo companyMainObj = new InsuranceCompanyListPojo();
                                 JSONObject jsonObj = jsonarr.getJSONObject(i);
-                                clientMainObj.setId(jsonObj.getString("id"));
-                                clientMainObj.setCompany_name(jsonObj.getString("company_name"));
-                                clientMainObj.setCompany_alias(jsonObj.getString("company_alias"));
-                                companyList.add(clientMainObj);
+                                companyMainObj.setId(jsonObj.getString("id"));
+                                companyMainObj.setCompany_name(jsonObj.getString("company_name"));
+                                companyMainObj.setCompany_alias(jsonObj.getString("company_alias"));
+                                companyMainObj.setInsurance_type(jsonObj.getString("insurance_type"));
+                                companyList.add(companyMainObj);
                             }
                             if (companyList.size() == 0) {
                                 ll_nothingtoshow.setVisibility(View.VISIBLE);

@@ -1,6 +1,8 @@
 package com.insurance.todojee.models;
 
-public class InsuranceCompanyListPojo {
+import java.io.Serializable;
+
+public class InsuranceCompanyListPojo implements Serializable {
 
     private String created_by;
 
