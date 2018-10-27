@@ -75,7 +75,6 @@
                         android:hint="Name"
                         android:longClickable="false"
                         android:singleLine="true"
-                        android:text="Priyesh Pawar"
                         android:textColor="@color/darkgrey"
                         android:textSize="14sp" />
 
@@ -113,7 +112,6 @@
                         android:longClickable="false"
                         android:maxLength="13"
                         android:singleLine="true"
-                        android:text="8149115089"
                         android:textColor="@color/darkgrey"
                         android:textSize="14sp" />
                 </android.support.design.widget.TextInputLayout>
@@ -131,7 +129,6 @@
                         android:hint="Email Address"
                         android:longClickable="false"
                         android:singleLine="true"
-                        android:text="priyeshpawar07@gmail.com"
                         android:textColor="@color/darkgrey"
                         android:textSize="14sp" />
 
@@ -167,29 +164,20 @@
 
                     <ImageView
                         android:layout_width="0dp"
-                        android:layout_height="25dp"
-                        android:layout_margin="10dp"
-                        android:layout_weight="0.5"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="0.4"
                         android:src="@drawable/img_message" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.05"
-                        android:gravity="center"
-                        android:text="-"
-                        android:textColor="@color/Pine_Green"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv_messagecount"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.45"
+                        android:layout_weight="0.6"
                         android:gravity="center"
-                        android:textColor="@color/Chilli_Pepper"
-                        android:textSize="12sp"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
 
@@ -216,29 +204,20 @@
 
                     <ImageView
                         android:layout_width="0dp"
-                        android:layout_height="25dp"
-                        android:layout_margin="10dp"
-                        android:layout_weight="0.5"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="0.4"
                         android:src="@drawable/img_whatsapp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.05"
-                        android:gravity="center"
-                        android:text="-"
-                        android:textColor="@color/Pine_Green"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv_whatsappcount"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.45"
+                        android:layout_weight="0.6"
                         android:gravity="center"
-                        android:textColor="@color/Chilli_Pepper"
-                        android:textSize="12sp"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
 
@@ -265,29 +244,20 @@
 
                     <ImageView
                         android:layout_width="0dp"
-                        android:layout_height="25dp"
-                        android:layout_margin="10dp"
-                        android:layout_weight="0.5"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="0.4"
                         android:src="@drawable/img_memory" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.05"
-                        android:gravity="center"
-                        android:text="-"
-                        android:textColor="@color/Pine_Green"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv_memorycount"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.45"
+                        android:layout_weight="0.6"
                         android:gravity="center"
-                        android:textColor="@color/Chilli_Pepper"
-                        android:textSize="12sp"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
 
