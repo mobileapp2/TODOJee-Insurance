@@ -39,12 +39,15 @@ public class GetEventListAdapter extends RecyclerView.Adapter<GetEventListAdapte
         holder.tv_status.setText(eventDetails.getStatus());
 
 
-        if (eventDetails.getStatus().equalsIgnoreCase("In ")) {
-
-        } else if (eventDetails.getStatus().equals("")) {
-
-        } else if (eventDetails.getStatus().equals("")) {
-
+        if (eventDetails.getStatus().equalsIgnoreCase("In Prograss")) {
+            holder.tv_event.setTextColor(context.getResources().getColor(R.color.Saffron));
+            holder.tv_status.setTextColor(context.getResources().getColor(R.color.Saffron));
+        } else if (eventDetails.getStatus().equals("Completed")) {
+            holder.tv_event.setTextColor(context.getResources().getColor(R.color.Clover_Green));
+            holder.tv_status.setTextColor(context.getResources().getColor(R.color.Clover_Green));
+        } else if (eventDetails.getStatus().equals("Dismissed")) {
+            holder.tv_event.setTextColor(context.getResources().getColor(R.color.Love_Red));
+            holder.tv_status.setTextColor(context.getResources().getColor(R.color.Love_Red));
         }
 
         if (position == resultArrayList.size() - 1) {

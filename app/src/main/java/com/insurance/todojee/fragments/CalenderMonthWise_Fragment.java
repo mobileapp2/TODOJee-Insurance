@@ -148,7 +148,7 @@ public class CalenderMonthWise_Fragment extends Fragment implements OnDateSelect
                 builder.setTitle("Select Your Choice");
                 builder.setCancelable(false);
 
-                builder.setSingleChoiceItems(choices, 0, new DialogInterface.OnClickListener() {
+                builder.setSingleChoiceItems(choices, -1, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         status[0] = choices[item];
                     }
