@@ -10,6 +10,8 @@ public class EventListPojo {
 
     private String date;
 
+    private String client_id;
+
     public boolean isChecked;
 
     public String getId ()
@@ -50,6 +52,14 @@ public class EventListPojo {
     public void setDate (String date)
     {
         this.date = date;
+    }
+
+    public String getClient_id() {
+        return client_id;
+    }
+
+    public void setClient_id(String client_id) {
+        this.client_id = client_id;
     }
 
     public boolean isChecked() {

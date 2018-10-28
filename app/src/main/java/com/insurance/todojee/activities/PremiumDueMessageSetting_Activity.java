@@ -16,12 +16,16 @@ import android.widget.LinearLayout;
 import com.google.gson.JsonObject;
 import com.insurance.todojee.R;
 import com.insurance.todojee.utilities.ApplicationConstants;
+import com.insurance.todojee.utilities.ParamsPojo;
 import com.insurance.todojee.utilities.UserSessionManager;
 import com.insurance.todojee.utilities.Utilities;
 import com.insurance.todojee.utilities.WebServiceCalls;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PremiumDueMessageSetting_Activity extends Activity {
 
@@ -66,11 +70,11 @@ public class PremiumDueMessageSetting_Activity extends Activity {
     }
 
     private void setDefaults() {
-//        if (Utilities.isInternetAvailable(context)) {
-//            new GetBirthSMSSettings().execute(user_id);
-//        } else {
-//            Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
-//        }
+        if (Utilities.isInternetAvailable(context)) {
+            new GetPremiumMessage().execute(user_id);
+        } else {
+            Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+        }
     }
 
     private void setEventHandler() {
@@ -122,6 +126,58 @@ public class PremiumDueMessageSetting_Activity extends Activity {
         });
     }
 
+    public class GetPremiumMessage extends AsyncTask<String, Void, String> {
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("type", "getPremiummessage"));
+            param.add(new ParamsPojo("user_id", params[0]));
+            res = WebServiceCalls.FORMDATAAPICall(ApplicationConstants.SETTINGSAPI, param);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        if (jsonarr.length() > 0) {
+                            for (int i = 0; i < jsonarr.length(); i++) {
+                                JSONObject jsonObj = jsonarr.getJSONObject(i);
+                                id = jsonObj.getString("id");
+                                smsMessage = jsonObj.getString("message");
+                            }
+                            edt_smsmessage.setText(smsMessage);
+                        }
+                    } else {
+                        edt_smsmessage.setText("");
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public class AddPremiumDueSettings extends AsyncTask<String, Void, String> {
         ProgressDialog pd;
 
@@ -156,11 +212,11 @@ public class PremiumDueMessageSetting_Activity extends Activity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-//                        if (Utilities.isInternetAvailable(context)) {
-//                            new GetBirthSMSSettings().execute(user_id);
-//                        } else {
-//                            Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
-//                        }
+                        if (Utilities.isInternetAvailable(context)) {
+                            new GetPremiumMessage().execute(user_id);
+                        } else {
+                            Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                        }
                     } else {
                         Utilities.showAlertDialog(context, "Alert", message, false);
                     }
