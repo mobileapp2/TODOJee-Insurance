@@ -42,6 +42,10 @@ public class Settings_Activity extends Activity {
         startActivity(new Intent(context, SMSAnniversarySettings_Activity.class));
     }
 
+    public void openPremiumDueMessageSettings(View view) {
+        startActivity(new Intent(context, PremiumDueMessageSetting_Activity.class));
+    }
+
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         mToolbar.setTitle("Settings");
