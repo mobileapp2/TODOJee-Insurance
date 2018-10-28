@@ -203,7 +203,6 @@ public class Anniversary_Fragment extends Fragment {
                 }, mYear, mMonth, mDay);
                 try {
                     dpd1.getDatePicker().setCalendarViewShown(false);
-                    dpd1.getDatePicker().setMaxDate(System.currentTimeMillis() + (1000 * 60 * 60));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -10,14 +10,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:paddingLeft="10dp">
+        android:background="@color/white">
 
         <CheckBox
             android:id="@+id/cb_checkall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
             android:text="Select All"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -30,11 +30,13 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
             android:drawableRight="@drawable/icon_date"
             android:focusable="false"
             android:longClickable="false"
             android:padding="10dp"
-            android:textSize="14sp"
+            android:text="01/01/2018"
+            android:textSize="16sp"
             android:textStyle="bold" />
     </RelativeLayout>
 
