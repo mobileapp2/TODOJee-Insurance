@@ -168,6 +168,7 @@ public class GeneralInsurePolicyType_Fragment extends Fragment {
 
                                     policyTypeMainObj.setId(jsonObj.getString("id"));
                                     policyTypeMainObj.setCompany_name(jsonObj.getString("company_name"));
+                                    policyTypeMainObj.setInsurance_type(jsonObj.getString("insurance_type"));
 
                                     ArrayList<PolicyTypeListPojo.Policy_details> policyTypesList = new ArrayList<>();
 

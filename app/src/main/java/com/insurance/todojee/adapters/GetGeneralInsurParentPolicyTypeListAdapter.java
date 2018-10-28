@@ -1,6 +1,7 @@
 package com.insurance.todojee.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.insurance.todojee.R;
+import com.insurance.todojee.activities.EditPolicyType_Activity;
 import com.insurance.todojee.models.PolicyTypeListPojo;
+import com.insurance.todojee.utilities.RecyclerItemClickListener;
 
 import java.util.List;
 
@@ -35,6 +38,7 @@ public class GetGeneralInsurParentPolicyTypeListAdapter extends RecyclerView.Ada
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         PolicyTypeListPojo policyDetails = new PolicyTypeListPojo();
         policyDetails = resultArrayList.get(position);
+        PolicyTypeListPojo finalPolicyDetails = policyDetails;
 
         holder.tv_companyname.setText(policyDetails.getCompany_name());
 
@@ -48,6 +52,17 @@ public class GetGeneralInsurParentPolicyTypeListAdapter extends RecyclerView.Ada
             holder.tv_nopolicytype.setVisibility(View.VISIBLE);
             holder.rv_policytypelist.setVisibility(View.GONE);
         }
+
+        holder.rv_policytypelist.addOnItemTouchListener(new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(context, EditPolicyType_Activity.class);
+                intent.putExtra("position", position);
+                intent.putExtra("policyDetails", finalPolicyDetails);
+                context.startActivity(intent);
+            }
+        }));
+
 
     }
 

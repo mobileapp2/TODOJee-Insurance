@@ -1,8 +1,9 @@
 package com.insurance.todojee.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PolicyTypeListPojo {
+public class PolicyTypeListPojo implements Serializable {
 
     private ArrayList<Policy_details> policy_details;
 
@@ -44,7 +45,7 @@ public class PolicyTypeListPojo {
         this.company_name = company_name;
     }
 
-    public static class Policy_details {
+    public static class Policy_details implements Serializable {
         private String id;
 
         private String alias;
