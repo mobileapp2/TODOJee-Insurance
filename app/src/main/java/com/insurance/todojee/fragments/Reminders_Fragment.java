@@ -73,7 +73,7 @@ public class Reminders_Fragment extends Fragment {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFrag(new Birthday_Fragment(), "Birthday");
         adapter.addFrag(new Anniversary_Fragment(), "Anniversary");
-        adapter.addFrag(new Premium_Fragment(), "Premium");
+        adapter.addFrag(new PremiumDue_Fragment(), "Premium");
         viewPager.setAdapter(adapter);
     }
 

@@ -10,6 +10,8 @@ public class EventListPojo {
 
     private String date;
 
+    public boolean isChecked;
+
     public String getId ()
     {
         return id;
@@ -50,9 +52,11 @@ public class EventListPojo {
         this.date = date;
     }
 
-    @Override
-    public String toString()
-    {
-        return "ClassPojo [id = "+id+", status = "+status+", description = "+description+", date = "+date+"]";
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }
