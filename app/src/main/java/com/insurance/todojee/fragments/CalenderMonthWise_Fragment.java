@@ -56,7 +56,7 @@ public class CalenderMonthWise_Fragment extends Fragment implements OnDateSelect
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView rv_eventlist;
     private int mYear, mMonth, mDay;
-    ArrayList<EventListPojo> eventList;
+    private ArrayList<EventListPojo> eventList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -148,7 +148,7 @@ public class CalenderMonthWise_Fragment extends Fragment implements OnDateSelect
                 builder.setTitle("Select Your Choice");
                 builder.setCancelable(false);
 
-                builder.setSingleChoiceItems(choices, -1, new DialogInterface.OnClickListener() {
+                builder.setSingleChoiceItems(choices, 0, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         status[0] = choices[item];
                     }
