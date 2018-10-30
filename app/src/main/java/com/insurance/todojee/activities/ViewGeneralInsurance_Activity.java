@@ -262,7 +262,7 @@ public class ViewGeneralInsurance_Activity extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mProgressDialog = new ProgressDialog(context);
+            mProgressDialog = new ProgressDialog(context, R.style.CustomDialogTheme);
             mProgressDialog.setCancelable(true);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setMessage("Downloading Document");

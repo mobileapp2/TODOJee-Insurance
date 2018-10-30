@@ -263,7 +263,7 @@ public class CalenderMonthWise_Fragment extends Fragment implements OnDateSelect
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(context);
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
             pd.setMessage("Please Wait . . .");
             pd.show();
         }

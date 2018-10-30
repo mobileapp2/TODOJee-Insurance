@@ -342,7 +342,7 @@ public class CalenderWeekWise_Fragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             ll_nothingtoshow.setVisibility(View.GONE);
-            pd = new ProgressDialog(context);
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
             pd.setMessage("Please Wait . . .");
             pd.show();
         }

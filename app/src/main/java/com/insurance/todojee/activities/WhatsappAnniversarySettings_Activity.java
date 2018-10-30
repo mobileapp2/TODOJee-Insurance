@@ -86,7 +86,7 @@ public class WhatsappAnniversarySettings_Activity extends Activity {
 
     private void init() {
         context = WhatsappAnniversarySettings_Activity.this;
-        pd = new ProgressDialog(context);
+        pd = new ProgressDialog(context, R.style.CustomDialogTheme);
         session = new UserSessionManager(context);
 
         ll_parent = findViewById(R.id.ll_parent);
