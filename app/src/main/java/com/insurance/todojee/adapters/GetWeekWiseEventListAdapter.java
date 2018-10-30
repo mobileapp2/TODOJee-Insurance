@@ -1,14 +1,30 @@
 package com.insurance.todojee.adapters;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.JsonObject;
 import com.insurance.todojee.R;
-import com.insurance.todojee.models.EventListPojo;
+import com.insurance.todojee.fragments.CalenderWeekWise_Fragment;
+import com.insurance.todojee.models.WeekWiseEventListPojo;
+import com.insurance.todojee.utilities.ApplicationConstants;
+import com.insurance.todojee.utilities.RecyclerItemClickListener;
+import com.insurance.todojee.utilities.Utilities;
+import com.insurance.todojee.utilities.WebServiceCalls;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,17 +35,17 @@ import static com.insurance.todojee.utilities.Utilities.changeDateFormat;
 
 public class GetWeekWiseEventListAdapter extends RecyclerView.Adapter<GetWeekWiseEventListAdapter.MyViewHolder> {
 
-    private List<EventListPojo> resultArrayList;
-    private List<Date> dateList;
+    private List<WeekWiseEventListPojo> resultArrayList;
     private Context context;
-    private SimpleDateFormat dateFormat;
+    private String user_id, weekStartDateStr;
 
-    public GetWeekWiseEventListAdapter(Context context, List<EventListPojo> resultArrayList, ArrayList<Date> dateList) {
+    public GetWeekWiseEventListAdapter(Context context, List<WeekWiseEventListPojo> resultArrayList, String user_id, String weekStartDateStr) {
         this.context = context;
         this.resultArrayList = resultArrayList;
-        this.dateList = dateList;
+        this.user_id = user_id;
+        this.weekStartDateStr = weekStartDateStr;
 
-        dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+//        dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     }
 
     @Override
@@ -42,33 +58,64 @@ public class GetWeekWiseEventListAdapter extends RecyclerView.Adapter<GetWeekWis
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        EventListPojo eventDetails = new EventListPojo();
-        eventDetails = resultArrayList.get(position);
+        WeekWiseEventListPojo eventMainDetails = new WeekWiseEventListPojo();
+        eventMainDetails = resultArrayList.get(position);
+        WeekWiseEventListPojo finalEventMainDetails = eventMainDetails;
 
-        holder.tv_date.setText(changeDateFormat("MM/dd/yyyy",
-                "dd MMM yyyy EEEE", eventDetails.getDate()));
-        holder.tv_event.setText(eventDetails.getDescription());
-        holder.tv_status.setText(eventDetails.getStatus());
-
-        if (eventDetails.getStatus().equalsIgnoreCase("In Progress")) {
-            holder.tv_event.setTextColor(context.getResources().getColor(R.color.Saffron));
-            holder.tv_status.setTextColor(context.getResources().getColor(R.color.Saffron));
-        } else if (eventDetails.getStatus().equals("Completed")) {
-            holder.tv_event.setTextColor(context.getResources().getColor(R.color.Clover_Green));
-            holder.tv_status.setTextColor(context.getResources().getColor(R.color.Clover_Green));
-        } else if (eventDetails.getStatus().equals("Dismissed")) {
-            holder.tv_event.setTextColor(context.getResources().getColor(R.color.Love_Red));
-            holder.tv_status.setTextColor(context.getResources().getColor(R.color.Love_Red));
+        if (eventMainDetails.getEventListPojos().size() != 0) {
+            holder.card_view.setVisibility(View.VISIBLE);
+            holder.ll_mainlayout.setVisibility(View.VISIBLE);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+            holder.rv_eventlist.setLayoutManager(layoutManager);
+            holder.tv_date.setText(changeDateFormat("MM/dd/yyyy", "dd MMM yyyy EEEE", eventMainDetails.getDate()));
+            holder.rv_eventlist.setAdapter(new GetWeekWiseChildEventListAdapter(context, eventMainDetails.getEventListPojos()));
+        } else {
+            holder.card_view.setVisibility(View.GONE);
+            holder.ll_mainlayout.setVisibility(View.GONE);
         }
 
-        for (Date dateObj : dateList) {
-            String dateStr = dateFormat.format(dateObj);
-        }
+        holder.rv_eventlist.addOnItemTouchListener(new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                WeekWiseEventListPojo.EventListPojo eventListPojo = finalEventMainDetails.getEventListPojos().get(position);
+                String[] choices = {"Completed", "Dismissed"};
+                final String[] status = {"Completed"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setTitle("Select Your Choice");
+                builder.setCancelable(false);
 
+                builder.setSingleChoiceItems(choices, 0, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        status[0] = choices[item];
+                    }
+                });
 
-//        if (position == resultArrayList.size() - 1) {
-//            holder.view1.setVisibility(View.GONE);
-//        }
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (Utilities.isInternetAvailable(context)) {
+                            new ChangeEventStatus().execute(eventListPojo.getId(),
+                                    changeDateFormat("MM/dd/yyyy", "yyyy-MM-dd", eventListPojo.getDate()),
+                                    status[0]);
+                        } else {
+                            Utilities.showMessageString(context, "Please Check Internet Connection");
+                        }
+                    }
+                });
+
+                AlertDialog alertD = builder.create();
+                alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+                alertD.show();
+            }
+        }));
+
     }
 
     @Override
@@ -78,15 +125,65 @@ public class GetWeekWiseEventListAdapter extends RecyclerView.Adapter<GetWeekWis
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView tv_date, tv_event, tv_status;
-        private View view1;
+        private TextView tv_date;
+        private RecyclerView rv_eventlist;
+        private CardView card_view;
+        private LinearLayout ll_mainlayout;
 
         public MyViewHolder(View view) {
             super(view);
             tv_date = view.findViewById(R.id.tv_date);
-            tv_event = view.findViewById(R.id.tv_event);
-            tv_status = view.findViewById(R.id.tv_status);
-            view1 = view.findViewById(R.id.view);
+            rv_eventlist = view.findViewById(R.id.rv_eventlist);
+            card_view = view.findViewById(R.id.card_view);
+            ll_mainlayout = view.findViewById(R.id.ll_mainlayout);
         }
     }
+
+    public class ChangeEventStatus extends AsyncTask<String, Void, String> {
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait . . .");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "statusChanged");
+            obj.addProperty("id", params[0]);
+            obj.addProperty("date", params[1]);
+            obj.addProperty("status", params[2]);
+            res = WebServiceCalls.JSONAPICall(ApplicationConstants.EVENTSAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        new CalenderWeekWise_Fragment.GetEventListWithProgressDialog().execute(user_id, weekStartDateStr);
+                    } else {
+                        Utilities.showAlertDialog(context, "Alert", message, false);
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

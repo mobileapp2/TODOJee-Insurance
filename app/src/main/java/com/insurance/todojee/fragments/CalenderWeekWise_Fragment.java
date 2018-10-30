@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.google.gson.JsonObject;
 import com.insurance.todojee.R;
 import com.insurance.todojee.adapters.GetWeekWiseEventListAdapter;
 import com.insurance.todojee.models.EventListPojo;
+import com.insurance.todojee.models.WeekWiseEventListPojo;
 import com.insurance.todojee.utilities.ApplicationConstants;
 import com.insurance.todojee.utilities.UserSessionManager;
 import com.insurance.todojee.utilities.Utilities;
@@ -35,25 +37,31 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static com.insurance.todojee.utilities.Utilities.changeDateFormat;
+
 public class CalenderWeekWise_Fragment extends Fragment {
 
-    private Context context;
-    public LinearLayout ll_parent, ll_nothingtoshow;
+    private static Context context;
+    public LinearLayout ll_parent;
+    public static LinearLayout ll_nothingtoshow;
     private UserSessionManager session;
-    private String user_id;
+    private static String user_id;
     private int mYear, mMonth, mDay;
     private ImageView imv_backweek, imv_nextweek;
     private TextView tv_daterange;
     private LinearLayoutManager layoutManager;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView rv_eventlist;
+    private static SwipeRefreshLayout swipeRefreshLayout;
+    private static RecyclerView rv_eventlist;
 
     private Date weekStartDate, weekEndDate;
-    private String weekStartDateStr, weekEndDateStr;
-    private SimpleDateFormat dateFormat, dateFormat2;
+    private static String weekStartDateStr;
+    private String weekEndDateStr;
+    private SimpleDateFormat dateFormat;
+    private SimpleDateFormat dateFormat2;
+    private static SimpleDateFormat dateFormat3;
     private int MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
-    private ArrayList<EventListPojo> eventList;
-    private ArrayList<Date> dateList;
+    private static ArrayList<EventListPojo> eventList;
+    private static ArrayList<Date> dateList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -98,6 +106,7 @@ public class CalenderWeekWise_Fragment extends Fragment {
 
         dateFormat = new SimpleDateFormat("dd MMM yyyy");
         dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat3 = new SimpleDateFormat("MM/dd/yyyy");
 
         weekStartDate = getWeekStartDate(Calendar.getInstance());
         weekEndDate = getWeekEndDate(Calendar.getInstance());
@@ -210,7 +219,6 @@ public class CalenderWeekWise_Fragment extends Fragment {
             }
         });
 
-
     }
 
     public static Calendar toCalendar(Date date) {
@@ -235,6 +243,7 @@ public class CalenderWeekWise_Fragment extends Fragment {
     }
 
     public class GetEventList extends AsyncTask<String, Void, String> {
+        ArrayList<WeekWiseEventListPojo> weekWiseEventList;
 
         @Override
         protected void onPreExecute() {
@@ -266,7 +275,8 @@ public class CalenderWeekWise_Fragment extends Fragment {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     eventList = new ArrayList<>();
-                    rv_eventlist.setAdapter(new GetWeekWiseEventListAdapter(context, eventList, dateList));
+                    weekWiseEventList = new ArrayList<>();
+                    rv_eventlist.setAdapter(new GetWeekWiseEventListAdapter(context, weekWiseEventList, user_id, weekStartDateStr));
                     if (type.equalsIgnoreCase("success")) {
                         JSONArray jsonarr = mainObj.getJSONArray("result");
                         if (jsonarr.length() > 0) {
@@ -286,8 +296,30 @@ public class CalenderWeekWise_Fragment extends Fragment {
                             } else {
                                 swipeRefreshLayout.setVisibility(View.VISIBLE);
                                 ll_nothingtoshow.setVisibility(View.GONE);
+
+                                weekWiseEventList = new ArrayList<>();
+                                ArrayList<WeekWiseEventListPojo.EventListPojo> childEventList;
+                                for (int i = 0; i < dateList.size(); i++) {
+                                    WeekWiseEventListPojo weekWiseeventMainObj = new WeekWiseEventListPojo();
+                                    childEventList = new ArrayList<>();
+                                    String compareDateStr = dateFormat3.format(dateList.get(i));
+                                    weekWiseeventMainObj.setDate(compareDateStr);
+                                    for (EventListPojo eventObj : eventList) {
+                                        if (compareDateStr.contains(changeDateFormat("MM/dd/yyyy", "MM/dd/yyyy", eventObj.getDate()))) {
+                                            WeekWiseEventListPojo.EventListPojo eventChildObj = new WeekWiseEventListPojo.EventListPojo();
+                                            eventChildObj.setId(eventObj.getId());
+                                            eventChildObj.setDescription(eventObj.getDescription());
+                                            eventChildObj.setStatus(eventObj.getStatus());
+                                            eventChildObj.setDate(eventObj.getDate());
+                                            childEventList.add(eventChildObj);
+                                        }
+                                    }
+                                    weekWiseeventMainObj.setEventListPojos(childEventList);
+                                    weekWiseEventList.add(weekWiseeventMainObj);
+                                }
                             }
-                            rv_eventlist.setAdapter(new GetWeekWiseEventListAdapter(context, eventList, dateList));
+
+                            rv_eventlist.setAdapter(new GetWeekWiseEventListAdapter(context, weekWiseEventList, user_id, weekStartDateStr));
                         }
                     } else {
                         ll_nothingtoshow.setVisibility(View.VISIBLE);
@@ -302,8 +334,9 @@ public class CalenderWeekWise_Fragment extends Fragment {
         }
     }
 
-    public class GetEventListWithProgressDialog extends AsyncTask<String, Void, String> {
+    public static class GetEventListWithProgressDialog extends AsyncTask<String, Void, String> {
         ProgressDialog pd;
+        ArrayList<WeekWiseEventListPojo> weekWiseEventList;
 
         @Override
         protected void onPreExecute() {
@@ -338,7 +371,8 @@ public class CalenderWeekWise_Fragment extends Fragment {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     eventList = new ArrayList<>();
-                    rv_eventlist.setAdapter(new GetWeekWiseEventListAdapter(context, eventList, dateList));
+                    weekWiseEventList = new ArrayList<>();
+                    rv_eventlist.setAdapter(new GetWeekWiseEventListAdapter(context, weekWiseEventList, user_id, weekStartDateStr));
                     if (type.equalsIgnoreCase("success")) {
                         JSONArray jsonarr = mainObj.getJSONArray("result");
                         if (jsonarr.length() > 0) {
@@ -359,13 +393,29 @@ public class CalenderWeekWise_Fragment extends Fragment {
                                 swipeRefreshLayout.setVisibility(View.VISIBLE);
                                 ll_nothingtoshow.setVisibility(View.GONE);
 
-
+                                weekWiseEventList = new ArrayList<>();
+                                ArrayList<WeekWiseEventListPojo.EventListPojo> childEventList;
                                 for (int i = 0; i < dateList.size(); i++) {
-
+                                    WeekWiseEventListPojo weekWiseeventMainObj = new WeekWiseEventListPojo();
+                                    childEventList = new ArrayList<>();
+                                    String compareDateStr = dateFormat3.format(dateList.get(i));
+                                    weekWiseeventMainObj.setDate(compareDateStr);
+                                    for (EventListPojo eventObj : eventList) {
+                                        if (compareDateStr.contains(changeDateFormat("MM/dd/yyyy", "MM/dd/yyyy", eventObj.getDate()))) {
+                                            WeekWiseEventListPojo.EventListPojo eventChildObj = new WeekWiseEventListPojo.EventListPojo();
+                                            eventChildObj.setId(eventObj.getId());
+                                            eventChildObj.setDescription(eventObj.getDescription());
+                                            eventChildObj.setStatus(eventObj.getStatus());
+                                            eventChildObj.setDate(eventObj.getDate());
+                                            childEventList.add(eventChildObj);
+                                        }
+                                    }
+                                    weekWiseeventMainObj.setEventListPojos(childEventList);
+                                    weekWiseEventList.add(weekWiseeventMainObj);
                                 }
                             }
 
-                            rv_eventlist.setAdapter(new GetWeekWiseEventListAdapter(context, eventList, dateList));
+                            rv_eventlist.setAdapter(new GetWeekWiseEventListAdapter(context, weekWiseEventList, user_id, weekStartDateStr));
                         }
                     } else {
                         ll_nothingtoshow.setVisibility(View.VISIBLE);
@@ -382,19 +432,23 @@ public class CalenderWeekWise_Fragment extends Fragment {
 
     public ArrayList<Date> getDaysBetweenDates(Date startdate, Date enddate) {
         ArrayList<Date> dates = new ArrayList<Date>();
-
+        Date finalEndDate = null;
         String endDateStr = dateFormat.format(enddate.getTime() + MILLIS_IN_DAY);
+        try {
+            finalEndDate = dateFormat.parse(endDateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 //        Date weekStartDate = dateFormat.parse(weekStartDateStr);
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(startdate);
 
-        while (calendar.getTime().before(enddate)) {
+        while (calendar.getTime().before(finalEndDate)) {
             Date result = calendar.getTime();
             dates.add(result);
             calendar.add(Calendar.DATE, 1);
         }
         return dates;
     }
-
 
 }

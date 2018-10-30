@@ -143,7 +143,7 @@ public class CalenderMonthWise_Fragment extends Fragment implements OnDateSelect
             public void onItemClick(View view, int position) {
                 EventListPojo eventListPojo = eventList.get(position);
                 String[] choices = {"Completed", "Dismissed"};
-                final String[] status = {""};
+                final String[] status = {"Completed"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                 builder.setTitle("Select Your Choice");
                 builder.setCancelable(false);
