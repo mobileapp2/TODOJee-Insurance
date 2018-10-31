@@ -17,6 +17,7 @@
             android:layout_height="270dp"
             card_view:cardElevation="5dp">
 
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -35,8 +36,20 @@
                     android:id="@+id/img_finish"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
+                    android:layout_margin="10dp"
+                    android:padding="10dp"
                     android:src="@drawable/icon_backarrow_16p" />
+
+                <ImageView
+                    android:id="@+id/img_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="10dp"
+                    android:padding="10dp"
+                    android:src="@drawable/icon_edit_24dp"
+                    android:tint="@color/white" />
+
 
             </RelativeLayout>
 

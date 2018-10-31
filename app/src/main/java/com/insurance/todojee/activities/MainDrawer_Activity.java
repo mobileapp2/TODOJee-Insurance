@@ -85,7 +85,7 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
     @Override
     protected void onResume() {
         super.onResume();
-        getUpDrawerHeader();
+        getSessionData();
     }
 
     private void init() {
@@ -108,8 +108,6 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         getUpDrawerHeader();
     }
 
