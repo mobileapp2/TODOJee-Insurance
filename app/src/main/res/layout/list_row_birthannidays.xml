@@ -36,7 +36,7 @@
         <ImageView
             android:id="@+id/imv_sms"
             android:layout_width="0dp"
-            android:layout_height="25dp"
+            android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.1"
             android:src="@drawable/icon_sms" />
@@ -44,7 +44,7 @@
         <ImageView
             android:id="@+id/imv_whatsapp"
             android:layout_width="0dp"
-            android:layout_height="25dp"
+            android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.1"
             android:src="@drawable/icon_whatsapp" />

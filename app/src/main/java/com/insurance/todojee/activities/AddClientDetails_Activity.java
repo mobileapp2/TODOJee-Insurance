@@ -19,7 +19,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.QuickContactBadge;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -161,6 +160,23 @@ public class AddClientDetails_Activity extends Activity {
             @Override
             public void afterTextChanged(Editable s) {
                 edt_alias.setText(edt_name.getText().toString().trim());
+            }
+        });
+
+        edt_mobile.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                edt_whatsapp.setText(edt_mobile.getText().toString().trim());
             }
         });
 
@@ -393,7 +409,6 @@ public class AddClientDetails_Activity extends Activity {
 
     public void selectRelation(View view) {
         edt_relation = (EditText) view;
-//        edt_relation.setTag(relationsIdList.size());
         if (relationsList.size() == 0) {
             if (Utilities.isNetworkAvailable(context)) {
                 new GetRelationList().execute(user_id, "1");

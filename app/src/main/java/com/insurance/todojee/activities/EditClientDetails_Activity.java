@@ -211,6 +211,23 @@ public class EditClientDetails_Activity extends Activity {
             }
         });
 
+        edt_mobile.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                edt_whatsapp.setText(edt_mobile.getText().toString().trim());
+            }
+        });
+
         edt_dob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
