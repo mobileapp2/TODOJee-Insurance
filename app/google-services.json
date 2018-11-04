@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "31156516473",
+    "firebase_url": "https://todojeeinsurance.firebaseio.com",
+    "project_id": "todojeeinsurance",
+    "storage_bucket": "todojeeinsurance.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:31156516473:android:be571145122148b9",
+        "android_client_info": {
+          "package_name": "com.insurance.todojee"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "31156516473-l60pgogp3cilbeqh6ied71mu41hi2952.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCr2m1Qvpr1qhhxBOMhZPiu7Ca8HtlGCpU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -43,7 +43,7 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
     private BotNavViewPagerAdapter adapter;
     private AHBottomNavigationViewPager view_pager;
     private UserSessionManager session;
-    private ImageView img_filter, img_reports;
+    private ImageView img_filter, img_notifications;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

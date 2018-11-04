@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -23,8 +24,10 @@ import com.insurance.todojee.utilities.ApplicationConstants;
 import com.insurance.todojee.utilities.PermissionUtil;
 import com.insurance.todojee.utilities.UserSessionManager;
 import com.insurance.todojee.utilities.Utilities;
+import com.insurance.todojee.utilities.WebServiceCalls;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -267,23 +270,23 @@ public class Login_Activity extends Activity {
     }
 
     private void saveRegistrationID() {
-//        String user_id = "", regToken = "";
-//        try {
-//            JSONArray user_info = new JSONArray(session.getUserDetails().get(
-//                    ApplicationConstants.KEY_LOGIN_INFO));
-//
-//            for (int j = 0; j < user_info.length(); j++) {
-//                JSONObject json = user_info.getJSONObject(j);
-//                user_id = json.getString("user_id");
-//            }
-//
-//            regToken = session.getAndroidToken().get(ApplicationConstants.KEY_ANDROIDTOKETID);
-//
-//            if (regToken != null && !regToken.isEmpty() && !regToken.equals("null") && !regToken.equals(""))
-//                new SendRegistrationToken().execute(user_id, regToken);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        String user_id = "", regToken = "";
+        try {
+            JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+
+            for (int j = 0; j < user_info.length(); j++) {
+                JSONObject json = user_info.getJSONObject(j);
+                user_id = json.getString("id");
+            }
+
+            regToken = session.getAndroidToken().get(ApplicationConstants.KEY_ANDROIDTOKETID);
+
+            if (regToken != null && !regToken.isEmpty() && !regToken.equals("null") && !regToken.equals(""))
+                new SendRegistrationToken().execute(user_id, regToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private String totalRAMSize() {
@@ -507,8 +510,7 @@ public class Login_Activity extends Activity {
                         if (jsonarr.length() > 0) {
                             for (int i = 0; i < jsonarr.length(); i++) {
                                 session.createUserLoginSession(jsonarr.toString());
-                                finish();
-                                startActivity(new Intent(context, MainDrawer_Activity.class));
+                                saveRegistrationID();
                             }
                         }
                     } else {
@@ -521,63 +523,63 @@ public class Login_Activity extends Activity {
             }
         }
     }
-    //    public class SendRegistrationToken extends AsyncTask<String, Integer, String> {
-//        ProgressDialog pd;
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
-//            pd.setMessage("Please wait ...");
-//            pd.setCancelable(false);
-//            pd.show();
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//            String res = "[]";
-//            String s = "";
-//            JSONObject obj = new JSONObject();
-//            try {
-//                obj.put("device_type", "Android");
-//                obj.put("device_id", params[1]);
-//                obj.put("ram", totalRAMSize());
-//                obj.put("processor", Build.CPU_ABI);
-//                obj.put("device_os", Build.VERSION.RELEASE);
-//                obj.put("location", "0.0, 0.0");
-//                obj.put("device_model", Build.MODEL);
-//                obj.put("manufacturer", Build.MANUFACTURER);
-//                obj.put("user_id", params[0]);
-//                obj.put("type", "registerDevice");
-//                s = obj.toString();
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            res = WebServiceCalls.APICall(ApplicationConstants.DEVICEREGAPI, s);
-//            return res.trim();
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            super.onPostExecute(result);
-//            pd.dismiss();
-//            if (result != null && result.length() > 0 && !result.equalsIgnoreCase("[]")) {
-//                try {
-//                    int c = 0;
-//                    JSONObject obj1 = new JSONObject(result);
-//                    String success = obj1.getString("success");
-//                    String message = obj1.getString("message");
-//                    if (success.equalsIgnoreCase("1")) {
-//                        startActivity(new Intent(context, MainDrawer_Activity.class));
-////                        startActivity(new Intent(context, MainNormalDrawer_Activity.class));
-//                        finish();
-//                    } else {
-//                        Utilities.showAlertDialog(context, "Server Not Responding", "Please Try After Sometime", false);
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
+
+    public class SendRegistrationToken extends AsyncTask<String, Integer, String> {
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            String s = "";
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("type", "registerDevice");
+                obj.put("device_type", "Android");
+                obj.put("customers_id", params[0]);
+                obj.put("device_id", params[1]);
+                obj.put("ram", totalRAMSize());
+                obj.put("processor", Build.CPU_ABI);
+                obj.put("device_os", Build.VERSION.RELEASE);
+                obj.put("location", "0.0, 0.0");
+                obj.put("device_model", Build.MODEL);
+                obj.put("manufacturer", Build.MANUFACTURER);
+                s = obj.toString();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            res = WebServiceCalls.JSONAPICall(ApplicationConstants.PROFILEAPI, s);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            if (result != null && result.length() > 0 && !result.equalsIgnoreCase("[]")) {
+                try {
+                    int c = 0;
+                    JSONObject obj1 = new JSONObject(result);
+                    String success = obj1.getString("success");
+                    String message = obj1.getString("message");
+                    if (success.equalsIgnoreCase("1")) {
+                        startActivity(new Intent(context, MainDrawer_Activity.class));
+                        finish();
+                    } else {
+                        Utilities.showAlertDialog(context, "Server Not Responding", "Please Try After Sometime", false);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
