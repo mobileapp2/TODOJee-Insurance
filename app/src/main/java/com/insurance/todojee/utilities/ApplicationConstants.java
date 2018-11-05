@@ -37,4 +37,6 @@ public class ApplicationConstants {
     public static final String EVENTSAPI = "https://gstkhata.com/QA/todojee_insurance/serverfiles/LIC_Apis/event.php";
 
     public static final String UPLOADFILEAPI = "https://gstkhata.com/QA/todojee_insurance/serverfiles/LIC_Apis/upload.php";
+
+    public static final String NOTIFICATIONAPI = "https://gstkhata.com/QA/todojee_insurance/serverfiles/LIC_Apis/notification.php";
 }

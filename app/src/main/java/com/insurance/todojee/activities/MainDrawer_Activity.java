@@ -59,6 +59,7 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
         init();
         setUpToolbar();
         getSessionData();
+        setEventHandler();
         setUpBottomNavigation();
 
         if (Utilities.isInternetAvailable(context)) {
@@ -109,6 +110,15 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
             e.printStackTrace();
         }
         getUpDrawerHeader();
+    }
+
+    private void setEventHandler() {
+        img_notifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, NotificationList_Activity.class));
+            }
+        });
     }
 
     private void getUpDrawerHeader() {
@@ -224,7 +234,7 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
     private void setUpToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        img_notifications = findViewById(R.id.img_notifications);
         DrawerLayout drawer = findViewById(R.id.drawerlayout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

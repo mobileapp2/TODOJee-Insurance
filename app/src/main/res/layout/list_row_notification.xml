@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingTop="5dp"
+    android:paddingRight="10dp">
+
+    <ImageView
+        android:id="@+id/imv_notificationimg"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/app_banner" />
+
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:longClickable="false"
+        android:text="Batman Fictional superhero"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:longClickable="false"
+        android:text="Batman is a fictional in American comic books published by DC Comics. The character was created by artist Bob Kane "
+        android:textColor="@color/grey"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/imv_delete"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="end"
+        android:visibility="gone"
+        android:src="@drawable/icon_delete_24dp" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/grey"
+        android:clickable="false" />
+
+</LinearLayout>
