@@ -39,7 +39,8 @@
                 android:layout_gravity="end"
                 android:layout_marginRight="20dp"
                 android:src="@drawable/icon_filter"
-                android:tint="@color/white" />
+                android:tint="@color/white"
+                android:visibility="gone"/>
         </android.support.v7.widget.Toolbar>
 
         <!--</android.support.design.widget.AppBarLayout>-->
@@ -61,7 +62,7 @@
         <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_gravity="bottom"
             android:backgroundTint="@color/white" />
         <!--</android.support.v7.widget.CardView>-->

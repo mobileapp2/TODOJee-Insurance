@@ -57,8 +57,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_margin="10dp"
                             android:onClick="openInsuranceCompany"
@@ -75,7 +75,7 @@
                             android:onClick="openInsuranceCompany"
                             android:text="Insurance Company"
                             android:textColor="@color/colorPrimary"
-                            android:textSize="14sp"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -98,8 +98,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_margin="10dp"
                             android:onClick="openPolicyType"
@@ -116,7 +116,7 @@
                             android:onClick="openPolicyType"
                             android:text="Policy Type"
                             android:textColor="@color/colorPrimary"
-                            android:textSize="14sp"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -149,8 +149,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_margin="10dp"
                             android:onClick="openNewPoducts"
@@ -167,7 +167,7 @@
                             android:onClick="openNewPoducts"
                             android:text="New Products"
                             android:textColor="@color/colorPrimary"
-                            android:textSize="14sp"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -190,8 +190,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_margin="10dp"
                             android:onClick="openFamilyCode"
@@ -208,7 +208,7 @@
                             android:onClick="openFamilyCode"
                             android:text="Family Code"
                             android:textColor="@color/colorPrimary"
-                            android:textSize="14sp"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
