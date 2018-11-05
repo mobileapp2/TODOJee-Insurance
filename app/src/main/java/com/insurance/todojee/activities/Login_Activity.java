@@ -14,11 +14,15 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.JsonObject;
 import com.insurance.todojee.R;
 import com.insurance.todojee.utilities.ApplicationConstants;
 import com.insurance.todojee.utilities.PermissionUtil;
@@ -51,6 +55,7 @@ public class Login_Activity extends Activity {
     private Button btn_login;
     private int i = 0;
     private UserSessionManager session;
+    private String mobileNo, user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,41 +93,59 @@ public class Login_Activity extends Activity {
         tv_forgotpass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                LayoutInflater layoutInflater = LayoutInflater.from(context);
-//                View promptView = layoutInflater.inflate(R.layout.prompt_forgotpassword, null);
-//                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-//                alertDialogBuilder.setTitle("Enter Registered Mobile");
-//                alertDialogBuilder.setView(promptView);
-//
-//                final EditText edt_entermobile = promptView.findViewById(R.id.edt_entermobile);
-//
-//                alertDialogBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        if (!Utilities.isMobileNo(edt_entermobile)) {
-//                            Utilities.showMessageString(context, "Please Enter Valid Mobile Number");
-//                            return;
-//                        }
-//
-//                        mobileNo = edt_entermobile.getText().toString().trim();
-//                        if (Utilities.isNetworkAvailable(context)) {
-//                            new SendOTP().execute();
-//                        } else {
-//                            Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
-//                        }
-//                    }
-//                });
-//
-//                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                });
-//
-//                AlertDialog alertD = alertDialogBuilder.create();
-//                alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-//                alertD.show();
+                final EditText edt_entermobile = new EditText(context);
+                float dpi = context.getResources().getDisplayMetrics().density;
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                alertDialogBuilder.setTitle("Enter Registered Mobile");
+
+                alertDialogBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!Utilities.isMobileNo(edt_entermobile)) {
+                            Utilities.showMessageString(context, "Please Enter Valid Mobile Number");
+                            return;
+                        }
+
+                        mobileNo = edt_entermobile.getText().toString().trim();
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new SendOTP().execute(mobileNo);
+                        } else {
+                            Utilities.showSnackBar(cl_parent, "Please Check Internet Connection");
+                        }
+                    }
+                });
+
+                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                final AlertDialog alertD = alertDialogBuilder.create();
+                alertD.setView(edt_entermobile, (int) (19 * dpi), (int) (5 * dpi), (int) (14 * dpi), (int) (5 * dpi));
+                alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+                alertD.show();
+                alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                edt_entermobile.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (TextUtils.isEmpty(s)) {
+                            alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                        } else {
+                            alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                        }
+
+                    }
+                });
             }
         });
 
@@ -143,111 +166,121 @@ public class Login_Activity extends Activity {
     }
 
     private void createDialogForOTP(final String otp) {
-//        LayoutInflater layoutInflater = LayoutInflater.from(context);
-//        View promptView = layoutInflater.inflate(R.layout.prompt_enterotp, null);
-//        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-//        alertDialogBuilder.setTitle("Enter OTP");
-//        alertDialogBuilder.setView(promptView);
-//
-//        final EditText edt_enterotp = promptView.findViewById(R.id.edt_enterotp);
-//
-//        alertDialogBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                if (otp.equals(edt_enterotp.getText().toString().trim())) {
-//                    createDialogForPassword();
-//                } else {
-//                    Utilities.showMessageString(context, "Please Enter Correct OTP");
-//                    createDialogForOTP(otp);
-//                }
-//            }
-//        });
-//
-//        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//            }
-//        });
-//
-//
-//        alertDialogBuilder.setNeutralButton("Resend", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                if (Utilities.isNetworkAvailable(context)) {
-//                    new SendOTP().execute();
-//                } else {
-//                    Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
-//                }
-//            }
-//        });
-//
-//        AlertDialog alertD = alertDialogBuilder.create();
-//        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-//        alertD.show();
+        final EditText edt_enterotp = new EditText(context);
+        float dpi = context.getResources().getDisplayMetrics().density;
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setTitle("Enter OTP");
+
+        alertDialogBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (otp.equals(edt_enterotp.getText().toString().trim())) {
+                    createDialogForPassword();
+                } else {
+                    Utilities.showMessageString(context, "Please Enter Correct OTP");
+                    createDialogForOTP(otp);
+                }
+            }
+        });
+
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+
+        alertDialogBuilder.setNeutralButton("Resend", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new SendOTP().execute(mobileNo);
+                } else {
+                    Utilities.showSnackBar(cl_parent, "Please Check Internet Connection");
+                }
+            }
+        });
+
+
+        final AlertDialog alertD = alertDialogBuilder.create();
+        alertD.setView(edt_enterotp, (int) (19 * dpi), (int) (5 * dpi), (int) (14 * dpi), (int) (5 * dpi));
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+        alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+        edt_enterotp.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(s)) {
+                    alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                } else {
+                    alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                }
+
+            }
+        });
     }
 
     private void createDialogForPassword() {
-//        LayoutInflater layoutInflater = LayoutInflater.from(context);
-//        View promptView = layoutInflater.inflate(R.layout.prompt_changepassword, null);
-//        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-//        alertDialogBuilder.setTitle("Change Password");
-//        alertDialogBuilder.setView(promptView);
-//
-//        final EditText edt_oldpassword = promptView.findViewById(R.id.edt_oldpassword);
-//        final EditText edt_enterpassword = promptView.findViewById(R.id.edt_enterpassword);
-//        final EditText edt_confirmpassword = promptView.findViewById(R.id.edt_confirmpassword);
-//
-//        edt_oldpassword.setVisibility(View.GONE);
-//
-//        edt_confirmpassword.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                if (!edt_confirmpassword.getText().toString().trim().equals(edt_enterpassword.getText().toString().trim())) {
-//                    edt_confirmpassword.setError("Passwords does not match");
-//                } else {
-//                    edt_confirmpassword.setError(null);
-//                }
-//            }
-//        });
-//
-//        alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                if (!edt_confirmpassword.getText().toString().trim().equals(edt_enterpassword.getText().toString().trim())) {
-//                    Utilities.showMessageString(context, "Passwords does not match");
-//                    return;
-//                }
-//
-//                if (Utilities.isNetworkAvailable(context)) {
-//                    new ChangePassword().execute(edt_confirmpassword.getText().toString().trim());
-//                } else {
-//                    Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
-//                }
-//
-//            }
-//        });
-//
-//        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//            }
-//        });
-//
-//        AlertDialog alertD = alertDialogBuilder.create();
-//        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-//        alertD.show();
+        final EditText edt_enterpassword = new EditText(context);
+        float dpi = context.getResources().getDisplayMetrics().density;
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setTitle("Change Password");
+
+
+        alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new ChangePassword().execute(edt_enterpassword.getText().toString().trim());
+                } else {
+                    Utilities.showSnackBar(cl_parent, "Please Check Internet Connection");
+                }
+
+            }
+        });
+
+
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        final AlertDialog alertD = alertDialogBuilder.create();
+        alertD.setView(edt_enterpassword, (int) (19 * dpi), (int) (5 * dpi), (int) (14 * dpi), (int) (5 * dpi));
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+        alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+        edt_enterpassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(s)) {
+                    alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                } else {
+                    alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                }
+
+            }
+        });
     }
 
     private void submitData() {
@@ -353,110 +386,119 @@ public class Login_Activity extends Activity {
         }
     }
 
-    //    public class SendOTP extends AsyncTask<String, Void, String> {
-//
-//        ProgressDialog pd;
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
-//            pd.setMessage("Please wait ...");
-//            pd.setCancelable(false);
-//            pd.show();
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//            String res = "[]";
-//            JSONObject obj = new JSONObject();
-//            try {
-//                obj.put("type", "ForgetPassword");
-//                obj.put("mobile", mobileNo);
-//                obj.put("email", "");
-//                obj.put("otp_type", "send");
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            res = WebServiceCalls.APICall(ApplicationConstants.SENDOTPAPI, obj.toString());
-//            return res.trim();
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            super.onPostExecute(result);
-//            String type = "", message = "";
-//            try {
-//                pd.dismiss();
-//                if (!result.equals("")) {
-//                    JSONObject mainObj = new JSONObject(result);
-//                    type = mainObj.getString("type");
+
+    public class SendOTP extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "forgotPassword");
+            obj.addProperty("mobile", params[0]);
+            res = WebServiceCalls.JSONAPICall(ApplicationConstants.PROFILEAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
 //                    message = mainObj.getString("message");
-//                    if (type.equalsIgnoreCase("success")) {
-//                        String OTP = mainObj.getString("otp");
-//                        user_id = mainObj.getString("user_id");
-//                        createDialogForOTP(OTP);
-//                    } else if (type.equalsIgnoreCase("failure")) {
-//                        Utilities.showAlertDialog(context, "Alert", message, false);
-//                    }
-//
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//
-//    public class ChangePassword extends AsyncTask<String, Void, String> {
-//
-//        ProgressDialog pd;
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
-//            pd.setMessage("Please wait ...");
-//            pd.setCancelable(false);
-//            pd.show();
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//            String res = "[]";
-//            JSONObject obj = new JSONObject();
-//            try {
-//                obj.put("type", "UpdateUserPassword");
-//                obj.put("password", params[0]);
-//                obj.put("user_id", user_id);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            res = WebServiceCalls.APICall(ApplicationConstants.USERAPI, obj.toString());
-//            return res.trim();
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            super.onPostExecute(result);
-//            String type = "", message = "";
-//            try {
-//                pd.dismiss();
-//                if (!result.equals("")) {
-//                    JSONObject mainObj = new JSONObject(result);
-//                    type = mainObj.getString("type");
-//                    message = mainObj.getString("message");
-//                    if (type.equalsIgnoreCase("success")) {
-//                        Utilities.showAlertDialog(context, "Success", "Password Changed Successfully", true);
-//                    } else if (type.equalsIgnoreCase("failure")) {
-//                        Utilities.showSnackBar(ll_parent, message);
-//                    }
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//
+                    if (type.equalsIgnoreCase("success")) {
+                        String OTP = mainObj.getString("otp");
+                        user_id = mainObj.getString("user_id");
+                        createDialogForOTP(OTP);
+                    } else {
+                        Utilities.showAlertDialog(context, "Alert", message, false);
+                    }
+
+                }
+            } catch (Exception e) {
+
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class ChangePassword extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("type", "updatePassword");
+                obj.put("password", params[0]);
+                obj.put("user_id", user_id);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            res = WebServiceCalls.JSONAPICall(ApplicationConstants.PROFILEAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        builder.setMessage("Password Changed Successfully");
+                        builder.setIcon(R.drawable.ic_success_24dp);
+                        builder.setTitle("Success");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                            }
+                        });
+                        AlertDialog alertD = builder.create();
+                        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+                        alertD.show();
+                    } else if (type.equalsIgnoreCase("failure")) {
+                        Utilities.showSnackBar(cl_parent, message);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public class LoginUser extends AsyncTask<String, Void, String> {
 
         ProgressDialog pd;
