@@ -66,7 +66,7 @@ public class GetNotificationListAdapter extends RecyclerView.Adapter<GetNotifica
                     .into(holder.imv_notificationimg, new Callback() {
                         @Override
                         public void onSuccess() {
-
+                            holder.imv_notificationimg.setVisibility(View.VISIBLE);
                         }
 
                         @Override

@@ -12,7 +12,8 @@
         android:id="@+id/imv_notificationimg"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:src="@drawable/app_banner" />
+        android:src="@drawable/app_banner"
+        android:visibility="gone" />
 
 
     <TextView
@@ -41,8 +42,8 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_gravity="end"
-        android:visibility="gone"
-        android:src="@drawable/icon_delete_24dp" />
+        android:src="@drawable/icon_delete_24dp"
+        android:visibility="gone" />
 
     <View
         android:id="@+id/view"

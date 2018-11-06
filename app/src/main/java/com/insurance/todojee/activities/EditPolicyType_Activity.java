@@ -19,9 +19,9 @@ import android.widget.LinearLayout;
 
 import com.google.gson.JsonObject;
 import com.insurance.todojee.R;
-import com.insurance.todojee.fragments.GeneralInsuranceCompany_Fragment;
+import com.insurance.todojee.fragments.GeneralInsurance_Fragment;
 import com.insurance.todojee.fragments.GeneralInsurePolicyType_Fragment;
-import com.insurance.todojee.fragments.LifeInsuranceCompany_Fragment;
+import com.insurance.todojee.fragments.LifeInsurance_Fragment;
 import com.insurance.todojee.fragments.LifeInsurePolicyType_Fragment;
 import com.insurance.todojee.models.InsuranceCompanyListPojo;
 import com.insurance.todojee.models.PolicyTypeListPojo;
@@ -386,6 +386,9 @@ public class EditPolicyType_Activity extends Activity {
 
                         new LifeInsurePolicyType_Fragment.GetPolicyTypeList().execute(user_id, "-1");
                         new GeneralInsurePolicyType_Fragment.GetPolicyTypeList().execute(user_id, "-1");
+
+                        new GeneralInsurance_Fragment.GetGeneralInsurance().execute(user_id);
+                        new LifeInsurance_Fragment.GetLifeInsurance().execute(user_id);
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                         builder.setMessage("Policy Type Updated Successfully");

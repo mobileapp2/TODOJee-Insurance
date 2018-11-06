@@ -72,9 +72,9 @@ public class FirebaseMessageService extends FirebaseMessagingService {
 //        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 //        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
 //        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
-//            notificationBuilder.setSmallIcon(R.drawable.icon_reminder);
+//            notificationBuilder.setSmallIcon(R.drawable.app_notification_icon);
 //        else
-//            notificationBuilder.setSmallIcon(R.drawable.icon_reminder);
+//            notificationBuilder.setSmallIcon(R.drawable.app_notification_icon);
 //
 //        notificationBuilder.setContentTitle("Todojee Insurance");
 //        notificationBuilder.setContentText(messageBody);
@@ -159,7 +159,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                 .setContentTitle(title)
                 .setContentText(msg)
 //                        .setTicker(Application.getContext().getString(R.string.app_name))
-                .setSmallIcon(R.drawable.icon_reminder)
+                .setSmallIcon(R.drawable.app_notification_icon)
                 //    .setLargeIcon(iconBitmap)
                 .setSound(notificationSound)
                 .setLights(Color.YELLOW, 1000, 1000)
@@ -248,7 +248,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                         .setContentTitle(title)
                         .setContentText(message)
 //                        .setTicker(Application.getContext().getString(R.string.app_name))
-                        .setSmallIcon(R.drawable.icon_reminder)
+                        .setSmallIcon(R.drawable.app_notification_icon)
                         //    .setLargeIcon(iconBitmap)
                         .setSound(notificationSound)
                         .setLights(Color.YELLOW, 1000, 1000)
@@ -263,7 +263,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                         .setContentTitle(title)
                         .setContentText(message)
 //                        .setTicker(getContext().getString(R.string.app_name))
-                        .setSmallIcon(R.drawable.icon_reminder)
+                        .setSmallIcon(R.drawable.app_notification_icon)
                         //.setLargeIcon(result)
                         .setStyle(new Notification.BigPictureStyle().bigPicture(result))
                         .setSound(notificationSound)

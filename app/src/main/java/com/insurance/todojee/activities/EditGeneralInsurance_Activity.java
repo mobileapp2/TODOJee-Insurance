@@ -795,7 +795,6 @@ public class EditGeneralInsurance_Activity extends Activity {
         }
 
 
-
     }
 
     public void removeDocument(View view) {
@@ -1550,7 +1549,6 @@ public class EditGeneralInsurance_Activity extends Activity {
 
         }
     }
-
 
 
 }

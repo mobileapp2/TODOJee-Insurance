@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.google.gson.JsonObject;
 import com.insurance.todojee.R;
 import com.insurance.todojee.activities.MastersFamiliyCode_Activity;
+import com.insurance.todojee.fragments.Clients_Fragment;
 import com.insurance.todojee.models.FamilyCodePojo;
 import com.insurance.todojee.utilities.ApplicationConstants;
 import com.insurance.todojee.utilities.UserSessionManager;
@@ -186,6 +187,7 @@ public class GetFamilyCodeListAdapter extends RecyclerView.Adapter<GetFamilyCode
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
+                        new Clients_Fragment.GetClientList().execute(user_id);
                         new MastersFamiliyCode_Activity.GetFamilyCodeList().execute(user_id);
                     } else {
                         Utilities.showAlertDialog(context, "Alert", message, false);

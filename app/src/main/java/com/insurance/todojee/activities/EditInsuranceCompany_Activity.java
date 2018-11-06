@@ -18,7 +18,9 @@ import android.widget.LinearLayout;
 import com.google.gson.JsonObject;
 import com.insurance.todojee.R;
 import com.insurance.todojee.fragments.GeneralInsuranceCompany_Fragment;
+import com.insurance.todojee.fragments.GeneralInsurance_Fragment;
 import com.insurance.todojee.fragments.LifeInsuranceCompany_Fragment;
+import com.insurance.todojee.fragments.LifeInsurance_Fragment;
 import com.insurance.todojee.models.InsuranceCompanyListPojo;
 import com.insurance.todojee.utilities.ApplicationConstants;
 import com.insurance.todojee.utilities.UserSessionManager;
@@ -234,6 +236,9 @@ public class EditInsuranceCompany_Activity extends Activity {
 
                         new LifeInsuranceCompany_Fragment.GetCompanyList().execute(user_id);
                         new GeneralInsuranceCompany_Fragment.GetCompanyList().execute(user_id);
+
+                        new GeneralInsurance_Fragment.GetGeneralInsurance().execute(user_id);
+                        new LifeInsurance_Fragment.GetLifeInsurance().execute(user_id);
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                         builder.setMessage("Insurance Company Updated Successfully");

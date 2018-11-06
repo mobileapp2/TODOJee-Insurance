@@ -467,7 +467,7 @@ public class Anniversary_Fragment extends Fragment {
                     edt_smsmessage.setText(smsMessage);
                     edt_smsmessage.setSelection(smsMessage.length());
                     AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    builder.setTitle("Send Anniversary SMS Message");
+                    builder.setTitle("SMS Message");
                     builder.setCancelable(false);
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -647,13 +647,15 @@ public class Anniversary_Fragment extends Fragment {
                     }
 
                     LayoutInflater layoutInflater = LayoutInflater.from(context);
-                    View promptView = layoutInflater.inflate(R.layout.prompt_whatsappsett, null);
+                    View promptView = layoutInflater.inflate(R.layout.prompt_send_whatsappmsg, null);
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    alertDialogBuilder.setTitle("Send Anniversary Whatsapp Message");
+                    alertDialogBuilder.setTitle("Whatsapp Message");
                     alertDialogBuilder.setView(promptView);
 
                     dialog_edt_whatsappmessage = promptView.findViewById(R.id.dialog_edt_whatsappmessage);
                     dialog_imv_whatsapppic = promptView.findViewById(R.id.dialog_imv_whatsapppic);
+                    CheckBox cb_whatsappmsg = promptView.findViewById(R.id.cb_whatsappmsg);
+                    CheckBox cb_whatsappimg = promptView.findViewById(R.id.cb_whatsappimg);
 
                     dialog_edt_whatsappmessage.setText(whatsappMessage);
 
@@ -667,7 +669,19 @@ public class Anniversary_Fragment extends Fragment {
                     alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            sendWhatsapp(dialog_edt_whatsappmessage.getText().toString().trim(), singleReceiverID);
+                            if (!cb_whatsappmsg.isChecked() && !cb_whatsappimg.isChecked()) {
+                                Utilities.showMessageString(context, "Please Check Atleast One");
+                                return;
+                            }
+
+                            String whatsappPicSend = "", whatsappMsgSend = "";
+                            if (cb_whatsappmsg.isChecked()) {
+                                whatsappPicSend = dialog_edt_whatsappmessage.getText().toString().trim();
+                            }
+                            if (cb_whatsappimg.isChecked()) {
+                                whatsappMsgSend = whatsappPic;
+                            }
+                            sendWhatsapp(whatsappPicSend, whatsappMsgSend, singleReceiverID);
                         }
                     });
 
@@ -708,7 +722,7 @@ public class Anniversary_Fragment extends Fragment {
         }
     }
 
-    private void sendWhatsapp(String message, String singleReceiverID) {
+    private void sendWhatsapp(String message, String whatsappPic, String singleReceiverID) {
         JsonArray clientIdJSONArray = new JsonArray();
 
         if (singleReceiverID.equals("")) {

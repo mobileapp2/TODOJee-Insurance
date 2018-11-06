@@ -31,6 +31,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.insurance.todojee.utilities.Utilities.html2text;
+
 public class NotificationList_Activity extends Activity {
 
     private static Context context;
@@ -193,8 +195,8 @@ public class NotificationList_Activity extends Activity {
                                 NotificationListPojo summary = new NotificationListPojo();
                                 JSONObject jsonObj = jsonarr.getJSONObject(i);
                                 summary.setId(jsonObj.getString("id"));
-                                summary.setTitle(jsonObj.getString("title"));
-                                summary.setMessage(jsonObj.getString("message"));
+                                summary.setTitle(html2text(jsonObj.getString("title")));
+                                summary.setMessage(html2text(jsonObj.getString("message")));
                                 summary.setImage(jsonObj.getString("image"));
                                 notificationList.add(summary);
 
