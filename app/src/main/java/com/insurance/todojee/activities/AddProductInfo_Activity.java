@@ -136,20 +136,27 @@ public class AddProductInfo_Activity extends Activity {
         img_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (bm == null) {
-                    Utilities.showSnackBar(ll_parent, "Please Pick Product Image");
-                    return;
-                }
+
 
                 if (edt_productinfo.getText().toString().trim().equals("")) {
                     Utilities.showSnackBar(ll_parent, "Please Enter Product Information");
                     return;
                 }
 
-                if (Utilities.isNetworkAvailable(context)) {
-                    new UploadProductPhoto().execute(photoFileToUpload);
+                if (bm == null) {
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new AddProductInfo().execute(edt_productinfo.getText().toString().trim(),
+                                "",
+                                user_id);
+                    } else {
+                        Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                    }
                 } else {
-                    Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new UploadProductPhoto().execute(photoFileToUpload);
+                    } else {
+                        Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                    }
                 }
             }
         });

@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -29,6 +30,7 @@ import com.insurance.todojee.utilities.ParamsPojo;
 import com.insurance.todojee.utilities.UserSessionManager;
 import com.insurance.todojee.utilities.Utilities;
 import com.insurance.todojee.utilities.WebServiceCalls;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -46,7 +48,7 @@ public class ViewProductInfo_Activity extends Activity {
     private ProductInfoListPojo productDetails;
     private ImageView img_delete, img_edit, imv_product;
     private UserSessionManager session;
-    private String user_id;
+    private String user_id, document_url, document_name;
     private ArrayList<ClientMainListPojo> clientList;
 
     private ListView lv_checkboxlist;
@@ -96,8 +98,23 @@ public class ViewProductInfo_Activity extends Activity {
             Picasso.with(context)
                     .load(productDetails.getDocument())
                     .placeholder(R.drawable.img_product)
-                    .into(imv_product);
+                    .into(imv_product, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            document_url = productDetails.getDocument();
+                            Uri uri = Uri.parse(document_url);
+                            document_name = uri.getLastPathSegment();
+                            imv_product.setClickable(true);
+                        }
+
+                        @Override
+                        public void onError() {
+                            document_name = "";
+                            imv_product.setClickable(false);
+                        }
+                    });
         }
+
 
         edt_productinfo.setText(productDetails.getText());
     }

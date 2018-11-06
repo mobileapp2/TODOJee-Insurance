@@ -34,6 +34,7 @@ import com.insurance.todojee.utilities.MultipartUtility;
 import com.insurance.todojee.utilities.UserSessionManager;
 import com.insurance.todojee.utilities.Utilities;
 import com.insurance.todojee.utilities.WebServiceCalls;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -128,10 +129,24 @@ public class EditProductInfo_Activity extends Activity {
                     .into(imv_product);
         }
 
-        document_url = productDetails.getDocument();
+        if (!productDetails.getDocument().equals("")) {
+            Picasso.with(context)
+                    .load(productDetails.getDocument())
+                    .placeholder(R.drawable.img_product)
+                    .into(imv_product, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            document_url = productDetails.getDocument();
+                            Uri uri = Uri.parse(document_url);
+                            document_name = uri.getLastPathSegment();
+                        }
 
-        Uri uri = Uri.parse(document_url);
-        document_name = uri.getLastPathSegment();
+                        @Override
+                        public void onError() {
+                            document_name = "";
+                        }
+                    });
+        }
 
         edt_productinfo.setText(productDetails.getText());
     }
@@ -152,10 +167,10 @@ public class EditProductInfo_Activity extends Activity {
         img_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (document_name.equals("")) {
-                    Utilities.showSnackBar(ll_parent, "Please Pick Product Image");
-                    return;
-                }
+//                if (document_name.equals("")) {
+//                    Utilities.showSnackBar(ll_parent, "Please Pick Product Image");
+//                    return;
+//                }
 
                 if (edt_productinfo.getText().toString().trim().equals("")) {
                     Utilities.showSnackBar(ll_parent, "Please Enter Product Information");
@@ -179,7 +194,7 @@ public class EditProductInfo_Activity extends Activity {
     }
 
     private void selectImage() {
-        final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
+        final CharSequence[] options = {"Take a Photo", "Choose from Gallery", "Remove Image"};
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builder.setCancelable(false);
         builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -195,6 +210,15 @@ public class EditProductInfo_Activity extends Activity {
                     Intent intent = new Intent(Intent.ACTION_PICK);
                     intent.setType("image/*");
                     startActivityForResult(intent, GALLERY_REQUEST);
+                } else if (options[item].equals("Remove Image")) {
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new EditProductInfo().execute(edt_productinfo.getText().toString().trim(),
+                                "",
+                                user_id,
+                                productDetails.getId());
+                    } else {
+                        Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                    }
                 }
             }
         });
@@ -377,7 +401,7 @@ public class EditProductInfo_Activity extends Activity {
                         new MastersProductList_Activity.GetProductInfoList().execute(user_id);
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                        builder.setMessage("Product Details Added Successfully");
+                        builder.setMessage("Product Details Updated Successfully");
                         builder.setIcon(R.drawable.ic_success_24dp);
                         builder.setTitle("Success");
                         builder.setCancelable(false);
@@ -404,7 +428,7 @@ public class EditProductInfo_Activity extends Activity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
 
         img_save = findViewById(R.id.img_save);
-        mToolbar.setTitle("Update Product Details");
+        mToolbar.setTitle("Edit Product Details");
         mToolbar.setNavigationIcon(R.drawable.icon_backarrow_16p);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

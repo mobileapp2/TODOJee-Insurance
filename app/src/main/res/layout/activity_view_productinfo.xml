@@ -68,6 +68,7 @@
                     android:layout_height="250dp"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
+                    android:clickable="false"
                     android:scaleType="centerCrop"
                     android:src="@drawable/img_product" />
 
@@ -85,8 +86,7 @@
                         android:hint="Product Information"
                         android:longClickable="false"
                         android:textColor="@color/black"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp"/>
 
                 </android.support.design.widget.TextInputLayout>
 
