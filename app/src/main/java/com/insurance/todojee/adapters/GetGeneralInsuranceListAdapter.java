@@ -6,8 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -40,15 +38,21 @@ public class GetGeneralInsuranceListAdapter extends RecyclerView.Adapter<GetGene
         LifeGeneralInsuranceMainListPojo lifeInsuranceDetails = new LifeGeneralInsuranceMainListPojo();
         lifeInsuranceDetails = resultArrayList.get(position);
         final LifeGeneralInsuranceMainListPojo finalIifeInsuranceDetails = lifeInsuranceDetails;
+        String insurerName = "";
+        String InsurerTypeId = lifeInsuranceDetails.getInsurer_type_id();
+        if (InsurerTypeId.equals("F")) {
+            insurerName = (lifeInsuranceDetails.getInsurer_firm_name().trim().equals("")) ? "-" : lifeInsuranceDetails.getInsurer_firm_name();
+        } else if (InsurerTypeId.equals("R")) {
+            insurerName = (lifeInsuranceDetails.getInsurer_family_name().trim().equals("")) ? "-" : lifeInsuranceDetails.getInsurer_family_name();
+        }
 
-        String clientName = (lifeInsuranceDetails.getClient_name().trim().equals("")) ? "-" : lifeInsuranceDetails.getClient_name();
         String policyNo = (lifeInsuranceDetails.getPolicy_no().equals("")) ? "-" : lifeInsuranceDetails.getPolicy_no();
         String insuranceCompanyAlias = (lifeInsuranceDetails.getInsurance_company_alias().equals("")) ? "-" : lifeInsuranceDetails.getInsurance_company_alias();
         String startDate = (lifeInsuranceDetails.getStart_date().equals("")) ? "-" : lifeInsuranceDetails.getStart_date();
         String endDate = (lifeInsuranceDetails.getEnd_date().equals("")) ? "-" : lifeInsuranceDetails.getEnd_date();
         String frequency = (lifeInsuranceDetails.getFrequency().equals("")) ? "-" : lifeInsuranceDetails.getFrequency();
 
-        holder.tv_name.setText(clientName + " | " + policyNo + " | " + insuranceCompanyAlias);
+        holder.tv_name.setText(insurerName + " | " + policyNo + " | " + insuranceCompanyAlias);
         holder.tv_startenddate.setText(startDate + " | " + endDate + " | " + frequency);
 
         holder.ll_mainlayout.setOnClickListener(new View.OnClickListener() {

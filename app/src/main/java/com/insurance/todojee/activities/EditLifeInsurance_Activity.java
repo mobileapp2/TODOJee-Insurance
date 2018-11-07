@@ -222,7 +222,7 @@ public class EditLifeInsurance_Activity extends Activity {
         edt_premiumamt.setText(lifeInsuranceDetails.getPremium_amount());
         edt_policystatus.setText(lifeInsuranceDetails.getPolicy_status());
         edt_link.setText(lifeInsuranceDetails.getLink());
-        edt_description.setText(lifeInsuranceDetails.getDescription());
+//        edt_description.setText(lifeInsuranceDetails.getDescription());
         edt_remark.setText(lifeInsuranceDetails.getRemark());
 
         ArrayList<LifeGeneralInsuranceMainListPojo.MaturityDatesListPojo> maturityDatesList = new ArrayList<>();

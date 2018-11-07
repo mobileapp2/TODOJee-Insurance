@@ -12,8 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
         android:weightSum="1">
 
         <CheckBox
@@ -25,11 +23,11 @@
         <TextView
             android:id="@+id/tv_clientname"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="0.7"
-            android:gravity="center_vertical"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
+            android:text="g"
             android:textColor="@color/black"
             android:textSize="16sp" />
 

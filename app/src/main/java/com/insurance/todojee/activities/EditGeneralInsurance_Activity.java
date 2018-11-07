@@ -217,7 +217,7 @@ public class EditGeneralInsurance_Activity extends Activity {
         edt_suminsured.setText(generalInsuranceDetails.getSum_insured());
         edt_premiumamt.setText(generalInsuranceDetails.getPremium_amount());
         edt_link.setText(generalInsuranceDetails.getLink());
-        edt_description.setText(generalInsuranceDetails.getDescription());
+//        edt_description.setText(generalInsuranceDetails.getDescription());
         edt_remark.setText(generalInsuranceDetails.getRemark());
 
         if (insurerType.equals("R")) {
@@ -834,6 +834,21 @@ public class EditGeneralInsurance_Activity extends Activity {
             return;
         }
 
+        if (edt_description.getText().toString().trim().equals("")) {
+
+            if (!companyAliasName.equals("") ||
+                    !edt_insurepolicyno.getText().toString().trim().equals("") ||
+                    !edt_insurername.getText().toString().trim().equals("")) {
+
+                edt_description.setText(companyAliasName
+                        + " - " + edt_insurepolicyno.getText().toString().trim()
+                        + " - " + edt_insurername.getText().toString().trim()
+                );
+                edt_description.setSelection(edt_description.getText().length());
+
+            }
+        }
+
         if (rb_individual.isChecked()) {
             insurerType = "R";
         } else if (rb_firm.isChecked()) {
@@ -1327,7 +1342,7 @@ public class EditGeneralInsurance_Activity extends Activity {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         Intent intent = new Intent(context, AddPolicyType_Activity.class);
-                                        intent.putExtra("TYPE", "2");
+                                        intent.putExtra("TYPE", "1");
                                         startActivity(intent);
                                     }
                                 });

@@ -17,7 +17,6 @@
             android:id="@+id/edt_firmname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:digits=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
             android:gravity="center_vertical"
             android:hint="Name of the Firm"
             android:inputType="textCapWords|textNoSuggestions"

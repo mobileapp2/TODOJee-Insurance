@@ -10,13 +10,10 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -78,13 +75,13 @@ public class GetClientListAdapter extends RecyclerView.Adapter<GetClientListAdap
                     alertDialogBuilder.setMessage("Are you sure you want to call " + finalClientDetails.getFirst_name() + " ?");
                     alertDialogBuilder.setCancelable(true);
                     alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @SuppressLint("MissingPermission")
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                    context.startActivity(new Intent(Intent.ACTION_CALL,
-                                            Uri.parse("tel:" + finalClientDetails.getMobile())));
-                                }
-                            });
+                        @SuppressLint("MissingPermission")
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                            context.startActivity(new Intent(Intent.ACTION_CALL,
+                                    Uri.parse("tel:" + finalClientDetails.getMobile())));
+                        }
+                    });
                     alertDialogBuilder.setNegativeButton(
                             "No", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
@@ -116,9 +113,19 @@ public class GetClientListAdapter extends RecyclerView.Adapter<GetClientListAdap
             @Override
             public void onClick(View v) {
                 if (!finalClientDetails.getWhats_app_no().equals("")) {
-                    Uri uri = Uri.parse("smsto:" + finalClientDetails.getWhats_app_no());
-                    Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
-                    context.startActivity(Intent.createChooser(intent, "Select Whatsapp"));
+//                    Uri uri = Uri.parse("smsto:" + finalClientDetails.getWhats_app_no());
+//                    Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+//                    context.startActivity(Intent.createChooser(intent, "Select Whatsapp"));
+
+                    String phoneno = "91" + finalClientDetails.getWhats_app_no();
+//                    Uri uri = Uri.parse("smsto:" + phoneno);
+//                    Intent i = new Intent(Intent.ACTION_SENDTO, uri);
+////                    i.putExtra("sms_body", smsText);
+//                    i.setPackage("com.whatsapp");
+//                    context.startActivity(i);
+//                    String URL = "https://api.whatsapp.com/send?phone=" + phoneno + "&text=hello";
+                    String URL = "https://wa.me/" + phoneno;
+                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URL)));
                 } else {
                     Utilities.showMessageString(context, "Please add Whatsapp number");
                 }

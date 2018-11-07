@@ -788,8 +788,8 @@ public class AddGeneralInsurance_Activity extends Activity {
                     !edt_insurername.getText().toString().trim().equals("")) {
 
                 edt_description.setText(companyAliasName
-                        + "/" + edt_insurepolicyno.getText().toString().trim()
-                        + "/" + edt_insurername.getText().toString().trim()
+                        + " - " + edt_insurepolicyno.getText().toString().trim()
+                        + " - " + edt_insurername.getText().toString().trim()
                 );
                 edt_description.setSelection(edt_description.getText().length());
 
@@ -1288,7 +1288,7 @@ public class AddGeneralInsurance_Activity extends Activity {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         Intent intent = new Intent(context, AddPolicyType_Activity.class);
-                                        intent.putExtra("TYPE", "2");
+                                        intent.putExtra("TYPE", "1");
                                         startActivity(intent);
                                     }
                                 });

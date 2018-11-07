@@ -41,14 +41,14 @@ public class GetLifeInsuranceListAdapter extends RecyclerView.Adapter<GetLifeIns
         lifeInsuranceDetails = resultArrayList.get(position);
         final LifeGeneralInsuranceMainListPojo finalIifeInsuranceDetails = lifeInsuranceDetails;
 
-        String clientName = (lifeInsuranceDetails.getClient_name().trim().equals("")) ? "-" : lifeInsuranceDetails.getClient_name();
+        String insurerName = (lifeInsuranceDetails.getInsurer_family_name().trim().equals("")) ? "-" : lifeInsuranceDetails.getInsurer_family_name();
         String policyNo = (lifeInsuranceDetails.getPolicy_no().equals("")) ? "-" : lifeInsuranceDetails.getPolicy_no();
         String insuranceCompanyAlias = (lifeInsuranceDetails.getInsurance_company_alias().equals("")) ? "-" : lifeInsuranceDetails.getInsurance_company_alias();
         String startDate = (lifeInsuranceDetails.getStart_date().equals("")) ? "-" : lifeInsuranceDetails.getStart_date();
         String endDate = (lifeInsuranceDetails.getEnd_date().equals("")) ? "-" : lifeInsuranceDetails.getEnd_date();
         String frequency = (lifeInsuranceDetails.getFrequency().equals("")) ? "-" : lifeInsuranceDetails.getFrequency();
 
-        holder.tv_name.setText(clientName + " | " + policyNo + " | " + insuranceCompanyAlias);
+        holder.tv_name.setText(insurerName + " | " + policyNo + " | " + insuranceCompanyAlias);
         holder.tv_startenddate.setText(startDate + " | " + endDate + " | " + frequency);
         holder.ll_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override

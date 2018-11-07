@@ -144,7 +144,7 @@ public class NotificationList_Activity extends Activity {
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
-        mToolbar.setTitle("Notificationa");
+        mToolbar.setTitle("Notifications");
         mToolbar.setNavigationIcon(R.drawable.icon_backarrow_16p);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
