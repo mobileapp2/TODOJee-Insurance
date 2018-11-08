@@ -11,7 +11,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -117,13 +119,10 @@ public class Register_Activity extends Activity {
     }
 
     private void createDialogForOTP(final String otp) {
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View promptView = layoutInflater.inflate(R.layout.prompt_enterotp, null);
+        final EditText edt_enterotp = new EditText(context);
+        float dpi = context.getResources().getDisplayMetrics().density;
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         alertDialogBuilder.setTitle("Enter OTP");
-        alertDialogBuilder.setView(promptView);
-
-        final EditText edt_enterotp = promptView.findViewById(R.id.edt_enterotp);
 
         alertDialogBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
             @Override
@@ -163,8 +162,29 @@ public class Register_Activity extends Activity {
         });
 
         AlertDialog alertD = alertDialogBuilder.create();
+        alertD.setView(edt_enterotp, (int) (19 * dpi), (int) (5 * dpi), (int) (14 * dpi), (int) (5 * dpi));
         alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
         alertD.show();
+        alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+        edt_enterotp.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(s)) {
+                    alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                } else {
+                    alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                }
+
+            }
+        });
     }
 
     private void saveRegistrationID() {
@@ -229,7 +249,7 @@ public class Register_Activity extends Activity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        if (message.equals("User is registered.")) {
+                        if (message.equals("Mobile Number is Already Registered.")) {
                             Utilities.showAlertDialog(context, "Alert", message, false);
                         } else {
                             String OTP = mainObj.getString("otp");

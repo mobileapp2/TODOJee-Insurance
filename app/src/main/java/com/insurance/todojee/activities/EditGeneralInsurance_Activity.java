@@ -247,23 +247,24 @@ public class EditGeneralInsurance_Activity extends Activity {
 
     }
 
-    private void companyListDialog(final ArrayList<InsuranceCompanyListPojo> companyList) {
+    private void companyListDialog(final ArrayList<InsuranceCompanyListPojo> companyListMain) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select Insurance Company");
         builderSingle.setCancelable(false);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.list_row);
 
-        for (int i = 0; i < companyList.size(); i++) {
+        for (int i = 0; i < companyListMain.size(); i++) {
 
-            arrayAdapter.add(String.valueOf(companyList.get(i).getCompany_name()));
+            arrayAdapter.add(String.valueOf(companyListMain.get(i).getCompany_name()));
         }
 
         builderSingle.setNeutralButton("Add New", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                companyList = new ArrayList<>();
                 Intent intent = new Intent(context, AddInsuranceCompany_Activity.class);
-                intent.putExtra("TYPE", "2");
+                intent.putExtra("TYPE", "1");
                 startActivity(intent);
             }
         });
@@ -282,9 +283,9 @@ public class EditGeneralInsurance_Activity extends Activity {
                 edt_policytype.setText("");
                 policyTypeID = "0";
 
-                edt_insurancecompany.setText(companyList.get(which).getCompany_name());
-                companyId = companyList.get(which).getId();
-                companyAliasName = companyList.get(which).getCompany_alias();
+                edt_insurancecompany.setText(companyListMain.get(which).getCompany_name());
+                companyId = companyListMain.get(which).getId();
+                companyAliasName = companyListMain.get(which).getCompany_alias();
 
             }
         });
@@ -293,21 +294,22 @@ public class EditGeneralInsurance_Activity extends Activity {
         alertD.show();
     }
 
-    private void clientListDialog(final ArrayList<ClientMainListPojo> clientList) {
+    private void clientListDialog(final ArrayList<ClientMainListPojo> clientListMain) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select Client");
         builderSingle.setCancelable(false);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.list_row);
 
-        for (int i = 0; i < clientList.size(); i++) {
+        for (int i = 0; i < clientListMain.size(); i++) {
 
-            arrayAdapter.add(String.valueOf(clientList.get(i).getFirst_name()));
+            arrayAdapter.add(String.valueOf(clientListMain.get(i).getFirst_name()));
         }
 
         builderSingle.setNeutralButton("Add New", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                clientList = new ArrayList<>();
                 startActivity(new Intent(context, AddClientDetails_Activity.class));
             }
         });
@@ -326,8 +328,8 @@ public class EditGeneralInsurance_Activity extends Activity {
                 edt_insurername.setText("");
                 insurerId = "";
 
-                edt_clientname.setText(clientList.get(which).getFirst_name());
-                clientId = clientList.get(which).getId();
+                edt_clientname.setText(clientListMain.get(which).getFirst_name());
+                clientId = clientListMain.get(which).getId();
 
             }
         });
@@ -662,8 +664,8 @@ public class EditGeneralInsurance_Activity extends Activity {
                             !edt_insurername.getText().toString().trim().equals("")) {
 
                         edt_description.setText(companyAliasName
-                                + "/" + edt_insurepolicyno.getText().toString().trim()
-                                + "/" + edt_insurername.getText().toString().trim()
+                                + " - " + edt_insurepolicyno.getText().toString().trim()
+                                + " - " + edt_insurername.getText().toString().trim()
                         );
                         edt_description.setSelection(edt_description.getText().length());
 
@@ -1052,7 +1054,7 @@ public class EditGeneralInsurance_Activity extends Activity {
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Intent intent = new Intent(context, AddInsuranceCompany_Activity.class);
-                                intent.putExtra("TYPE", "2");
+                                intent.putExtra("TYPE", "1");
                                 startActivity(intent);
                             }
                         });

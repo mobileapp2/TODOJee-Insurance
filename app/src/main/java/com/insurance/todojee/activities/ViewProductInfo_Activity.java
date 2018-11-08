@@ -52,7 +52,6 @@ public class ViewProductInfo_Activity extends Activity {
     private ArrayList<ClientMainListPojo> clientList;
 
     private ListView lv_checkboxlist;
-    private List selectedClientIdList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +76,6 @@ public class ViewProductInfo_Activity extends Activity {
         edt_productinfo = findViewById(R.id.edt_productinfo);
 
         clientList = new ArrayList<>();
-        selectedClientIdList = new ArrayList();
     }
 
     private void getSessionData() {

@@ -43,6 +43,8 @@ public class ClientMainListPojo implements Serializable {
 
     private String mobile;
 
+    private String family_code_id;
+
     public ArrayList<ClientFamilyDetailsPojo> getRelation_details() {
         return relation_details;
     }
@@ -195,6 +197,14 @@ public class ClientMainListPojo implements Serializable {
         this.mobile = mobile;
     }
 
+    public String getFamily_code_id() {
+        return family_code_id;
+    }
+
+    public void setFamily_code_id(String family_code_id) {
+        this.family_code_id = family_code_id;
+    }
+
     public static class ClientFamilyDetailsPojo implements Serializable {
 
         private String dob;
@@ -202,6 +212,8 @@ public class ClientMainListPojo implements Serializable {
         private String name;
 
         private String relation;
+
+        private String family_details_id;
 
         public String getDob() {
             return dob;
@@ -226,11 +238,21 @@ public class ClientMainListPojo implements Serializable {
         public void setRelation(String relation) {
             this.relation = relation;
         }
+
+        public String getFamily_details_id() {
+            return family_details_id;
+        }
+
+        public void setFamily_details_id(String family_details_id) {
+            this.family_details_id = family_details_id;
+        }
     }
 
     public static class ClientFirmDetailsPojo implements Serializable {
 
         private String firm_name;
+
+        private String firm_id;
 
         public String getFirm_name() {
             return firm_name;
@@ -238,6 +260,14 @@ public class ClientMainListPojo implements Serializable {
 
         public void setFirm_name(String firm_name) {
             this.firm_name = firm_name;
+        }
+
+        public String getFirm_id() {
+            return firm_id;
+        }
+
+        public void setFirm_id(String firm_id) {
+            this.firm_id = firm_id;
         }
     }
 }

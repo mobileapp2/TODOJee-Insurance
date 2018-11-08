@@ -169,6 +169,7 @@ public class Clients_Fragment extends Fragment {
                                 clientMainObj.setDob(jsonObj.getString("dob"));
                                 clientMainObj.setAnniversary_date(jsonObj.getString("anniversary_date"));
                                 clientMainObj.setFamily_code(jsonObj.getString("family_code"));
+                                clientMainObj.setFamily_code_id(jsonObj.getString("family_code_id"));
                                 clientMainObj.setIs_main(jsonObj.getString("is_main"));
                                 clientMainObj.setSync_status(jsonObj.getString("sync_status"));
 
@@ -176,6 +177,7 @@ public class Clients_Fragment extends Fragment {
 
                                 for (int j = 0; j < jsonObj.getJSONArray("relation_details").length(); j++) {
                                     ClientMainListPojo.ClientFamilyDetailsPojo clientFamilyObj = new ClientMainListPojo.ClientFamilyDetailsPojo();
+                                    clientFamilyObj.setFamily_details_id(jsonObj.getJSONArray("relation_details").getJSONObject(j).getString("family_details_id"));
                                     clientFamilyObj.setName(jsonObj.getJSONArray("relation_details").getJSONObject(j).getString("name"));
                                     clientFamilyObj.setDob(jsonObj.getJSONArray("relation_details").getJSONObject(j).getString("dob"));
                                     clientFamilyObj.setRelation(jsonObj.getJSONArray("relation_details").getJSONObject(j).getString("relation"));
@@ -187,6 +189,7 @@ public class Clients_Fragment extends Fragment {
 
                                 for (int j = 0; j < jsonObj.getJSONArray("firm_details").length(); j++) {
                                     ClientMainListPojo.ClientFirmDetailsPojo clientFirmObj = new ClientMainListPojo.ClientFirmDetailsPojo();
+                                    clientFirmObj.setFirm_id(jsonObj.getJSONArray("firm_details").getJSONObject(j).getString("firm_id"));
                                     clientFirmObj.setFirm_name(jsonObj.getJSONArray("firm_details").getJSONObject(j).getString("firm_name"));
                                     firmDetailsList.add(clientFirmObj);
                                 }

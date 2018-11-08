@@ -26,6 +26,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.insurance.todojee.R;
 import com.insurance.todojee.fragments.Clients_Fragment;
+import com.insurance.todojee.fragments.GeneralInsurance_Fragment;
+import com.insurance.todojee.fragments.LifeInsurance_Fragment;
 import com.insurance.todojee.models.ClientMainListPojo;
 import com.insurance.todojee.models.FamilyCodePojo;
 import com.insurance.todojee.models.RelationListPojo;
@@ -63,7 +65,7 @@ public class EditClientDetails_Activity extends Activity {
     private ArrayList<FamilyCodePojo> familyCodeList;
     private ArrayList<RelationListPojo> relationsList;
     private UserSessionManager session;
-    private String user_id, familyCodeId = "0";
+    private String user_id, familyCodeId = "0", familyCode = "";
     private ImageView img_save;
     private EditText edt_relation = null;
 
@@ -156,6 +158,8 @@ public class EditClientDetails_Activity extends Activity {
                 "dd/MM/yyyy",
                 clientDetails.getAnniversary_date()));
         edt_familycode.setText(clientDetails.getFamily_code());
+        familyCodeId = clientDetails.getFamily_code_id();
+        familyCode = clientDetails.getFamily_code();
 
         ArrayList<ClientMainListPojo.ClientFamilyDetailsPojo> familyDetailsList = new ArrayList<>();
         familyDetailsList = clientDetails.getRelation_details();
@@ -454,12 +458,19 @@ public class EditClientDetails_Activity extends Activity {
                     !((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_familyrelation)).getText().toString().trim().equals("")) {
 
                 ClientMainListPojo.ClientFamilyDetailsPojo clientFamilyObj = new ClientMainListPojo.ClientFamilyDetailsPojo();
+
+
+                if (i < clientDetails.getRelation_details().size()) {
+                    clientFamilyObj.setFamily_details_id(clientDetails.getRelation_details().get(i).getFamily_details_id());
+                } else {
+                    clientFamilyObj.setFamily_details_id("0");
+                }
+
                 clientFamilyObj.setName(((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_familyname)).getText().toString().trim());
                 clientFamilyObj.setDob(changeDateFormat(
                         "dd/MM/yyyy",
                         "yyyy-MM-dd",
                         ((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_familydob)).getText().toString().trim()));
-//                clientFamilyObj.setRelation(((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_familyrelation)).getText().toString().trim());
 
                 for (int j = 0; j < relationsList.size(); j++) {
                     if (!((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_familyrelation)).getText().toString().trim().equals("")) {
@@ -481,6 +492,13 @@ public class EditClientDetails_Activity extends Activity {
             if (!((EditText) firmDetailsLayouts.get(i).findViewById(R.id.edt_firmname)).getText().toString().trim().equals("")) {
 
                 ClientMainListPojo.ClientFirmDetailsPojo clientFirmObj = new ClientMainListPojo.ClientFirmDetailsPojo();
+
+                if (i < clientDetails.getFirm_details().size()) {
+                    clientFirmObj.setFirm_id(clientDetails.getFirm_details().get(i).getFirm_id());
+                } else {
+                    clientFirmObj.setFirm_id("0");
+                }
+
                 clientFirmObj.setFirm_name(((EditText) firmDetailsLayouts.get(i).findViewById(R.id.edt_firmname)).getText().toString().trim());
                 firmDetailsList.add(clientFirmObj);
 
@@ -493,6 +511,7 @@ public class EditClientDetails_Activity extends Activity {
 
         for (int i = 0; i < familyDetailsList.size(); i++) {
             JsonObject familyJSONObj = new JsonObject();
+            familyJSONObj.addProperty("id", familyDetailsList.get(i).getFamily_details_id());
             familyJSONObj.addProperty("name", familyDetailsList.get(i).getName());
             familyJSONObj.addProperty("dob", familyDetailsList.get(i).getDob());
             familyJSONObj.addProperty("relation", familyDetailsList.get(i).getRelation());
@@ -504,8 +523,14 @@ public class EditClientDetails_Activity extends Activity {
 
         for (int i = 0; i < firmDetailsList.size(); i++) {
             JsonObject firmJSONObj = new JsonObject();
+            firmJSONObj.addProperty("id", firmDetailsList.get(i).getFirm_id());
             firmJSONObj.addProperty("firm_name", firmDetailsList.get(i).getFirm_name());
             firmJSONArray.add(firmJSONObj);
+        }
+
+
+        if (!familyCode.equals(edt_familycode.getText().toString().trim())) {
+            familyCodeId = "0";
         }
 
 
@@ -777,6 +802,8 @@ public class EditClientDetails_Activity extends Activity {
                     if (type.equalsIgnoreCase("success")) {
 
                         new Clients_Fragment.GetClientList().execute(user_id);
+                        new LifeInsurance_Fragment.GetLifeInsurance().execute(user_id);
+                        new GeneralInsurance_Fragment.GetGeneralInsurance().execute(user_id);
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                         builder.setMessage("Client Details Updated Successfully");

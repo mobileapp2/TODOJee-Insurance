@@ -191,9 +191,6 @@ public class AddInsuranceCompany_Activity extends Activity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
-                        new LifeInsuranceCompany_Fragment.GetCompanyList().execute(user_id);
-                        new GeneralInsuranceCompany_Fragment.GetCompanyList().execute(user_id);
-
                         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                         builder.setMessage("Insurance Company Added Successfully");
                         builder.setIcon(R.drawable.ic_success_24dp);
@@ -207,6 +204,10 @@ public class AddInsuranceCompany_Activity extends Activity {
                         AlertDialog alertD = builder.create();
                         alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
                         alertD.show();
+
+                        new LifeInsuranceCompany_Fragment.GetCompanyList().execute(user_id);
+                        new GeneralInsuranceCompany_Fragment.GetCompanyList().execute(user_id);
+
                     } else {
 
                     }

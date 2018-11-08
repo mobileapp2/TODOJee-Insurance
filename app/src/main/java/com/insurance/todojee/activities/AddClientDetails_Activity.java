@@ -787,8 +787,6 @@ public class AddClientDetails_Activity extends Activity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
-                        new Clients_Fragment.GetClientList().execute(user_id);
-
                         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                         builder.setMessage("Client Details Saved Successfully");
                         builder.setIcon(R.drawable.ic_success_24dp);
@@ -802,6 +800,8 @@ public class AddClientDetails_Activity extends Activity {
                         AlertDialog alertD = builder.create();
                         alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
                         alertD.show();
+
+                        new Clients_Fragment.GetClientList().execute(user_id);
                     } else {
 
                     }

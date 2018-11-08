@@ -335,9 +335,6 @@ public class AddPolicyType_Activity extends Activity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
-                        new LifeInsurePolicyType_Fragment.GetPolicyTypeList().execute(user_id, "-1");
-                        new GeneralInsurePolicyType_Fragment.GetPolicyTypeList().execute(user_id, "-1");
-
                         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                         builder.setMessage("Policy Type Added Successfully");
                         builder.setIcon(R.drawable.ic_success_24dp);
@@ -351,6 +348,9 @@ public class AddPolicyType_Activity extends Activity {
                         AlertDialog alertD = builder.create();
                         alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
                         alertD.show();
+
+                        new LifeInsurePolicyType_Fragment.GetPolicyTypeList().execute(user_id, "-1");
+                        new GeneralInsurePolicyType_Fragment.GetPolicyTypeList().execute(user_id, "-1");
                     } else {
 
                     }
