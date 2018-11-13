@@ -343,5 +343,8 @@
     <color name="Pearl">#FDEEF4</color>
     <color name="SeaShell">#FFF5EE</color>
     <color name="Milk_White">#FEFCFF</color>
+    <color name="Light_Red">#FFCDD2</color>
+    <color name="Light_Green">#C8E6C9</color>
+    <color name="Light_Yellow">#FFF9C4</color>
 
 </resources>

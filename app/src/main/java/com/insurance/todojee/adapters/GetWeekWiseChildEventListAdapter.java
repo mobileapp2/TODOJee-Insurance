@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.insurance.todojee.R;
@@ -41,14 +42,17 @@ public class GetWeekWiseChildEventListAdapter extends RecyclerView.Adapter<GetWe
 
 
         if (eventDetails.getStatus().equalsIgnoreCase("In Progress")) {
-            holder.tv_event.setTextColor(context.getResources().getColor(R.color.Saffron));
-            holder.tv_status.setTextColor(context.getResources().getColor(R.color.Saffron));
-        } else if (eventDetails.getStatus().equals("Completed")) {
-            holder.tv_event.setTextColor(context.getResources().getColor(R.color.Clover_Green));
-            holder.tv_status.setTextColor(context.getResources().getColor(R.color.Clover_Green));
-        } else if (eventDetails.getStatus().equals("Dismissed")) {
-            holder.tv_event.setTextColor(context.getResources().getColor(R.color.Love_Red));
-            holder.tv_status.setTextColor(context.getResources().getColor(R.color.Love_Red));
+//            holder.tv_event.setTextColor(context.getResources().getColor(R.color.Saffron));
+//            holder.tv_status.setTextColor(context.getResources().getColor(R.color.Saffron));
+            holder.ll_rowparent.setBackgroundColor(context.getResources().getColor(R.color.Light_Yellow));
+        } else if (eventDetails.getStatus().equals("Completed") || eventDetails.getStatus().equals("Paid")) {
+//            holder.tv_event.setTextColor(context.getResources().getColor(R.color.Clover_Green));
+//            holder.tv_status.setTextColor(context.getResources().getColor(R.color.Clover_Green));
+            holder.ll_rowparent.setBackgroundColor(context.getResources().getColor(R.color.Light_Green));
+        } else if (eventDetails.getStatus().equals("Dismissed") || eventDetails.getStatus().equals("Not Paid")) {
+//            holder.tv_event.setTextColor(context.getResources().getColor(R.color.Love_Red));
+//            holder.tv_status.setTextColor(context.getResources().getColor(R.color.Love_Red));
+            holder.ll_rowparent.setBackgroundColor(context.getResources().getColor(R.color.Light_Red));
         }
 
         if (position == resultArrayList.size() - 1) {
@@ -66,11 +70,13 @@ public class GetWeekWiseChildEventListAdapter extends RecyclerView.Adapter<GetWe
 
         private TextView tv_event, tv_status;
         private View view1;
+        private LinearLayout ll_rowparent;
 
         public MyViewHolder(View view) {
             super(view);
             tv_event = view.findViewById(R.id.tv_event);
             tv_status = view.findViewById(R.id.tv_status);
+            ll_rowparent = view.findViewById(R.id.ll_rowparent);
             view1 = view.findViewById(R.id.view);
         }
     }

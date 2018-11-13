@@ -78,8 +78,8 @@ public class GetWeekWiseEventListAdapter extends RecyclerView.Adapter<GetWeekWis
             @Override
             public void onItemClick(View view, int position) {
                 WeekWiseEventListPojo.EventListPojo eventListPojo = finalEventMainDetails.getEventListPojos().get(position);
-                String[] choices = {"Completed", "Dismissed"};
-                final String[] status = {"Completed"};
+                String[] choices = {"Paid", "Not Paid"};
+                final String[] status = {"Paid"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                 builder.setTitle("Select Your Choice");
                 builder.setCancelable(false);
