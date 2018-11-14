@@ -6,6 +6,8 @@ public class FrequencyListPojo {
 
     private String frequency;
 
+    public boolean isChecked;
+
     public String getId() {
         return id;
     }
@@ -20,5 +22,13 @@ public class FrequencyListPojo {
 
     public void setFrequency(String frequency) {
         this.frequency = frequency;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }

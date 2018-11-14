@@ -6,6 +6,8 @@ public class PolicyStatusListPojo {
 
     private String status;
 
+    public boolean isChecked;
+
     public String getId() {
         return id;
     }
@@ -22,8 +24,11 @@ public class PolicyStatusListPojo {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "ClassPojo [id = " + id + ", status = " + status + "]";
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }

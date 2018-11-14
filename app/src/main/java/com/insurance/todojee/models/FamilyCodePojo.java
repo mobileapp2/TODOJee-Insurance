@@ -13,6 +13,8 @@ public class FamilyCodePojo {
 
     private String code;
 
+    public boolean isChecked;
+
     public String getCreated_by ()
     {
         return created_by;
@@ -71,5 +73,13 @@ public class FamilyCodePojo {
     public void setCode (String code)
     {
         this.code = code;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }

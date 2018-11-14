@@ -38,12 +38,12 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
     private ImageView imv_profile;
     private String name, photo;
     private AHBottomNavigation bottomNavigation;
-    private AHBottomNavigationItem botNavClent, botNavPolicy, botNavCalendar, botNavReminder, botTodoList;
+    private AHBottomNavigationItem botNavClent, botNavPolicy, botNavCalendar, botNavReminder, botFilter;
     private Fragment currentFragment;
     private BotNavViewPagerAdapter adapter;
     private AHBottomNavigationViewPager view_pager;
     private UserSessionManager session;
-    private ImageView img_filter, img_notifications;
+    private ImageView img_todolist, img_notifications;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +119,12 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
                 startActivity(new Intent(context, NotificationList_Activity.class));
             }
         });
+        img_todolist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, TodoList_Activity.class));
+            }
+        });
     }
 
     private void getUpDrawerHeader() {
@@ -140,14 +146,14 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
         botNavPolicy = new AHBottomNavigationItem("Policy", R.drawable.icon_policytype, R.color.Gunmetal);
         botNavCalendar = new AHBottomNavigationItem("Calendar", R.drawable.icon_calendarview, R.color.Gunmetal);
         botNavReminder = new AHBottomNavigationItem("Reminders", R.drawable.icon_reminder, R.color.Gunmetal);
-        botTodoList = new AHBottomNavigationItem("Todo List", R.drawable.icon_todolist, R.color.Gunmetal);
+        botFilter = new AHBottomNavigationItem("Filter", R.drawable.icon_filter, R.color.Gunmetal);
 
         // Add items
         bottomNavigation.addItem(botNavClent);
         bottomNavigation.addItem(botNavPolicy);
         bottomNavigation.addItem(botNavCalendar);
         bottomNavigation.addItem(botNavReminder);
-        bottomNavigation.addItem(botTodoList);
+        bottomNavigation.addItem(botFilter);
 
 
         bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#ffffff"));
@@ -235,6 +241,7 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         img_notifications = findViewById(R.id.img_notifications);
+        img_todolist = findViewById(R.id.img_todolist);
         DrawerLayout drawer = findViewById(R.id.drawerlayout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

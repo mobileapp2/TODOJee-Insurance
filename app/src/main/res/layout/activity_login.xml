@@ -81,7 +81,6 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="30dp"
                         android:background="@drawable/style_button"
-                        android:fontFamily="@fonts/Roboto-Medium"
                         android:text="Login"
                         android:textAllCaps="false"
                         android:textColor="@color/white"

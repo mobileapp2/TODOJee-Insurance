@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.google.gson.JsonObject;
 import com.insurance.todojee.R;
-import com.insurance.todojee.fragments.TodoList_Fragment;
+import com.insurance.todojee.activities.TodoList_Activity;
 import com.insurance.todojee.models.ToDoListPojo;
 import com.insurance.todojee.utilities.ApplicationConstants;
 import com.insurance.todojee.utilities.UserSessionManager;
@@ -220,7 +220,7 @@ public class GetToDoListAdapter extends RecyclerView.Adapter<GetToDoListAdapter.
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
-                        new TodoList_Fragment.GetToDoList().execute(user_id);
+                        new TodoList_Activity.GetToDoList().execute(user_id);
 //                        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
 //                        builder.setMessage("Todo Task Updated Successfully");
 //                        builder.setIcon(R.drawable.ic_success_24dp);
@@ -282,7 +282,7 @@ public class GetToDoListAdapter extends RecyclerView.Adapter<GetToDoListAdapter.
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
-                        new TodoList_Fragment.GetToDoList().execute(user_id);
+                        new TodoList_Activity.GetToDoList().execute(user_id);
 //                        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
 //                        builder.setMessage("Todo Task Updated Successfully");
 //                        builder.setIcon(R.drawable.ic_success_24dp);
@@ -340,7 +340,7 @@ public class GetToDoListAdapter extends RecyclerView.Adapter<GetToDoListAdapter.
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new TodoList_Fragment.GetToDoList().execute(user_id);
+                        new TodoList_Activity.GetToDoList().execute(user_id);
 //
 //                        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
 //                        builder.setMessage("Todo Task Deleted Successfully");

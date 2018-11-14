@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.insurance.todojee.fragments.Calendar_Fragment;
 import com.insurance.todojee.fragments.Clients_Fragment;
+import com.insurance.todojee.fragments.Filter_Fragment;
 import com.insurance.todojee.fragments.Policy_Fragment;
 import com.insurance.todojee.fragments.Reminders_Fragment;
 import com.insurance.todojee.fragments.TodoList_Fragment;
@@ -26,7 +27,7 @@ public class BotNavViewPagerAdapter extends FragmentPagerAdapter {
         fragments.add(new Policy_Fragment());
         fragments.add(new Calendar_Fragment());
         fragments.add(new Reminders_Fragment());
-        fragments.add(new TodoList_Fragment());
+        fragments.add(new Filter_Fragment());
     }
 
     @Override
