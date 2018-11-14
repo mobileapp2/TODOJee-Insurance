@@ -45,6 +45,8 @@ public class ClientMainListPojo implements Serializable {
 
     private String family_code_id;
 
+    private boolean isChecked;
+
     public ArrayList<ClientFamilyDetailsPojo> getRelation_details() {
         return relation_details;
     }
@@ -203,6 +205,14 @@ public class ClientMainListPojo implements Serializable {
 
     public void setFamily_code_id(String family_code_id) {
         this.family_code_id = family_code_id;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 
     public static class ClientFamilyDetailsPojo implements Serializable {

@@ -52,6 +52,8 @@ public class PolicyTypeListPojo implements Serializable {
 
         private String type;
 
+        private boolean isChecked;
+
         public String getId() {
             return id;
         }
@@ -76,9 +78,12 @@ public class PolicyTypeListPojo implements Serializable {
             this.type = type;
         }
 
-        @Override
-        public String toString() {
-            return "ClassPojo [id = " + id + ", alias = " + alias + ", type = " + type + "]";
+        public boolean isChecked() {
+            return isChecked;
+        }
+
+        public void setChecked(boolean checked) {
+            isChecked = checked;
         }
     }
 
