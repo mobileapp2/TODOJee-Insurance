@@ -210,7 +210,7 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.FilteredPolicyList_Activity"
+            android:name=".activities.FilteredInsuranceList_Activity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />

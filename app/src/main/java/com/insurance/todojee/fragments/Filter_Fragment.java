@@ -2,6 +2,7 @@ package com.insurance.todojee.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.insurance.todojee.R;
+import com.insurance.todojee.activities.FilteredInsuranceList_Activity;
 import com.insurance.todojee.models.ClientMainListPojo;
 import com.insurance.todojee.models.FamilyCodePojo;
 import com.insurance.todojee.models.FilterOptionsListPojo;
@@ -27,6 +29,7 @@ import com.insurance.todojee.models.InsuranceTypeListPojo;
 import com.insurance.todojee.models.PolicyStatusListPojo;
 import com.insurance.todojee.models.PolicyTypeListPojo;
 import com.insurance.todojee.utilities.ApplicationConstants;
+import com.insurance.todojee.utilities.ConstantData;
 import com.insurance.todojee.utilities.ParamsPojo;
 import com.insurance.todojee.utilities.RecyclerItemClickListener;
 import com.insurance.todojee.utilities.UserSessionManager;
@@ -59,6 +62,8 @@ public class Filter_Fragment extends Fragment {
     private ArrayList<FrequencyListPojo> frequencyList;
     private ArrayList<PolicyTypeListPojo> policyTypeList;
 
+    private ConstantData constantData;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_filter, container, false);
@@ -72,7 +77,7 @@ public class Filter_Fragment extends Fragment {
 
     private void init(View rootView) {
         session = new UserSessionManager(context);
-
+        constantData = ConstantData.getInstance();
         rv_filteroption = rootView.findViewById(R.id.rv_filteroption);
         rv_filtervalue = rootView.findViewById(R.id.rv_filtervalue);
         btn_filter = rootView.findViewById(R.id.btn_filter);
@@ -157,7 +162,14 @@ public class Filter_Fragment extends Fragment {
         btn_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                constantData.setFamilyCodeList(familyCodeList);
+                constantData.setClientList(clientList);
+                constantData.setInsuranceTypeList(insuranceTypeList);
+                constantData.setFrequencyList(frequencyList);
+                constantData.setPolicyTypeList(policyTypeList);
+                constantData.setPolicyStatusList(policyStatusList);
 
+                startActivity(new Intent(context, FilteredInsuranceList_Activity.class));
             }
         });
 

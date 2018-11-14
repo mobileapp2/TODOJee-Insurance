@@ -49,6 +49,8 @@ public class LifeGeneralInsuranceMainListPojo implements Serializable {
 
     private String policy_status;
 
+    private String family_code_id;
+
     private String link;
 
     private String remark;
@@ -241,6 +243,14 @@ public class LifeGeneralInsuranceMainListPojo implements Serializable {
 
     public void setPolicy_status(String policy_status) {
         this.policy_status = policy_status;
+    }
+
+    public String getFamily_code_id() {
+        return family_code_id;
+    }
+
+    public void setFamily_code_id(String family_code_id) {
+        this.family_code_id = family_code_id;
     }
 
     public String getLink() {
