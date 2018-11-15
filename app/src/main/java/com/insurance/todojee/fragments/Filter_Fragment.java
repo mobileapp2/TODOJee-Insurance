@@ -54,6 +54,7 @@ public class Filter_Fragment extends Fragment {
     private ArrayList<FilterOptionsListPojo> filterOptionsList;
     private FilterOptionListAdaper filterAdaper;
     private int globalPosition = 0;
+    private String insurerType = "";
 
     private ArrayList<FamilyCodePojo> familyCodeList;
     private ArrayList<ClientMainListPojo> clientList;
@@ -111,8 +112,8 @@ public class Filter_Fragment extends Fragment {
     }
 
     private void setDefault() {
-        String[] filterOptions = {"Family Code", "Client", "Insurance Type"/*, "Company"*/, "Policy Type", "Frequency", "Policy Status"};
-        int[] filterIcons = {R.drawable.icon_familycode, R.drawable.icon_insurer, R.drawable.icon_insurancetype/*, R.drawable.icon_insurancecompany*/,
+        String[] filterOptions = {"Family Code", "Insurance Type", "Family Insurer", "Firm Insurer", "Policy Type", "Frequency", "Policy Status"};
+        int[] filterIcons = {R.drawable.icon_familycode, R.drawable.icon_insurancetype, R.drawable.icon_insurer, R.drawable.icon_insurancecompany,
                 R.drawable.icon_policy, R.drawable.icon_frequency, R.drawable.icon_polictstatus};
         boolean[] checked = {true, false, false, false, false, false, false};
 
@@ -181,7 +182,12 @@ public class Filter_Fragment extends Fragment {
                     familyCodeList.get(i).setChecked(false);
                 }
                 for (int i = 0; i < clientList.size(); i++) {
-                    clientList.get(i).setChecked(false);
+                    for (int j = 0; j < clientList.get(i).getRelation_details().size(); j++)
+                        clientList.get(i).getRelation_details().get(j).setChecked(false);
+                }
+                for (int i = 0; i < clientList.size(); i++) {
+                    for (int j = 0; j < clientList.get(i).getFirm_details().size(); j++)
+                        clientList.get(i).getFirm_details().get(j).setChecked(false);
                 }
                 for (int i = 0; i < policyStatusList.size(); i++) {
                     policyStatusList.get(i).setChecked(false);
@@ -218,18 +224,6 @@ public class Filter_Fragment extends Fragment {
 
         } else if (globalPosition == 1) {
 
-            if (clientList.size() == 0) {
-                if (Utilities.isNetworkAvailable(context)) {
-                    new GetClientList().execute(user_id);
-                } else {
-                    Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
-                }
-            } else {
-                rv_filtervalue.setAdapter(new ClientListAdapter());
-            }
-
-        } else if (globalPosition == 2) {
-
             if (insuranceTypeList.size() == 0) {
                 String[] id = {"2", "1"};
                 String[] insuranceType = {"Life Insurance", "General Insurance"};
@@ -243,7 +237,31 @@ public class Filter_Fragment extends Fragment {
                 rv_filtervalue.setAdapter(new InsuranceTypeAdapter());
             }
 
+        } else if (globalPosition == 2) {
+            insurerType = "R";
+            if (clientList.size() == 0) {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new GetClientList().execute(user_id);
+                } else {
+                    Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                }
+            } else {
+                rv_filtervalue.setAdapter(new ClientListAdapter());
+            }
+
         } else if (globalPosition == 3) {
+            insurerType = "F";
+            if (clientList.size() == 0) {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new GetClientList().execute(user_id);
+                } else {
+                    Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                }
+            } else {
+                rv_filtervalue.setAdapter(new ClientListAdapter());
+            }
+
+        } else if (globalPosition == 4) {
 
             if (policyTypeList.size() == 0) {
                 if (Utilities.isNetworkAvailable(context)) {
@@ -255,7 +273,8 @@ public class Filter_Fragment extends Fragment {
                 rv_filtervalue.setAdapter(new ParentPolicyTypeListAdapter());
             }
 
-        } else if (globalPosition == 4) {
+
+        } else if (globalPosition == 5) {
 
             if (frequencyList.size() == 0) {
                 if (Utilities.isNetworkAvailable(context)) {
@@ -266,9 +285,7 @@ public class Filter_Fragment extends Fragment {
             } else {
                 rv_filtervalue.setAdapter(new FrequencyAdapter());
             }
-
-        } else if (globalPosition == 5) {
-
+        } else if (globalPosition == 6) {
             if (policyStatusList.size() == 0) {
                 if (Utilities.isNetworkAvailable(context)) {
                     new GetPolicyStatusList().execute();
@@ -280,9 +297,6 @@ public class Filter_Fragment extends Fragment {
             }
 
         }
-//        else if (globalPosition == 6) {
-//
-//        }
     }
 
     public class FilterOptionListAdaper extends RecyclerView.Adapter<FilterOptionListAdaper.MyViewHolder> {
@@ -439,8 +453,10 @@ public class Filter_Fragment extends Fragment {
 
     }
 
+
     public class GetClientList extends AsyncTask<String, Void, String> {
-        ProgressDialog pd;
+        private ProgressDialog pd;
+
 
         @Override
         protected void onPreExecute() {
@@ -483,6 +499,27 @@ public class Filter_Fragment extends Fragment {
                                 clientMainObj.setId(jsonObj.getString("id"));
                                 clientMainObj.setFirst_name(jsonObj.getString("first_name"));
 
+                                ArrayList<ClientMainListPojo.ClientFamilyDetailsPojo> familyDetailsList = new ArrayList<>();
+
+                                for (int j = 0; j < jsonObj.getJSONArray("relation_details").length(); j++) {
+                                    ClientMainListPojo.ClientFamilyDetailsPojo clientFamilyObj = new ClientMainListPojo.ClientFamilyDetailsPojo();
+                                    clientFamilyObj.setFamily_details_id(jsonObj.getJSONArray("relation_details").getJSONObject(j).getString("family_details_id"));
+                                    clientFamilyObj.setName(jsonObj.getJSONArray("relation_details").getJSONObject(j).getString("name"));
+                                    familyDetailsList.add(clientFamilyObj);
+                                }
+                                clientMainObj.setRelation_details(familyDetailsList);
+
+                                ArrayList<ClientMainListPojo.ClientFirmDetailsPojo> firmDetailsList = new ArrayList<>();
+
+                                for (int j = 0; j < jsonObj.getJSONArray("firm_details").length(); j++) {
+                                    ClientMainListPojo.ClientFirmDetailsPojo clientFirmObj = new ClientMainListPojo.ClientFirmDetailsPojo();
+                                    clientFirmObj.setFirm_id(jsonObj.getJSONArray("firm_details").getJSONObject(j).getString("firm_id"));
+                                    clientFirmObj.setFirm_name(jsonObj.getJSONArray("firm_details").getJSONObject(j).getString("firm_name"));
+                                    firmDetailsList.add(clientFirmObj);
+                                }
+
+                                clientMainObj.setFirm_details(firmDetailsList);
+
                                 clientList.add(clientMainObj);
                             }
                             rv_filtervalue.setAdapter(new ClientListAdapter());
@@ -507,28 +544,56 @@ public class Filter_Fragment extends Fragment {
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.list_row_filteritem, parent, false);
+            View view = inflater.inflate(R.layout.list_row_parentpolicytype, parent, false);
             MyViewHolder myViewHolder = new MyViewHolder(view);
             return myViewHolder;
         }
 
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
-            if (clientList.get(position).isChecked()) {
-                holder.cb_check.setChecked(true);
-            }
+//            if (clientList.get(position).isChecked()) {
+//                holder.cb_check.setChecked(true);
+//            }
+//
+//            holder.tv_itemname.setText(clientList.get(position).getFirst_name());
+//
+//            holder.cb_check.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (holder.cb_check.isChecked())
+//                        clientList.get(position).setChecked(true);
+//                    else
+//                        clientList.get(position).setChecked(false);
+//                }
+//            });
 
-            holder.tv_itemname.setText(clientList.get(position).getFirst_name());
+            if (insurerType.equals("R")) {
+                holder.tv_companyname.setText(clientList.get(position).getFirst_name());
 
-            holder.cb_check.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (holder.cb_check.isChecked())
-                        clientList.get(position).setChecked(true);
-                    else
-                        clientList.get(position).setChecked(false);
+                if (clientList.get(position).getRelation_details().size() != 0) {
+                    holder.tv_nopolicytype.setVisibility(View.GONE);
+                    holder.rv_policytypelist.setVisibility(View.VISIBLE);
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+                    holder.rv_policytypelist.setLayoutManager(layoutManager);
+                    holder.rv_policytypelist.setAdapter(new FamilyInsurerListAdapter(position));
+                } else {
+                    holder.tv_nopolicytype.setVisibility(View.VISIBLE);
+                    holder.rv_policytypelist.setVisibility(View.GONE);
                 }
-            });
+            } else if (insurerType.equals("F")) {
+                holder.tv_companyname.setText(clientList.get(position).getFirst_name());
+
+                if (clientList.get(position).getRelation_details().size() != 0) {
+                    holder.tv_nopolicytype.setVisibility(View.GONE);
+                    holder.rv_policytypelist.setVisibility(View.VISIBLE);
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+                    holder.rv_policytypelist.setLayoutManager(layoutManager);
+                    holder.rv_policytypelist.setAdapter(new FirmInsurerListAdapter(position));
+                } else {
+                    holder.tv_nopolicytype.setVisibility(View.VISIBLE);
+                    holder.rv_policytypelist.setVisibility(View.GONE);
+                }
+            }
         }
 
         @Override
@@ -538,17 +603,140 @@ public class Filter_Fragment extends Fragment {
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
+            private TextView tv_companyname, tv_nopolicytype;
+            private RecyclerView rv_policytypelist;
+
+
+            public MyViewHolder(View view) {
+                super(view);
+                tv_companyname = view.findViewById(R.id.tv_companyname);
+                tv_nopolicytype = view.findViewById(R.id.tv_nopolicytype);
+                rv_policytypelist = view.findViewById(R.id.rv_policytypelist);
+            }
+        }
+
+    }
+
+    public class FamilyInsurerListAdapter extends RecyclerView.Adapter<FamilyInsurerListAdapter.MyViewHolder> {
+        private int position;
+
+        public FamilyInsurerListAdapter(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_filteritem, parent, false);
+            MyViewHolder myViewHolder = new MyViewHolder(view);
+            return myViewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, final int pos) {
+            if (clientList.get(position).getRelation_details().get(pos).isChecked()) {
+                holder.cb_check.setChecked(true);
+            }
+
+
+            holder.tv_itemname.setText(clientList.get(position).getRelation_details().get(pos).getName());
+
+            if (pos == clientList.get(position).getRelation_details().size() - 1) {
+                holder.view1.setVisibility(View.GONE);
+            }
+
+            holder.cb_check.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (holder.cb_check.isChecked())
+                        clientList.get(position).getRelation_details().get(pos).setChecked(true);
+                    else
+                        clientList.get(position).getRelation_details().get(pos).setChecked(false);
+                }
+            });
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return clientList.get(position).getRelation_details().size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
             private TextView tv_itemname;
+            private View view1;
             private CheckBox cb_check;
 
             public MyViewHolder(View view) {
                 super(view);
                 tv_itemname = view.findViewById(R.id.tv_itemname);
                 cb_check = view.findViewById(R.id.cb_check);
+                view1 = view.findViewById(R.id.view);
             }
         }
-
     }
+
+    public class FirmInsurerListAdapter extends RecyclerView.Adapter<FirmInsurerListAdapter.MyViewHolder> {
+        private int position;
+
+        public FirmInsurerListAdapter(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_filteritem, parent, false);
+            MyViewHolder myViewHolder = new MyViewHolder(view);
+            return myViewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, final int pos) {
+            if (clientList.get(position).getFirm_details().get(pos).isChecked()) {
+                holder.cb_check.setChecked(true);
+            }
+
+
+            holder.tv_itemname.setText(clientList.get(position).getFirm_details().get(pos).getFirm_name());
+
+            if (pos == clientList.get(position).getFirm_details().size() - 1) {
+                holder.view1.setVisibility(View.GONE);
+            }
+
+            holder.cb_check.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (holder.cb_check.isChecked())
+                        clientList.get(position).getFirm_details().get(pos).setChecked(true);
+                    else
+                        clientList.get(position).getFirm_details().get(pos).setChecked(false);
+                }
+            });
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return clientList.get(position).getFirm_details().size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView tv_itemname;
+            private View view1;
+            private CheckBox cb_check;
+
+            public MyViewHolder(View view) {
+                super(view);
+                tv_itemname = view.findViewById(R.id.tv_itemname);
+                cb_check = view.findViewById(R.id.cb_check);
+                view1 = view.findViewById(R.id.view);
+            }
+        }
+    }
+
 
     public class InsuranceTypeAdapter extends RecyclerView.Adapter<InsuranceTypeAdapter.MyViewHolder> {
 
@@ -601,8 +789,9 @@ public class Filter_Fragment extends Fragment {
 
     }
 
+
     public class GetPolicyTypeList extends AsyncTask<String, Void, String> {
-        ProgressDialog pd;
+        private ProgressDialog pd;
 
         @Override
         protected void onPreExecute() {
@@ -786,8 +975,9 @@ public class Filter_Fragment extends Fragment {
         }
     }
 
+
     public class GetFrequenctList extends AsyncTask<String, Void, String> {
-        ProgressDialog pd;
+        private ProgressDialog pd;
 
         @Override
         protected void onPreExecute() {
@@ -897,8 +1087,9 @@ public class Filter_Fragment extends Fragment {
 
     }
 
+
     public class GetPolicyStatusList extends AsyncTask<String, Void, String> {
-        ProgressDialog pd;
+        private ProgressDialog pd;
 
         @Override
         protected void onPreExecute() {

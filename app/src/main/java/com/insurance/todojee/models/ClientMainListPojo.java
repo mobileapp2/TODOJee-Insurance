@@ -225,6 +225,8 @@ public class ClientMainListPojo implements Serializable {
 
         private String family_details_id;
 
+        private boolean isChecked;
+
         public String getDob() {
             return dob;
         }
@@ -256,6 +258,14 @@ public class ClientMainListPojo implements Serializable {
         public void setFamily_details_id(String family_details_id) {
             this.family_details_id = family_details_id;
         }
+
+        public boolean isChecked() {
+            return isChecked;
+        }
+
+        public void setChecked(boolean checked) {
+            isChecked = checked;
+        }
     }
 
     public static class ClientFirmDetailsPojo implements Serializable {
@@ -263,6 +273,8 @@ public class ClientMainListPojo implements Serializable {
         private String firm_name;
 
         private String firm_id;
+
+        private boolean isChecked;
 
         public String getFirm_name() {
             return firm_name;
@@ -278,6 +290,14 @@ public class ClientMainListPojo implements Serializable {
 
         public void setFirm_id(String firm_id) {
             this.firm_id = firm_id;
+        }
+
+        public boolean isChecked() {
+            return isChecked;
+        }
+
+        public void setChecked(boolean checked) {
+            isChecked = checked;
         }
     }
 }
