@@ -54,6 +54,7 @@ public class GetLifeInsuranceListAdapter extends RecyclerView.Adapter<GetLifeIns
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ViewLifeInsurance_Activity.class);
+                intent.putExtra("TYPE", "NONFILTER");
                 intent.putExtra("lifeInsuranceDetails", finalIifeInsuranceDetails);
                 context.startActivity(intent);
             }

@@ -13,11 +13,12 @@ public class ConstantData {
 
     public static ConstantData _instance;
     private ArrayList<FamilyCodePojo> familyCodeList;
-    private ArrayList<ClientMainListPojo> clientList;
+    private ArrayList<ClientMainListPojo.ClientFamilyDetailsPojo> clientFamilyList;
+    private ArrayList<ClientMainListPojo.ClientFirmDetailsPojo> clientFirmList;
     private ArrayList<InsuranceTypeListPojo> insuranceTypeList;
     private ArrayList<PolicyStatusListPojo> policyStatusList;
     private ArrayList<FrequencyListPojo> frequencyList;
-    private ArrayList<PolicyTypeListPojo> policyTypeList;
+    private ArrayList<PolicyTypeListPojo.Policy_details> policyTypeList;
 
     private ConstantData() {
     }
@@ -45,12 +46,20 @@ public class ConstantData {
         this.familyCodeList = familyCodeList;
     }
 
-    public ArrayList<ClientMainListPojo> getClientList() {
-        return clientList;
+    public ArrayList<ClientMainListPojo.ClientFamilyDetailsPojo> getClientFamilyList() {
+        return clientFamilyList;
     }
 
-    public void setClientList(ArrayList<ClientMainListPojo> clientList) {
-        this.clientList = clientList;
+    public void setClientFamilyList(ArrayList<ClientMainListPojo.ClientFamilyDetailsPojo> clientFamilyList) {
+        this.clientFamilyList = clientFamilyList;
+    }
+
+    public ArrayList<ClientMainListPojo.ClientFirmDetailsPojo> getClientFirmList() {
+        return clientFirmList;
+    }
+
+    public void setClientFirmList(ArrayList<ClientMainListPojo.ClientFirmDetailsPojo> clientFirmList) {
+        this.clientFirmList = clientFirmList;
     }
 
     public ArrayList<InsuranceTypeListPojo> getInsuranceTypeList() {
@@ -77,11 +86,11 @@ public class ConstantData {
         this.frequencyList = frequencyList;
     }
 
-    public ArrayList<PolicyTypeListPojo> getPolicyTypeList() {
+    public ArrayList<PolicyTypeListPojo.Policy_details> getPolicyTypeList() {
         return policyTypeList;
     }
 
-    public void setPolicyTypeList(ArrayList<PolicyTypeListPojo> policyTypeList) {
+    public void setPolicyTypeList(ArrayList<PolicyTypeListPojo.Policy_details> policyTypeList) {
         this.policyTypeList = policyTypeList;
     }
 }

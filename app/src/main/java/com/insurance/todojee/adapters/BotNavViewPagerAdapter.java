@@ -10,7 +10,6 @@ import com.insurance.todojee.fragments.Clients_Fragment;
 import com.insurance.todojee.fragments.Filter_Fragment;
 import com.insurance.todojee.fragments.Policy_Fragment;
 import com.insurance.todojee.fragments.Reminders_Fragment;
-import com.insurance.todojee.fragments.TodoList_Fragment;
 
 import java.util.ArrayList;
 

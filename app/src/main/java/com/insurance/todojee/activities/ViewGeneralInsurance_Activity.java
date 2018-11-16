@@ -61,7 +61,7 @@ public class ViewGeneralInsurance_Activity extends Activity {
     private List<LinearLayout> documentsLayoutsList;
 
     private UserSessionManager session;
-    private String user_id;
+    private String user_id, callType;
 
     private File file, generalInsurancePicFolder;
 
@@ -129,6 +129,7 @@ public class ViewGeneralInsurance_Activity extends Activity {
 
     private void setDefaults() {
         generalInsuranceDetails = (LifeGeneralInsuranceMainListPojo) getIntent().getSerializableExtra("generalInsuranceDetails");
+
 
         edt_clientname.setText(generalInsuranceDetails.getClient_name());
         edt_insurancecompany.setText(generalInsuranceDetails.getInsurance_company_name());
@@ -237,9 +238,18 @@ public class ViewGeneralInsurance_Activity extends Activity {
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
-
+        callType = getIntent().getStringExtra("TYPE");
         img_delete = findViewById(R.id.img_delete);
         img_edit = findViewById(R.id.img_edit);
+
+        if (callType.equals("NONFILTER")) {
+            img_delete.setVisibility(View.VISIBLE);
+            img_edit.setVisibility(View.VISIBLE);
+        } else if (callType.equals("FILTER")) {
+            img_delete.setVisibility(View.GONE);
+            img_edit.setVisibility(View.GONE);
+        }
+
         mToolbar.setTitle("General Insurance Details");
         mToolbar.setNavigationIcon(R.drawable.icon_backarrow_16p);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {

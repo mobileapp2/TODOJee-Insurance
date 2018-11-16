@@ -2,6 +2,7 @@ package com.insurance.todojee.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.insurance.todojee.R;
+import com.insurance.todojee.fragments.Filter_Fragment;
 import com.insurance.todojee.models.ClientMainListPojo;
 import com.insurance.todojee.models.FamilyCodePojo;
 import com.insurance.todojee.models.FrequencyListPojo;
@@ -47,12 +49,13 @@ public class FilteredInsuranceList_Activity extends Activity {
 
     private ArrayList<LifeGeneralInsuranceMainListPojo> insuranceList, noneRepeatInsuranceList;
 
-    private ArrayList<FamilyCodePojo> familyCodeList, selectedFamilyCodeList;
-    private ArrayList<ClientMainListPojo> clientList, selectedClientFamilyList, selectedClientFirmList;
-    private ArrayList<InsuranceTypeListPojo> insuranceTypeList, selectedInsuranceTypeList;
-    private ArrayList<PolicyStatusListPojo> policyStatusList, selectedPolicyStatusList;
-    private ArrayList<FrequencyListPojo> frequencyList, selectedFrequencyList;
-    private ArrayList<PolicyTypeListPojo> policyTypeList, selectedPolicyTypeList;
+    private ArrayList<FamilyCodePojo> selectedFamilyCodeList;
+    private ArrayList<ClientMainListPojo.ClientFamilyDetailsPojo> selectedClientFamilyList;
+    private ArrayList<ClientMainListPojo.ClientFirmDetailsPojo> selectedClientFirmList;
+    private ArrayList<InsuranceTypeListPojo> selectedInsuranceTypeList;
+    private ArrayList<PolicyStatusListPojo> selectedPolicyStatusList;
+    private ArrayList<FrequencyListPojo> selectedFrequencyList;
+    private ArrayList<PolicyTypeListPojo.Policy_details> selectedPolicyTypeList;
 
     private ConstantData constantData;
 
@@ -80,13 +83,6 @@ public class FilteredInsuranceList_Activity extends Activity {
 
         insuranceList = new ArrayList<>();
 
-        familyCodeList = new ArrayList<>();
-        clientList = new ArrayList<>();
-        insuranceTypeList = new ArrayList<>();
-        policyStatusList = new ArrayList<>();
-        frequencyList = new ArrayList<>();
-        policyTypeList = new ArrayList<>();
-
         selectedFamilyCodeList = new ArrayList<>();
         selectedClientFamilyList = new ArrayList<>();
         selectedClientFirmList = new ArrayList<>();
@@ -109,79 +105,13 @@ public class FilteredInsuranceList_Activity extends Activity {
 
     private void setDefault() {
 
-        familyCodeList = constantData.getFamilyCodeList();
-        clientList = constantData.getClientList();
-        insuranceTypeList = constantData.getInsuranceTypeList();
-        policyStatusList = constantData.getPolicyStatusList();
-        frequencyList = constantData.getFrequencyList();
-        policyTypeList = constantData.getPolicyTypeList();
-
-        for (FamilyCodePojo familyCodeObj : familyCodeList) {
-            if (familyCodeObj.isChecked()) {
-                selectedFamilyCodeList.add(familyCodeObj);
-            }
-        }
-
-//        for (ClientMainListPojo clientObj : clientList) {
-//            if (clientObj.isChecked()) {
-//                selectedClientList.add(clientObj);
-//            }
-//        }
-
-        for (int i = 0; i < clientList.size(); i++) {
-            ClientMainListPojo clientObj = new ClientMainListPojo();
-            clientObj.setId(clientList.get(i).getId());
-            clientObj.setFirst_name(clientList.get(i).getFirst_name());
-            for (int j = 0; j < clientList.get(i).getRelation_details().size(); j++) {
-                if (clientList.get(i).getRelation_details().get(j).isChecked()) {
-                    clientObj.setRelation_details(clientList.get(i).getRelation_details());
-                }
-                selectedClientFamilyList.add(clientObj);
-            }
-        }
-
-        for (int i = 0; i < clientList.size(); i++) {
-            ClientMainListPojo clientObj = new ClientMainListPojo();
-            clientObj.setId(clientList.get(i).getId());
-            clientObj.setFirst_name(clientList.get(i).getFirst_name());
-            for (int j = 0; j < clientList.get(i).getFirm_details().size(); j++) {
-                if (clientList.get(i).getFirm_details().get(j).isChecked()) {
-                    clientObj.setFirm_details(clientList.get(i).getFirm_details());
-                }
-                selectedClientFirmList.add(clientObj);
-            }
-        }
-
-        for (InsuranceTypeListPojo insuranceTypeObj : insuranceTypeList) {
-            if (insuranceTypeObj.isChecked()) {
-                selectedInsuranceTypeList.add(insuranceTypeObj);
-            }
-        }
-
-        for (PolicyStatusListPojo policyTypeObj : policyStatusList) {
-            if (policyTypeObj.isChecked()) {
-                selectedPolicyStatusList.add(policyTypeObj);
-            }
-        }
-
-        for (FrequencyListPojo frequencyObj : frequencyList) {
-            if (frequencyObj.isChecked()) {
-                selectedFrequencyList.add(frequencyObj);
-            }
-        }
-
-        for (int i = 0; i < policyTypeList.size(); i++) {
-            PolicyTypeListPojo policyTypeObj = new PolicyTypeListPojo();
-            policyTypeObj.setId(policyTypeList.get(i).getId());
-            policyTypeObj.setCompany_name(policyTypeList.get(i).getCompany_name());
-            for (int j = 0; j < policyTypeList.get(i).getPolicy_details().size(); j++) {
-                if (policyTypeList.get(i).getPolicy_details().get(j).isChecked()) {
-                    policyTypeObj.setPolicy_details(policyTypeList.get(i).getPolicy_details());
-                }
-                selectedPolicyTypeList.add(policyTypeObj);
-            }
-        }
-
+        selectedFamilyCodeList = constantData.getFamilyCodeList();
+        selectedClientFamilyList = constantData.getClientFamilyList();
+        selectedClientFirmList = constantData.getClientFirmList();
+        selectedInsuranceTypeList = constantData.getInsuranceTypeList();
+        selectedPolicyStatusList = constantData.getPolicyStatusList();
+        selectedFrequencyList = constantData.getFrequencyList();
+        selectedPolicyTypeList = constantData.getPolicyTypeList();
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetInsuranceList().execute(user_id);
@@ -368,28 +298,56 @@ public class FilteredInsuranceList_Activity extends Activity {
             filteredInsuranceList4.addAll(filteredInsuranceList3);
         }
 
-//        ArrayList<LifeGeneralInsuranceMainListPojo> filteredInsuranceList5 = new ArrayList<>();
+        ArrayList<LifeGeneralInsuranceMainListPojo> filteredInsuranceList5 = new ArrayList<>();
 
-//        if (selectedPolicyTypeList.size() != 0) {
-//            for (PolicyTypeListPojo policyTypeObj : selectedPolicyTypeList) {
-//                if (policyTypeObj.getPolicy_details().size() != 0) {
-//                    for (int i = 0; i < policyTypeObj.getPolicy_details().size(); i++) {
-//                        for (LifeGeneralInsuranceMainListPojo insuranceObj : filteredInsuranceList4) {
-//                            if (insuranceObj.getPolicy_type_id().equals(policyTypeObj.getPolicy_details().get(i).getId())) {
-//                                filteredInsuranceList5.add(insuranceObj);
-//                            }
-//                        }
-//                    }
-//                }
+        if (selectedPolicyTypeList.size() != 0) {
+            for (PolicyTypeListPojo.Policy_details policyTypeObj : selectedPolicyTypeList) {
+                for (LifeGeneralInsuranceMainListPojo insuranceObj : filteredInsuranceList4) {
+                    if (insuranceObj.getPolicy_type_id().equals(policyTypeObj.getId())) {
+                        filteredInsuranceList5.add(insuranceObj);
+                    }
+                }
+
+            }
+        } else {
+            filteredInsuranceList5.addAll(filteredInsuranceList4);
+        }
+
+        ArrayList<LifeGeneralInsuranceMainListPojo> filteredInsuranceList6 = new ArrayList<>();
+
+        if (selectedClientFamilyList.size() != 0 || selectedClientFirmList.size() != 0) {
+
+//            if (selectedClientFamilyList.size() != 0) {
+            for (ClientMainListPojo.ClientFamilyDetailsPojo familyObj : selectedClientFamilyList) {
+                for (LifeGeneralInsuranceMainListPojo insuranceObj : filteredInsuranceList5) {
+                    if (insuranceObj.getInsurer_type_id().equals("R")) {
+                        if (insuranceObj.getInsurer_id().equals(familyObj.getFamily_details_id())) {
+                            filteredInsuranceList6.add(insuranceObj);
+                        }
+                    }
+                }
+            }
 //            }
-//        } else {
-//            filteredInsuranceList5.addAll(filteredInsuranceList4);
-//        }
+
+//            if (selectedClientFirmList.size() != 0) {
+            for (ClientMainListPojo.ClientFirmDetailsPojo firmObj : selectedClientFirmList) {
+                for (LifeGeneralInsuranceMainListPojo insuranceObj : filteredInsuranceList5) {
+                    if (insuranceObj.getInsurer_type_id().equals("F")) {
+                        if (insuranceObj.getInsurer_id().equals(firmObj.getFirm_id())) {
+                            filteredInsuranceList6.add(insuranceObj);
+                        }
+                    }
+                }
+            }
+//            }
+        } else {
+            filteredInsuranceList6.addAll(filteredInsuranceList5);
+        }
 
 
         noneRepeatInsuranceList = new ArrayList<>();
 
-        for (LifeGeneralInsuranceMainListPojo insuranceObj : filteredInsuranceList4) {
+        for (LifeGeneralInsuranceMainListPojo insuranceObj : filteredInsuranceList6) {
             boolean isFound = false;
             for (LifeGeneralInsuranceMainListPojo e : noneRepeatInsuranceList) {
                 if ((e.equals(insuranceObj))) {
@@ -429,7 +387,7 @@ public class FilteredInsuranceList_Activity extends Activity {
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
             LifeGeneralInsuranceMainListPojo insuranceDetails = new LifeGeneralInsuranceMainListPojo();
             insuranceDetails = noneRepeatInsuranceList.get(position);
-            final LifeGeneralInsuranceMainListPojo finalIifeInsuranceDetails = insuranceDetails;
+            final LifeGeneralInsuranceMainListPojo finalInsuranceDetails = insuranceDetails;
             String insurerName = "";
             String InsurerTypeId = insuranceDetails.getInsurer_type_id();
             if (InsurerTypeId.equals("F")) {
@@ -447,14 +405,22 @@ public class FilteredInsuranceList_Activity extends Activity {
             holder.tv_name.setText(insurerName + " | " + policyNo + " | " + insuranceCompanyAlias);
             holder.tv_startenddate.setText(startDate + " | " + endDate + " | " + frequency);
 
-//            holder.ll_mainlayout.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(context, ViewGeneralInsurance_Activity.class);
-//                    intent.putExtra("generalInsuranceDetails", finalIifeInsuranceDetails);
-//                    context.startActivity(intent);
-//                }
-//            });
+            holder.ll_mainlayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (finalInsuranceDetails.getInsurance_type_id().equals("1")) {
+                        Intent intent = new Intent(context, ViewGeneralInsurance_Activity.class);
+                        intent.putExtra("TYPE", "FILTER");
+                        intent.putExtra("generalInsuranceDetails", finalInsuranceDetails);
+                        context.startActivity(intent);
+                    } else if (finalInsuranceDetails.getInsurance_type_id().equals("2")) {
+                        Intent intent = new Intent(context, ViewLifeInsurance_Activity.class);
+                        intent.putExtra("TYPE", "FILTER");
+                        intent.putExtra("lifeInsuranceDetails", finalInsuranceDetails);
+                        context.startActivity(intent);
+                    }
+                }
+            });
         }
 
         @Override
@@ -474,6 +440,7 @@ public class FilteredInsuranceList_Activity extends Activity {
                 ll_mainlayout = view.findViewById(R.id.ll_mainlayout);
             }
         }
+
     }
 
     private void setUpToolbar() {
@@ -492,10 +459,19 @@ public class FilteredInsuranceList_Activity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         constantData.setFamilyCodeList(new ArrayList<>());
-        constantData.setClientList(new ArrayList<>());
+        constantData.setClientFirmList(new ArrayList<>());
+        constantData.setClientFamilyList(new ArrayList<>());
         constantData.setInsuranceTypeList(new ArrayList<>());
         constantData.setFrequencyList(new ArrayList<>());
         constantData.setPolicyTypeList(new ArrayList<>());
         constantData.setPolicyStatusList(new ArrayList<>());
+
+        Filter_Fragment.selectedFamilyCodeList = new ArrayList<>();
+        Filter_Fragment.selectedClientFamilyList = new ArrayList<>();
+        Filter_Fragment.selectedClientFirmList = new ArrayList<>();
+        Filter_Fragment.selectedInsuranceTypeList = new ArrayList<>();
+        Filter_Fragment.selectedPolicyStatusList = new ArrayList<>();
+        Filter_Fragment.selectedFrequencyList = new ArrayList<>();
+        Filter_Fragment.selectedPolicyTypeList = new ArrayList<>();
     }
 }

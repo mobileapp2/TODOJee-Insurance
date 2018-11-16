@@ -59,6 +59,7 @@ public class GetGeneralInsuranceListAdapter extends RecyclerView.Adapter<GetGene
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ViewGeneralInsurance_Activity.class);
+                intent.putExtra("TYPE", "NONFILTER");
                 intent.putExtra("generalInsuranceDetails", finalIifeInsuranceDetails);
                 context.startActivity(intent);
             }

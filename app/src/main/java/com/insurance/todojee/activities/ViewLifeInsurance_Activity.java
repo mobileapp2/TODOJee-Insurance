@@ -61,7 +61,7 @@ public class ViewLifeInsurance_Activity extends Activity {
     private List<LinearLayout> documentsLayoutsList;
 
     private UserSessionManager session;
-    private String user_id;
+    private String user_id, callType;
 
     private File file, lifeInsurancePicFolder;
 
@@ -182,11 +182,9 @@ public class ViewLifeInsurance_Activity extends Activity {
                 final View rowView = inflater.inflate(R.layout.add_layout_viewdocuments, null);
                 documentsLayoutsList.add((LinearLayout) rowView);
                 ll_documents.addView(rowView, ll_documents.getChildCount());
-
 //                Uri uri = Uri.parse(documentsList.get(i).getDocument());
 //                String document_name = uri.getLastPathSegment();
 //                ((EditText) documentsLayoutsList.get(i).findViewById(R.id.edt_documentname)).setText(document_name);
-
                 ((EditText) documentsLayoutsList.get(i).findViewById(R.id.edt_selectdocuments)).setText(documentsList.get(i).getDocument());
 
             }
@@ -254,9 +252,18 @@ public class ViewLifeInsurance_Activity extends Activity {
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
-
+        callType = getIntent().getStringExtra("TYPE");
         img_delete = findViewById(R.id.img_delete);
         img_edit = findViewById(R.id.img_edit);
+
+        if (callType.equals("NONFILTER")) {
+            img_delete.setVisibility(View.VISIBLE);
+            img_edit.setVisibility(View.VISIBLE);
+        } else if (callType.equals("FILTER")) {
+            img_delete.setVisibility(View.GONE);
+            img_edit.setVisibility(View.GONE);
+        }
+
         mToolbar.setTitle("Life Insurance Details");
         mToolbar.setNavigationIcon(R.drawable.icon_backarrow_16p);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {

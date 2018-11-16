@@ -56,12 +56,20 @@ public class Filter_Fragment extends Fragment {
     private int globalPosition = 0;
     private String insurerType = "";
 
-    private ArrayList<FamilyCodePojo> familyCodeList;
-    private ArrayList<ClientMainListPojo> clientList;
-    private ArrayList<InsuranceTypeListPojo> insuranceTypeList;
-    private ArrayList<PolicyStatusListPojo> policyStatusList;
-    private ArrayList<FrequencyListPojo> frequencyList;
-    private ArrayList<PolicyTypeListPojo> policyTypeList;
+    public static ArrayList<FamilyCodePojo> familyCodeList, selectedFamilyCodeList;
+
+    public static ArrayList<ClientMainListPojo> clientList;
+    public static ArrayList<ClientMainListPojo.ClientFamilyDetailsPojo> selectedClientFamilyList;
+    public static ArrayList<ClientMainListPojo.ClientFirmDetailsPojo> selectedClientFirmList;
+
+    public static ArrayList<InsuranceTypeListPojo> insuranceTypeList, selectedInsuranceTypeList;
+
+    public static ArrayList<PolicyStatusListPojo> policyStatusList, selectedPolicyStatusList;
+
+    public static ArrayList<FrequencyListPojo> frequencyList, selectedFrequencyList;
+
+    public static ArrayList<PolicyTypeListPojo> policyTypeList;
+    public static ArrayList<PolicyTypeListPojo.Policy_details> selectedPolicyTypeList;
 
     private ConstantData constantData;
 
@@ -98,6 +106,14 @@ public class Filter_Fragment extends Fragment {
         frequencyList = new ArrayList<>();
         policyTypeList = new ArrayList<>();
         insuranceTypeList = new ArrayList<>();
+
+        selectedFamilyCodeList = new ArrayList<>();
+        selectedClientFamilyList = new ArrayList<>();
+        selectedClientFirmList = new ArrayList<>();
+        selectedInsuranceTypeList = new ArrayList<>();
+        selectedPolicyStatusList = new ArrayList<>();
+        selectedFrequencyList = new ArrayList<>();
+        selectedPolicyTypeList = new ArrayList<>();
     }
 
     private void getSessionData() {
@@ -163,14 +179,71 @@ public class Filter_Fragment extends Fragment {
         btn_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                constantData.setFamilyCodeList(familyCodeList);
-                constantData.setClientList(clientList);
-                constantData.setInsuranceTypeList(insuranceTypeList);
-                constantData.setFrequencyList(frequencyList);
-                constantData.setPolicyTypeList(policyTypeList);
-                constantData.setPolicyStatusList(policyStatusList);
 
-                startActivity(new Intent(context, FilteredInsuranceList_Activity.class));
+                for (FamilyCodePojo familyCodeObj : familyCodeList) {
+                    if (familyCodeObj.isChecked()) {
+                        selectedFamilyCodeList.add(familyCodeObj);
+                    }
+                }
+
+                for (int i = 0; i < clientList.size(); i++) {
+                    for (int j = 0; j < clientList.get(i).getRelation_details().size(); j++) {
+                        if (clientList.get(i).getRelation_details().get(j).isChecked()) {
+                            selectedClientFamilyList.add(clientList.get(i).getRelation_details().get(j));
+                        }
+                    }
+                }
+
+                for (int i = 0; i < clientList.size(); i++) {
+                    for (int j = 0; j < clientList.get(i).getFirm_details().size(); j++) {
+                        if (clientList.get(i).getFirm_details().get(j).isChecked()) {
+                            selectedClientFirmList.add(clientList.get(i).getFirm_details().get(j));
+                        }
+                    }
+                }
+
+                for (InsuranceTypeListPojo insuranceTypeObj : insuranceTypeList) {
+                    if (insuranceTypeObj.isChecked()) {
+                        selectedInsuranceTypeList.add(insuranceTypeObj);
+                    }
+                }
+
+                for (PolicyStatusListPojo policyTypeObj : policyStatusList) {
+                    if (policyTypeObj.isChecked()) {
+                        selectedPolicyStatusList.add(policyTypeObj);
+                    }
+                }
+
+                for (FrequencyListPojo frequencyObj : frequencyList) {
+                    if (frequencyObj.isChecked()) {
+                        selectedFrequencyList.add(frequencyObj);
+                    }
+                }
+
+                for (int i = 0; i < policyTypeList.size(); i++) {
+                    for (int j = 0; j < policyTypeList.get(i).getPolicy_details().size(); j++) {
+                        if (policyTypeList.get(i).getPolicy_details().get(j).isChecked()) {
+                            selectedPolicyTypeList.add(policyTypeList.get(i).getPolicy_details().get(j));
+                        }
+                    }
+                }
+
+
+                if (selectedFamilyCodeList.size() == 0 && selectedClientFamilyList.size() == 0 && selectedClientFirmList.size() == 0
+                        && selectedInsuranceTypeList.size() == 0 && selectedFrequencyList.size() == 0 && selectedPolicyTypeList.size() == 0
+                        && selectedPolicyStatusList.size() == 0) {
+                    Utilities.showMessageString(context, "Please select atleast one type of filter");
+                } else {
+                    constantData.setFamilyCodeList(selectedFamilyCodeList);
+                    constantData.setClientFamilyList(selectedClientFamilyList);
+                    constantData.setClientFirmList(selectedClientFirmList);
+                    constantData.setInsuranceTypeList(selectedInsuranceTypeList);
+                    constantData.setFrequencyList(selectedFrequencyList);
+                    constantData.setPolicyTypeList(selectedPolicyTypeList);
+                    constantData.setPolicyStatusList(selectedPolicyStatusList);
+                    startActivity(new Intent(context, FilteredInsuranceList_Activity.class));
+                }
+
             }
         });
 
