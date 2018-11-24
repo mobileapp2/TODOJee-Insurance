@@ -676,12 +676,12 @@ public class Anniversary_Fragment extends Fragment {
 
                             String whatsappPicSend = "", whatsappMsgSend = "";
                             if (cb_whatsappmsg.isChecked()) {
-                                whatsappPicSend = dialog_edt_whatsappmessage.getText().toString().trim();
+                                whatsappMsgSend = dialog_edt_whatsappmessage.getText().toString().trim();
                             }
                             if (cb_whatsappimg.isChecked()) {
-                                whatsappMsgSend = whatsappPic;
+                                whatsappPicSend = whatsappPic;
                             }
-                            sendWhatsapp(whatsappPicSend, whatsappMsgSend, singleReceiverID);
+                            sendWhatsapp(whatsappMsgSend, whatsappPicSend, singleReceiverID);
                         }
                     });
 

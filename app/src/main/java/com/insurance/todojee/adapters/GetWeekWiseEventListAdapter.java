@@ -3,7 +3,6 @@ package com.insurance.todojee.adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -26,9 +25,6 @@ import com.insurance.todojee.utilities.WebServiceCalls;
 
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.insurance.todojee.utilities.Utilities.changeDateFormat;
@@ -79,14 +75,15 @@ public class GetWeekWiseEventListAdapter extends RecyclerView.Adapter<GetWeekWis
             public void onItemClick(View view, int position) {
                 WeekWiseEventListPojo.EventListPojo eventListPojo = finalEventMainDetails.getEventListPojos().get(position);
                 String[] choices = {"Paid", "Not Paid"};
-                final String[] status = {"Paid"};
+                String[] statuses = {"Completed", "Dismissed"};
+                final String[] status = {"Completed"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                 builder.setTitle("Select Your Choice");
                 builder.setCancelable(false);
 
                 builder.setSingleChoiceItems(choices, 0, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
-                        status[0] = choices[item];
+                        status[0] = statuses[item];
                     }
                 });
 

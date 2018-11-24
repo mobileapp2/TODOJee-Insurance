@@ -37,20 +37,21 @@ public class GetEventListAdapter extends RecyclerView.Adapter<GetEventListAdapte
         eventDetails = resultArrayList.get(position);
 
         holder.tv_event.setText(eventDetails.getDescription());
-        holder.tv_status.setText(eventDetails.getStatus());
-
 
         if (eventDetails.getStatus().equalsIgnoreCase("In Progress")) {
 //            holder.tv_event.setTextColor(context.getResources().getColor(R.color.Saffron));
 //            holder.tv_status.setTextColor(context.getResources().getColor(R.color.Saffron));
+            holder.tv_status.setText("In Progress");
             holder.ll_rowparent.setBackgroundColor(context.getResources().getColor(R.color.Light_Yellow));
-        } else if (eventDetails.getStatus().equals("Completed") || eventDetails.getStatus().equals("Paid")) {
+        } else if (eventDetails.getStatus().equals("Completed")) {
 //            holder.tv_event.setTextColor(context.getResources().getColor(R.color.Clover_Green));
 //            holder.tv_status.setTextColor(context.getResources().getColor(R.color.Clover_Green));
+            holder.tv_status.setText("Paid");
             holder.ll_rowparent.setBackgroundColor(context.getResources().getColor(R.color.Light_Green));
-        } else if (eventDetails.getStatus().equals("Dismissed") || eventDetails.getStatus().equals("Not Paid")) {
+        } else if (eventDetails.getStatus().equals("Dismissed")) {
 //            holder.tv_event.setTextColor(context.getResources().getColor(R.color.Love_Red));
 //            holder.tv_status.setTextColor(context.getResources().getColor(R.color.Love_Red));
+            holder.tv_status.setText("Not Paid");
             holder.ll_rowparent.setBackgroundColor(context.getResources().getColor(R.color.Light_Red));
         }
 

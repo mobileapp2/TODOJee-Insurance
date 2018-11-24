@@ -158,8 +158,9 @@ public class PremiumDueMessageSetting_Activity extends Activity {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
+                    JSONObject jsonObject = mainObj.getJSONObject("result");
                     if (type.equalsIgnoreCase("success")) {
-                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        JSONArray jsonarr = jsonObject.getJSONArray("result");
                         if (jsonarr.length() > 0) {
                             for (int i = 0; i < jsonarr.length(); i++) {
                                 JSONObject jsonObj = jsonarr.getJSONObject(i);

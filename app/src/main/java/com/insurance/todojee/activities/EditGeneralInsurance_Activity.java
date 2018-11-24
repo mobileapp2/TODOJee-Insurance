@@ -202,6 +202,7 @@ public class EditGeneralInsurance_Activity extends Activity {
         policyTypeID = generalInsuranceDetails.getPolicy_type_id();
         frequencyId = generalInsuranceDetails.getFrequency_id();
         insurerType = generalInsuranceDetails.getInsurer_type_id();
+        companyAliasName = generalInsuranceDetails.getInsurance_company_alias();
 
         edt_clientname.setText(generalInsuranceDetails.getClient_name());
         edt_insurancecompany.setText(generalInsuranceDetails.getInsurance_company_name());
@@ -244,243 +245,6 @@ public class EditGeneralInsurance_Activity extends Activity {
                 ((EditText) documentsLayoutsList.get(i).findViewById(R.id.edt_selectdocuments)).setText(document_name);
             }
         }
-
-    }
-
-    private void companyListDialog(final ArrayList<InsuranceCompanyListPojo> companyListMain) {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Insurance Company");
-        builderSingle.setCancelable(false);
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.list_row);
-
-        for (int i = 0; i < companyListMain.size(); i++) {
-
-            arrayAdapter.add(String.valueOf(companyListMain.get(i).getCompany_name()));
-        }
-
-        builderSingle.setNeutralButton("Add New", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                companyList = new ArrayList<>();
-                Intent intent = new Intent(context, AddInsuranceCompany_Activity.class);
-                intent.putExtra("TYPE", "1");
-                startActivity(intent);
-            }
-        });
-
-        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                edt_policytype.setText("");
-                policyTypeID = "0";
-
-                edt_insurancecompany.setText(companyListMain.get(which).getCompany_name());
-                companyId = companyListMain.get(which).getId();
-                companyAliasName = companyListMain.get(which).getCompany_alias();
-
-            }
-        });
-        AlertDialog alertD = builderSingle.create();
-        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-        alertD.show();
-    }
-
-    private void clientListDialog(final ArrayList<ClientMainListPojo> clientListMain) {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Client");
-        builderSingle.setCancelable(false);
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.list_row);
-
-        for (int i = 0; i < clientListMain.size(); i++) {
-
-            arrayAdapter.add(String.valueOf(clientListMain.get(i).getFirst_name()));
-        }
-
-        builderSingle.setNeutralButton("Add New", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                clientList = new ArrayList<>();
-                startActivity(new Intent(context, AddClientDetails_Activity.class));
-            }
-        });
-
-        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                edt_insurername.setText("");
-                insurerId = "";
-
-                edt_clientname.setText(clientListMain.get(which).getFirst_name());
-                clientId = clientListMain.get(which).getId();
-
-            }
-        });
-
-        AlertDialog alertD = builderSingle.create();
-        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-        alertD.show();
-    }
-
-    private void familyInsurerListDialog(final ArrayList<FamilyInsurerNameListPojo> familyInsurerList) {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Insurer");
-        builderSingle.setCancelable(false);
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.list_row);
-
-        for (int i = 0; i < familyInsurerList.size(); i++) {
-            if (!familyInsurerList.get(i).getRelation().trim().equals("")) {
-                arrayAdapter.add(familyInsurerList.get(i).getName()/* + " (" + familyInsurerList.get(i).getRelation() + ")"*/);
-            } else {
-                arrayAdapter.add(familyInsurerList.get(i).getName());
-            }
-        }
-
-        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                edt_insurername.setText(familyInsurerList.get(which).getName());
-                insurerId = familyInsurerList.get(which).getId();
-
-            }
-        });
-
-        AlertDialog alertD = builderSingle.create();
-        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-        alertD.show();
-    }
-
-    private void firmInsurerListDialog(ArrayList<FirmInsurerNameListPojo> firmInsurerList) {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Insurer");
-        builderSingle.setCancelable(false);
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.list_row);
-
-        for (int i = 0; i < firmInsurerList.size(); i++) {
-            arrayAdapter.add(firmInsurerList.get(i).getFirm_name());
-        }
-
-        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                edt_insurername.setText(firmInsurerList.get(which).getFirm_name());
-                insurerId = firmInsurerList.get(which).getId();
-
-            }
-        });
-
-        AlertDialog alertD = builderSingle.create();
-        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-        alertD.show();
-    }
-
-    private void policyTypeListDialog(ArrayList<PolicyTypeListPojo> parentPolicyTypeList) {
-        ArrayList<PolicyTypeListPojo.Policy_details> policyTypeList = parentPolicyTypeList.get(0).getPolicy_details();
-
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Policy Type");
-        builderSingle.setCancelable(false);
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.list_row);
-
-        for (int i = 0; i < policyTypeList.size(); i++) {
-
-            arrayAdapter.add(policyTypeList.get(i).getType());
-        }
-
-        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                edt_policytype.setText(policyTypeList.get(which).getType());
-                policyTypeID = policyTypeList.get(which).getId();
-
-            }
-        });
-
-        AlertDialog alertD = builderSingle.create();
-        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-        alertD.show();
-
-
-    }
-
-    private void frequencyListDialog(ArrayList<FrequencyListPojo> frequencyList) {
-
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Frequency");
-        builderSingle.setCancelable(false);
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.list_row);
-
-        for (int i = 0; i < frequencyList.size(); i++) {
-
-            arrayAdapter.add(frequencyList.get(i).getFrequency());
-        }
-
-        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                edt_frequency.setText(frequencyList.get(which).getFrequency());
-                frequencyId = frequencyList.get(which).getId();
-
-            }
-        });
-
-        AlertDialog alertD = builderSingle.create();
-        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-        alertD.show();
-
 
     }
 
@@ -1536,6 +1300,243 @@ public class EditGeneralInsurance_Activity extends Activity {
         }
     }
 
+
+    private void companyListDialog(final ArrayList<InsuranceCompanyListPojo> companyListMain) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Insurance Company");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.list_row);
+
+        for (int i = 0; i < companyListMain.size(); i++) {
+
+            arrayAdapter.add(String.valueOf(companyListMain.get(i).getCompany_name()));
+        }
+
+        builderSingle.setNeutralButton("Add New", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                companyList = new ArrayList<>();
+                Intent intent = new Intent(context, AddInsuranceCompany_Activity.class);
+                intent.putExtra("TYPE", "1");
+                startActivity(intent);
+            }
+        });
+
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                edt_policytype.setText("");
+                policyTypeID = "0";
+
+                edt_insurancecompany.setText(companyListMain.get(which).getCompany_name());
+                companyId = companyListMain.get(which).getId();
+                companyAliasName = companyListMain.get(which).getCompany_alias();
+
+            }
+        });
+        AlertDialog alertD = builderSingle.create();
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+    }
+
+    private void clientListDialog(final ArrayList<ClientMainListPojo> clientListMain) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Client");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.list_row);
+
+        for (int i = 0; i < clientListMain.size(); i++) {
+
+            arrayAdapter.add(String.valueOf(clientListMain.get(i).getFirst_name()));
+        }
+
+        builderSingle.setNeutralButton("Add New", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                clientList = new ArrayList<>();
+                startActivity(new Intent(context, AddClientDetails_Activity.class));
+            }
+        });
+
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                edt_insurername.setText("");
+                insurerId = "";
+
+                edt_clientname.setText(clientListMain.get(which).getFirst_name());
+                clientId = clientListMain.get(which).getId();
+
+            }
+        });
+
+        AlertDialog alertD = builderSingle.create();
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+    }
+
+    private void familyInsurerListDialog(final ArrayList<FamilyInsurerNameListPojo> familyInsurerList) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Insurer");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.list_row);
+
+        for (int i = 0; i < familyInsurerList.size(); i++) {
+            if (!familyInsurerList.get(i).getRelation().trim().equals("")) {
+                arrayAdapter.add(familyInsurerList.get(i).getName()/* + " (" + familyInsurerList.get(i).getRelation() + ")"*/);
+            } else {
+                arrayAdapter.add(familyInsurerList.get(i).getName());
+            }
+        }
+
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                edt_insurername.setText(familyInsurerList.get(which).getName());
+                insurerId = familyInsurerList.get(which).getId();
+
+            }
+        });
+
+        AlertDialog alertD = builderSingle.create();
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+    }
+
+    private void firmInsurerListDialog(ArrayList<FirmInsurerNameListPojo> firmInsurerList) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Insurer");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.list_row);
+
+        for (int i = 0; i < firmInsurerList.size(); i++) {
+            arrayAdapter.add(firmInsurerList.get(i).getFirm_name());
+        }
+
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                edt_insurername.setText(firmInsurerList.get(which).getFirm_name());
+                insurerId = firmInsurerList.get(which).getId();
+
+            }
+        });
+
+        AlertDialog alertD = builderSingle.create();
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+    }
+
+    private void policyTypeListDialog(ArrayList<PolicyTypeListPojo> parentPolicyTypeList) {
+        ArrayList<PolicyTypeListPojo.Policy_details> policyTypeList = parentPolicyTypeList.get(0).getPolicy_details();
+
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Policy Type");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.list_row);
+
+        for (int i = 0; i < policyTypeList.size(); i++) {
+
+            arrayAdapter.add(policyTypeList.get(i).getType());
+        }
+
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                edt_policytype.setText(policyTypeList.get(which).getType());
+                policyTypeID = policyTypeList.get(which).getId();
+
+            }
+        });
+
+        AlertDialog alertD = builderSingle.create();
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+
+
+    }
+
+    private void frequencyListDialog(ArrayList<FrequencyListPojo> frequencyList) {
+
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Frequency");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.list_row);
+
+        for (int i = 0; i < frequencyList.size(); i++) {
+
+            arrayAdapter.add(frequencyList.get(i).getFrequency());
+        }
+
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                edt_frequency.setText(frequencyList.get(which).getFrequency());
+                frequencyId = frequencyList.get(which).getId();
+
+            }
+        });
+
+        AlertDialog alertD = builderSingle.create();
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+
+
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {

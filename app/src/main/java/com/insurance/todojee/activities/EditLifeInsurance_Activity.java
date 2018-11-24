@@ -205,6 +205,7 @@ public class EditLifeInsurance_Activity extends Activity {
         policyTypeID = lifeInsuranceDetails.getPolicy_type_id();
         frequencyId = lifeInsuranceDetails.getFrequency_id();
         policyStatusId = lifeInsuranceDetails.getPolicy_status_id();
+        companyAliasName = lifeInsuranceDetails.getInsurance_company_alias();
 
         edt_clientname.setText(lifeInsuranceDetails.getClient_name());
         edt_insurancecompany.setText(lifeInsuranceDetails.getInsurance_company_name());

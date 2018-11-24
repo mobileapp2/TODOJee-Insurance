@@ -10,15 +10,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -51,7 +53,8 @@ public class ViewProductInfo_Activity extends Activity {
     private String user_id, document_url, document_name;
     private ArrayList<ClientMainListPojo> clientList;
 
-    private ListView lv_checkboxlist;
+    private RecyclerView lv_checkboxlist;
+    private CheckBox cb_selectallclient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,7 +192,7 @@ public class ViewProductInfo_Activity extends Activity {
                         Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
                     }
                 } else {
-                    clientListDialog(clientList);
+                    clientListDialog();
                 }
             }
         });
@@ -270,89 +273,6 @@ public class ViewProductInfo_Activity extends Activity {
         }
     }
 
-    private void clientListDialog(final ArrayList<ClientMainListPojo> clientList) {
-        final String[] clientNameList = new String[clientList.size()];
-        final String[] clientIdList = new String[clientList.size()];
-//        final int checkedItemCount;
-
-        for (int i = 0; i < clientList.size(); i++) {
-            clientNameList[i] = (String.valueOf(clientList.get(i).getFirst_name()));
-            clientIdList[i] = (String.valueOf(clientList.get(i).getId()));
-        }
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        LayoutInflater inflater = getLayoutInflater();
-        builder.setTitle("Select Clients");
-        builder.setCancelable(false);
-        View rawview = inflater.inflate(R.layout.prompt_checkbox_listview, null);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, clientNameList);
-        lv_checkboxlist = rawview.findViewById(R.id.lv_checkboxlist);
-        lv_checkboxlist.setAdapter(adapter);
-
-        builder.setView(rawview);
-
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int checkedItemCount = getCheckedItemCount();
-
-                if (checkedItemCount != 0) {
-                    JsonArray clientIdJSONArray = new JsonArray();
-                    SparseBooleanArray positions = lv_checkboxlist.getCheckedItemPositions();
-                    if (positions != null) {
-                        int length = positions.size();
-                        for (int z = 0; z < length; z++) {
-                            if (positions.get(positions.keyAt(z))) {
-                                JsonObject childObj = new JsonObject();
-                                childObj.addProperty("id", String.valueOf(clientList.get(positions.keyAt(z)).getId()));
-                                clientIdJSONArray.add(childObj);
-                            }
-                        }
-
-                    }
-
-                    JsonObject mainObj = new JsonObject();
-                    mainObj.addProperty("type", "shareProduct");
-                    mainObj.add("client-id", clientIdJSONArray);
-                    mainObj.addProperty("recored-id", productDetails.getId());
-                    mainObj.addProperty("user_id", user_id);
-
-                    if (Utilities.isInternetAvailable(context)) {
-                        new ShareProductDetails().execute(mainObj.toString());
-                    } else {
-                        Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
-                    }
-                } else {
-                    Utilities.showMessageString(context, "No Client Selected");
-                }
-
-
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-
-        AlertDialog alertD = builder.create();
-        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-        alertD.show();
-    }
-
-    private int getCheckedItemCount() {
-        int cnt = 0;
-        SparseBooleanArray positions = lv_checkboxlist.getCheckedItemPositions();
-        int itemCount = lv_checkboxlist.getCount();
-
-        for (int i = 0; i < itemCount; i++) {
-            if (positions.get(i))
-                cnt++;
-        }
-        return cnt;
-    }
-
     public class GetClientList extends AsyncTask<String, Void, String> {
 
         ProgressDialog pd;
@@ -404,7 +324,7 @@ public class ViewProductInfo_Activity extends Activity {
                         }
 
                         if (clientList.size() != 0) {
-                            clientListDialog(clientList);
+                            clientListDialog();
                         }
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -433,6 +353,232 @@ public class ViewProductInfo_Activity extends Activity {
             }
         }
     }
+
+//    private void clientListDialog(final ArrayList<ClientMainListPojo> clientList) {
+//        final String[] clientNameList = new String[clientList.size()];
+//        final String[] clientIdList = new String[clientList.size()];
+////        final int checkedItemCount;
+//
+//        for (int i = 0; i < clientList.size(); i++) {
+//            clientNameList[i] = (String.valueOf(clientList.get(i).getFirst_name()));
+//            clientIdList[i] = (String.valueOf(clientList.get(i).getId()));
+//        }
+//        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+//        LayoutInflater inflater = getLayoutInflater();
+//        builder.setTitle("Select Clients");
+//        builder.setCancelable(false);
+//        View rawview = inflater.inflate(R.layout.prompt_checkbox_listview, null);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, clientNameList);
+//        lv_checkboxlist = rawview.findViewById(R.id.lv_checkboxlist);
+//        lv_checkboxlist.setAdapter(adapter);
+//
+//        builder.setView(rawview);
+//
+//        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                int checkedItemCount = getCheckedItemCount();
+//
+//                if (checkedItemCount != 0) {
+//                    JsonArray clientIdJSONArray = new JsonArray();
+//                    SparseBooleanArray positions = lv_checkboxlist.getCheckedItemPositions();
+//                    if (positions != null) {
+//                        int length = positions.size();
+//                        for (int z = 0; z < length; z++) {
+//                            if (positions.get(positions.keyAt(z))) {
+//                                JsonObject childObj = new JsonObject();
+//                                childObj.addProperty("id", String.valueOf(clientList.get(positions.keyAt(z)).getId()));
+//                                clientIdJSONArray.add(childObj);
+//                            }
+//                        }
+//
+//                    }
+//
+//                    JsonObject mainObj = new JsonObject();
+//                    mainObj.addProperty("type", "shareProduct");
+//                    mainObj.add("client-id", clientIdJSONArray);
+//                    mainObj.addProperty("recored-id", productDetails.getId());
+//                    mainObj.addProperty("user_id", user_id);
+//
+//                    if (Utilities.isInternetAvailable(context)) {
+//                        new ShareProductDetails().execute(mainObj.toString());
+//                    } else {
+//                        Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+//                    }
+//                } else {
+//                    Utilities.showMessageString(context, "No Client Selected");
+//                }
+//
+//
+//            }
+//        });
+//
+//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//
+//            }
+//        });
+//
+//        AlertDialog alertD = builder.create();
+//        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+//        alertD.show();
+//    }
+
+    private void clientListDialog() {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.prompt_checkbox_listview, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setTitle("Client List");
+        alertDialogBuilder.setView(promptView);
+
+        lv_checkboxlist = promptView.findViewById(R.id.lv_checkboxlist);
+        lv_checkboxlist.setLayoutManager(new LinearLayoutManager(context));
+        cb_selectallclient = promptView.findViewById(R.id.cb_selectallclient);
+
+        cb_selectallclient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < clientList.size(); i++) {
+
+                    ClientListAdapter.MyViewHolder myViewHolder =
+                            (ClientListAdapter.MyViewHolder) lv_checkboxlist.findViewHolderForAdapterPosition(i);
+
+                    if (((CheckBox) v).isChecked()) {
+                        myViewHolder.cb_check.setChecked(true);
+                        clientList.get(i).setChecked(true);
+                    } else {
+                        myViewHolder.cb_check.setChecked(false);
+                        clientList.get(i).setChecked(false);
+                    }
+                }
+            }
+        });
+
+        lv_checkboxlist.setAdapter(new ClientListAdapter());
+
+        alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                ArrayList<ClientMainListPojo> selectedClientList = new ArrayList<>();
+                for (ClientMainListPojo clientObj : clientList) {
+                    if (clientObj.isChecked()) {
+                        selectedClientList.add(clientObj);
+                    }
+
+                }
+
+
+                if (selectedClientList.size() != 0) {
+                    JsonArray clientIdJSONArray = new JsonArray();
+
+                    for (ClientMainListPojo clientObj : selectedClientList) {
+                        JsonObject childObj = new JsonObject();
+                        childObj.addProperty("id", clientObj.getId());
+                        clientIdJSONArray.add(childObj);
+
+
+                    }
+
+                    JsonObject mainObj = new JsonObject();
+                    mainObj.addProperty("type", "shareProduct");
+                    mainObj.add("client-id", clientIdJSONArray);
+                    mainObj.addProperty("recored-id", productDetails.getId());
+                    mainObj.addProperty("user_id", user_id);
+
+                    if (Utilities.isInternetAvailable(context)) {
+                        new ShareProductDetails().execute(mainObj.toString());
+                    } else {
+                        Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                    }
+                } else {
+                    Utilities.showMessageString(context, "No Client Selected");
+                }
+
+
+            }
+        });
+
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertD = alertDialogBuilder.create();
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+
+
+    }
+
+    public class ClientListAdapter extends RecyclerView.Adapter<ClientListAdapter.MyViewHolder> {
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_filteritem, parent, false);
+            MyViewHolder myViewHolder = new MyViewHolder(view);
+            return myViewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, final int position) {
+            ClientMainListPojo annivarsaryDetails = new ClientMainListPojo();
+            annivarsaryDetails = clientList.get(position);
+
+            holder.tv_itemname.setText(annivarsaryDetails.getFirst_name());
+
+            holder.cb_check.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (holder.cb_check.isChecked())
+                        clientList.get(position).setChecked(true);
+                    else
+                        clientList.get(position).setChecked(false);
+
+                    if (isAllValuesChecked(clientList)) {
+                        cb_selectallclient.setChecked(true);
+                    } else {
+                        cb_selectallclient.setChecked(false);
+                    }
+
+                }
+            });
+
+            holder.view1.setVisibility(View.GONE);
+        }
+
+        @Override
+        public int getItemCount() {
+            return clientList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView tv_itemname;
+            private CheckBox cb_check;
+            private View view1;
+
+            public MyViewHolder(View view) {
+                super(view);
+                tv_itemname = view.findViewById(R.id.tv_itemname);
+                cb_check = view.findViewById(R.id.cb_check);
+                view1 = view.findViewById(R.id.view);
+            }
+        }
+
+        private boolean isAllValuesChecked(ArrayList<ClientMainListPojo> clientList) {
+            for (int i = 0; i < clientList.size(); i++)
+                if (!clientList.get(i).isChecked())
+                    return false;
+            return true;
+        }
+    }
+
 
     public class ShareProductDetails extends AsyncTask<String, Void, String> {
         ProgressDialog pd;

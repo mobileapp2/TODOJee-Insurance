@@ -16,15 +16,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.google.gson.JsonObject;
 import com.insurance.todojee.R;
 import com.insurance.todojee.adapters.GetEventListAdapter;
 import com.insurance.todojee.models.EventListPojo;
 import com.insurance.todojee.utilities.ApplicationConstants;
-import com.insurance.todojee.utilities.ParamsPojo;
 import com.insurance.todojee.utilities.RecyclerItemClickListener;
 import com.insurance.todojee.utilities.UserSessionManager;
 import com.insurance.todojee.utilities.Utilities;
@@ -32,17 +29,13 @@ import com.insurance.todojee.utilities.WebServiceCalls;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
-import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 public class CalenderMonthWise_Fragment extends Fragment implements OnDateSelectedListener/*, OnMonthChangedListener*/ {
 
@@ -143,14 +136,15 @@ public class CalenderMonthWise_Fragment extends Fragment implements OnDateSelect
             public void onItemClick(View view, int position) {
                 EventListPojo eventListPojo = eventList.get(position);
                 String[] choices = {"Paid", "Not Paid"};
-                final String[] status = {"Paid"};
+                String[] statuses = {"Completed", "Dismissed"};
+                final String[] status = {"Completed"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                 builder.setTitle("Select Your Choice");
                 builder.setCancelable(false);
 
                 builder.setSingleChoiceItems(choices, 0, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
-                        status[0] = choices[item];
+                        status[0] = statuses[item];
                     }
                 });
 
