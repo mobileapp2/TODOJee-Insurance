@@ -5,10 +5,19 @@
     <!--<color name="colorPrimaryLight">#BBDEFB</color>-->
     <!--<color name="colorAccent">#0D47A1</color>-->
 
-    <color name="colorPrimary">#575784</color>
+    <!--<color name="colorPrimary">#575784</color>-->
+    <color name="colorPrimary">#360568</color>
+
     <color name="colorPrimaryDark">#2C293A</color>
-    <color name="colorPrimaryLight">#575784</color>
-    <color name="colorAccent">#575784</color>
+    <!--<color name="colorPrimaryLight">#575784</color>-->
+    <color name="colorPrimaryLight">#5B2A86</color>
+    <color name="colorAccent">#6307c2</color>
+    <color name="colorCard1">#6f8de2</color>
+    <color name="colorCard2">#8ce6e4</color>
+    <color name="colorCard3">#8ee8ab</color>
+    <color name="colorButton">#24b1c2</color>
+    <color name="textColor">#5B2A86</color>
+    <!--<color name="colorAccent">#575784</color>-->
 
 
     <color name="white">#FFFFFF</color>
@@ -343,8 +352,8 @@
     <color name="Pearl">#FDEEF4</color>
     <color name="SeaShell">#FFF5EE</color>
     <color name="Milk_White">#FEFCFF</color>
-    <color name="Light_Red">#FFCDD2</color>
-    <color name="Light_Green">#C8E6C9</color>
-    <color name="Light_Yellow">#FFF9C4</color>
+    <color name="Light_Red">#fe6c7b</color>
+    <color name="Light_Green">#88fb8c</color>
+    <color name="Light_Yellow">#ffeb37</color>
 
 </resources>

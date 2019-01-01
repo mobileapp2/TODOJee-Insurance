@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.insurance.todojee.R;
 import com.insurance.todojee.activities.AddInsuranceCompany_Activity;
 import com.insurance.todojee.adapters.GetGeneralInsurCompListAdapter;
@@ -41,7 +40,7 @@ public class GeneralInsuranceCompany_Fragment extends Fragment {
     private static LinearLayout ll_nothingtoshow;
     private FloatingActionButton fab_add_company;
     private LinearLayoutManager layoutManager;
-//    private static ShimmerFrameLayout shimmer_view_container;
+    //    private static ShimmerFrameLayout shimmer_view_container;
     private UserSessionManager session;
     private String user_id;
 

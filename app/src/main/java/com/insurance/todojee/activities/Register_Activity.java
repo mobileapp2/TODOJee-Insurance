@@ -16,6 +16,8 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -46,10 +48,12 @@ public class Register_Activity extends Activity {
 
     private Context context;
     private ConstraintLayout cl_parent;
-    private EditText edt_name, edt_mobile, edt_password;
+    private EditText edt_name, edt_mobile, edt_password, edt_referral;
     private TextView tv_alreadyregister;
     private Button btn_register;
     private UserSessionManager session;
+    CheckBox chk_referral;
+    String referralCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +79,21 @@ public class Register_Activity extends Activity {
         edt_mobile = findViewById(R.id.edt_mobile);
         edt_password = findViewById(R.id.edt_password);
 
+        chk_referral = findViewById(R.id.chk_referral);
         tv_alreadyregister = findViewById(R.id.tv_alreadyregister);
         btn_register = findViewById(R.id.btn_register);
     }
 
     private void setEventHandler() {
+        chk_referral.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                                    @Override
+                                                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                                        if (isChecked)
+                                                            createDialogForReferralCode();
+                                                    }
+                                                }
+        );
+
         tv_alreadyregister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +145,7 @@ public class Register_Activity extends Activity {
                     if (Utilities.isNetworkAvailable(context)) {
                         new RegisterNewUser().execute(edt_name.getText().toString().trim(),
                                 edt_mobile.getText().toString().trim(),
-                                edt_password.getText().toString().trim());
+                                edt_password.getText().toString().trim(), referralCode);
                     } else {
                         Utilities.showSnackBar(cl_parent, "Please Check Internet Connection");
                     }
@@ -187,6 +201,59 @@ public class Register_Activity extends Activity {
         });
     }
 
+    private void createDialogForReferralCode() {
+        final EditText edt_referral = new EditText(context);
+        float dpi = context.getResources().getDisplayMetrics().density;
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setTitle("Enter Referral Code");
+
+        alertDialogBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new ValidateReferralCode().execute(edt_referral.getText().toString().trim());
+                } else {
+                    Utilities.showSnackBar(cl_parent, "Please Check Internet Connection");
+                    chk_referral.setChecked(false);
+                }
+            }
+        });
+
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                chk_referral.setChecked(false);
+            }
+        });
+
+
+        AlertDialog alertD = alertDialogBuilder.create();
+        alertD.setView(edt_referral, (int) (19 * dpi), (int) (5 * dpi), (int) (14 * dpi), (int) (5 * dpi));
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+        alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+        edt_referral.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(s)) {
+                    alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                } else {
+                    alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                }
+
+            }
+        });
+    }
+
     private void saveRegistrationID() {
         String user_id = "", regToken = "";
         try {
@@ -213,6 +280,58 @@ public class Register_Activity extends Activity {
         activityManager.getMemoryInfo(memoryInfo);
         double totalRAM = memoryInfo.totalMem / 1048576.0;
         return String.valueOf(totalRAM);
+    }
+
+    public class ValidateReferralCode extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("type", "getValidReferral"));
+            param.add(new ParamsPojo("referral", params[0]));
+            referralCode = params[0];
+            res = WebServiceCalls.FORMDATAAPICall(ApplicationConstants.REGISTERAPI, param);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+
+                    } else {
+                        createDialogForReferralCode();
+                        Utilities.showAlertDialog(context, "Alert", message, false);
+
+                        // chk_referral.setChecked(false);
+                        referralCode = "";
+                    }
+
+                }
+            } catch (Exception e) {
+
+                e.printStackTrace();
+            }
+        }
     }
 
     public class SendOTP extends AsyncTask<String, Void, String> {
@@ -285,12 +404,21 @@ public class Register_Activity extends Activity {
             String res = "[]";
 
             OkHttpClient client = new OkHttpClient();
-
-            RequestBody formBody = new FormBody.Builder()
-                    .add("name", params[0])
-                    .add("mobile", params[1])
-                    .add("password", params[2])
-                    .build();
+            RequestBody formBody = null;
+            if (chk_referral.isChecked()) {
+                formBody = new FormBody.Builder()
+                        .add("name", params[0])
+                        .add("mobile", params[1])
+                        .add("password", params[2])
+                        .add("referral_code", params[3])
+                        .build();
+            } else {
+                formBody = new FormBody.Builder()
+                        .add("name", params[0])
+                        .add("mobile", params[1])
+                        .add("password", params[2])
+                        .build();
+            }
             Request request = new Request.Builder()
                     .url(ApplicationConstants.REGISTERAPI)
                     .post(formBody)

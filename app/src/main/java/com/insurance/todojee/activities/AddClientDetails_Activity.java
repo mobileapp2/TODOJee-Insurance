@@ -464,7 +464,8 @@ public class AddClientDetails_Activity extends Activity {
 
             if (!((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_familyname)).getText().toString().trim().equals("") ||
                     !((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_familydob)).getText().toString().trim().equals("") ||
-                    !((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_familyrelation)).getText().toString().trim().equals("")) {
+                    !((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_familyrelation)).getText().toString().trim().equals("") ||
+                    !((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().equals("")) {
 
                 ClientMainListPojo.ClientFamilyDetailsPojo clientFamilyObj = new ClientMainListPojo.ClientFamilyDetailsPojo();
                 clientFamilyObj.setName(((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_familyname)).getText().toString().trim());
@@ -473,7 +474,7 @@ public class AddClientDetails_Activity extends Activity {
                         "yyyy-MM-dd",
                         ((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_familydob)).getText().toString().trim()));
 //                clientFamilyObj.setRelation(((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_familyrelation)).getText().toString().trim());
-
+                clientFamilyObj.setMobile(((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim());
                 for (int j = 0; j < relationsList.size(); j++) {
                     if (!((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_familyrelation)).getText().toString().trim().equals("")) {
                         if (relationsList.get(j).getRelation().equals(((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_familyrelation)).getText().toString().trim())) {
@@ -509,6 +510,7 @@ public class AddClientDetails_Activity extends Activity {
             familyJSONObj.addProperty("name", familyDetailsList.get(i).getName());
             familyJSONObj.addProperty("dob", familyDetailsList.get(i).getDob());
             familyJSONObj.addProperty("relation", familyDetailsList.get(i).getRelation());
+            familyJSONObj.addProperty("mobile", familyDetailsList.get(i).getMobile());
             familyJSONArray.add(familyJSONObj);
         }
 

@@ -590,15 +590,11 @@ public class EditGeneralInsurance_Activity extends Activity {
 //            return;
 //        }
 
-        if (edt_startdate.getText().toString().trim().equals("")) {
-            Utilities.showSnackBar(ll_parent, "Please Select Start Date");
+        if (edt_enddate.getText().toString().trim().equals("")) {
+            Utilities.showSnackBar(ll_parent, "Please Select Renewal Date");
             return;
         }
 
-        if (edt_frequency.getText().toString().trim().equals("")) {
-            Utilities.showSnackBar(ll_parent, "Please Select Frequency");
-            return;
-        }
 
         if (edt_description.getText().toString().trim().equals("")) {
 
@@ -653,7 +649,8 @@ public class EditGeneralInsurance_Activity extends Activity {
         mainObj.addProperty("policyNo", edt_insurepolicyno.getText().toString().trim());
         mainObj.addProperty("sum_insured", edt_suminsured.getText().toString().trim());
         mainObj.addProperty("premium_amount", edt_premiumamt.getText().toString().trim());
-        mainObj.addProperty("frequency", frequencyId);
+        //hardcode due to cr to remove frequency
+        mainObj.addProperty("frequency", 0);
         mainObj.addProperty("start_date", changeDateFormat("dd/MM/yyyy",
                 "yyyy/MM/dd",
                 edt_startdate.getText().toString().trim()));
@@ -1537,6 +1534,7 @@ public class EditGeneralInsurance_Activity extends Activity {
 
 
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {

@@ -267,7 +267,7 @@
                                 android:layout_height="wrap_content"
                                 android:focusable="false"
                                 android:gravity="center_vertical"
-                                android:hint="Start Date *"
+                                android:hint="Start Date"
                                 android:inputType="date"
                                 android:longClickable="false"
                                 android:textColor="@color/black"
@@ -287,7 +287,7 @@
                                 android:layout_height="wrap_content"
                                 android:focusable="false"
                                 android:gravity="center_vertical"
-                                android:hint="End Date"
+                                android:hint="Renewal Date *"
                                 android:inputType="date"
                                 android:longClickable="false"
                                 android:textColor="@color/black"
@@ -301,7 +301,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp">
+                        android:layout_marginRight="5dp"
+                        android:visibility="gone">
 
                         <EditText
                             android:id="@+id/edt_frequency"
@@ -314,6 +315,7 @@
                             android:inputType="textCapWords|textNoSuggestions|textMultiLine"
                             android:longClickable="false"
                             android:textColor="@color/black"
+                            android:visibility="gone"
                             android:textSize="14sp" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -440,7 +442,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
-                        android:text="Attact Documents"
+                        android:text="Attach Documents"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />

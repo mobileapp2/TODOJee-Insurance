@@ -6,8 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.insurance.todojee.R;
@@ -39,7 +37,7 @@ public class GetLifeInsurChildPolicyTypeListAdapter extends RecyclerView.Adapter
         policyDetails = resultArrayList.get(position);
 
         holder.tv_namealias.setText(policyDetails.getType() + " | " + policyDetails.getAlias());
-        holder.tv_namealias.setTypeface(null,Typeface.NORMAL);
+        holder.tv_namealias.setTypeface(null, Typeface.NORMAL);
         if (position == resultArrayList.size() - 1) {
             holder.view1.setVisibility(View.GONE);
         }

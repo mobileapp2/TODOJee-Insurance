@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.insurance.todojee.R;
 import com.insurance.todojee.activities.AddPolicyType_Activity;
 import com.insurance.todojee.adapters.GetGeneralInsurParentPolicyTypeListAdapter;
@@ -41,7 +40,7 @@ public class GeneralInsurePolicyType_Fragment extends Fragment {
     private static LinearLayout ll_nothingtoshow;
     private FloatingActionButton fab_add_policytype;
     private LinearLayoutManager layoutManager;
-//    private static ShimmerFrameLayout shimmer_view_container;
+    //    private static ShimmerFrameLayout shimmer_view_container;
     private String user_id;
     private UserSessionManager session;
 

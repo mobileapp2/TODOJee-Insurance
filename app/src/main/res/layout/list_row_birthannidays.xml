@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -6,7 +8,9 @@
     android:orientation="vertical"
     android:paddingLeft="10dp"
     android:paddingTop="5dp"
-    android:paddingRight="10dp">
+    android:paddingRight="10dp"
+    android:layout_margin="5dp"
+    android:layout_marginBottom="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,10 +27,11 @@
         <TextView
             android:id="@+id/tv_clientname"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.7"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
+            android:paddingBottom="2dp"
             android:text="g"
             android:textColor="@color/black"
             android:textSize="16sp" />
@@ -34,18 +39,29 @@
         <ImageView
             android:id="@+id/imv_sms"
             android:layout_width="0dp"
-            android:layout_height="20dp"
+            android:layout_height="25dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.1"
-            android:src="@drawable/icon_sms" />
+            android:src="@drawable/icon_smsthin"
+            android:tint="@color/grey" />
 
         <ImageView
             android:id="@+id/imv_whatsapp"
             android:layout_width="0dp"
-            android:layout_height="20dp"
+            android:layout_height="25dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.1"
-            android:src="@drawable/icon_whatsapp" />
+            android:src="@drawable/icon_watsapp"
+            android:tint="@color/grey" />
+
+        <ImageView
+            android:id="@+id/imv_share"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.1"
+            android:src="@drawable/icon_sharethin"
+            android:tint="@color/grey" />
 
     </LinearLayout>
 
@@ -57,3 +73,4 @@
         android:background="@color/grey" />
 
 </LinearLayout>
+

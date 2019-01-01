@@ -5,10 +5,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -83,8 +85,17 @@ public class SMSAnniversarySettings_Activity extends Activity {
             public void onClick(View view) {
                 final EditText edt_smsmessage = new EditText(context);
                 float dpi = context.getResources().getDisplayMetrics().density;
-                edt_smsmessage.setText(smsMessage);
-                edt_smsmessage.setSelection(smsMessage.length());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    edt_smsmessage.setText(Html.fromHtml(smsMessage, Html.FROM_HTML_MODE_COMPACT));
+                } else {
+                    edt_smsmessage.setText(Html.fromHtml(smsMessage));
+                }
+                //   edt_smsmessage.setText(smsMessage);
+                if (edt_smsmessage.getText().length() > 0)
+                    edt_smsmessage.setSelection(edt_smsmessage.getText().length() - 1);
+                else
+                    edt_smsmessage.setSelection(0);
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                 builder.setTitle("Set Anniversary SMS Message");
                 builder.setCancelable(false);
@@ -165,7 +176,12 @@ public class SMSAnniversarySettings_Activity extends Activity {
                                 JSONObject jsonObj = jsonarr.getJSONObject(i);
                                 id = jsonObj.getString("id");
                                 smsMessage = jsonObj.getString("message");
-                                edt_smsmessage.setText(smsMessage);
+                                // edt_smsmessage.setText(smsMessage);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    edt_smsmessage.setText(Html.fromHtml(smsMessage, Html.FROM_HTML_MODE_COMPACT));
+                                } else {
+                                    edt_smsmessage.setText(Html.fromHtml(smsMessage));
+                                }
                             }
                         }
                     } else {

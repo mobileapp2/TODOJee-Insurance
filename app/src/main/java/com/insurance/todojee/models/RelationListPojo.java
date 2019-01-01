@@ -6,29 +6,24 @@ public class RelationListPojo {
 
     private String relation;
 
-    public String getId ()
-    {
+    public String getId() {
         return id;
     }
 
-    public void setId (String id)
-    {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getRelation ()
-    {
+    public String getRelation() {
         return relation;
     }
 
-    public void setRelation (String relation)
-    {
+    public void setRelation(String relation) {
         this.relation = relation;
     }
 
     @Override
-    public String toString()
-    {
-        return "ClassPojo [id = "+id+", relation = "+relation+"]";
+    public String toString() {
+        return "ClassPojo [id = " + id + ", relation = " + relation + "]";
     }
 }

@@ -27,6 +27,15 @@
         <meta-data
             android:name="firebase_crash_collection_enabled"
             android:value="false" />
+        <provider
+            android:name=".utilities.GenericFileProvider"
+            android:authorities="${applicationId}.com.insurance.todojee.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
 
         <activity
             android:name=".activities.SplashScreen_Activity"
@@ -211,6 +220,11 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.FilteredInsuranceList_Activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.FAQ_Activity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />

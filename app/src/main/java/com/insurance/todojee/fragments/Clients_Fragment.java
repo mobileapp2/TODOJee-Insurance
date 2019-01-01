@@ -15,8 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.insurance.todojee.R;
 import com.insurance.todojee.activities.AddClientDetails_Activity;
 import com.insurance.todojee.adapters.GetClientListAdapter;
@@ -31,7 +31,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Clients_Fragment extends Fragment {
 
@@ -42,9 +45,11 @@ public class Clients_Fragment extends Fragment {
     private static LinearLayout ll_nothingtoshow;
     private FloatingActionButton fab_add_client;
     private LinearLayoutManager layoutManager;
-//    private static ShimmerFrameLayout shimmer_view_container;
+    //    private static ShimmerFrameLayout shimmer_view_container;
     private UserSessionManager session;
     private String user_id;
+    private SearchView searchView;
+    private static ArrayList<ClientMainListPojo> clientList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -67,6 +72,8 @@ public class Clients_Fragment extends Fragment {
 //        shimmer_view_container = rootView.findViewById(R.id.shimmer_view_container);
         layoutManager = new LinearLayoutManager(context);
         rv_clientlist.setLayoutManager(layoutManager);
+        searchView = rootView.findViewById(R.id.searchView);
+        searchView.setFocusable(false);
     }
 
     private void setDefault() {
@@ -92,6 +99,21 @@ public class Clients_Fragment extends Fragment {
     }
 
     private void setEventHandlers() {
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                return filterList(query);
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return filterList(newText);
+            }
+        });
+
         fab_add_client.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,7 +138,7 @@ public class Clients_Fragment extends Fragment {
     }
 
     public static class GetClientList extends AsyncTask<String, Void, String> {
-        private ArrayList<ClientMainListPojo> clientList;
+
 
         @Override
         protected void onPreExecute() {
@@ -151,7 +173,8 @@ public class Clients_Fragment extends Fragment {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
-                    clientList = new ArrayList<ClientMainListPojo>();
+                    clientList.clear();
+                    Collections.sort(clientList, ClientMainListPojo.NameComparator);
                     rv_clientlist.setAdapter(new GetClientListAdapter(context, clientList));
                     if (type.equalsIgnoreCase("success")) {
                         JSONArray jsonarr = mainObj.getJSONArray("result");
@@ -181,6 +204,7 @@ public class Clients_Fragment extends Fragment {
                                     clientFamilyObj.setName(jsonObj.getJSONArray("relation_details").getJSONObject(j).getString("name"));
                                     clientFamilyObj.setDob(jsonObj.getJSONArray("relation_details").getJSONObject(j).getString("dob"));
                                     clientFamilyObj.setRelation(jsonObj.getJSONArray("relation_details").getJSONObject(j).getString("relation"));
+                                    clientFamilyObj.setMobile(jsonObj.getJSONArray("relation_details").getJSONObject(j).getString("mobile"));
                                     familyDetailsList.add(clientFamilyObj);
                                 }
                                 clientMainObj.setRelation_details(familyDetailsList);
@@ -204,6 +228,7 @@ public class Clients_Fragment extends Fragment {
                                 rv_clientlist.setVisibility(View.VISIBLE);
                                 ll_nothingtoshow.setVisibility(View.GONE);
                             }
+                            Collections.sort(clientList, ClientMainListPojo.NameComparator);
                             rv_clientlist.setAdapter(new GetClientListAdapter(context, clientList));
 
                         }
@@ -218,6 +243,27 @@ public class Clients_Fragment extends Fragment {
                 e.printStackTrace();
             }
         }
+    }
+
+    public boolean filterList(String filterKeyword) {
+        if (!filterKeyword.equals("")) {
+            Set<ClientMainListPojo> searchedProductsSet = new HashSet<>();
+
+            for (ClientMainListPojo product : clientList) {
+
+                if ((null != product.getFirst_name() && product.getFirst_name().toLowerCase().contains(filterKeyword.toLowerCase())) ||
+                        (null != product.getLast_name() && product.getLast_name().toLowerCase().contains(filterKeyword.toLowerCase()))
+                        || (null != product.getMiddle_name() && product.getMiddle_name().toLowerCase().contains(filterKeyword.toLowerCase()))) {
+                    searchedProductsSet.add(product);
+                }
+            }
+            List<ClientMainListPojo> searchedProductsList = new ArrayList(searchedProductsSet);
+            rv_clientlist.setAdapter(new GetClientListAdapter(context, searchedProductsList));
+        } else {
+            Collections.sort(clientList, ClientMainListPojo.NameComparator);
+            rv_clientlist.setAdapter(new GetClientListAdapter(context, clientList));
+        }
+        return true;
     }
 
 }

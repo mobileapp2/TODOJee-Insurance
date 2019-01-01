@@ -24,7 +24,7 @@
             android:background="@drawable/style_button"
             android:text="Clear"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -38,7 +38,7 @@
             android:background="@drawable/style_button"
             android:text="Apply"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="14sp"
             android:textStyle="bold" />
 

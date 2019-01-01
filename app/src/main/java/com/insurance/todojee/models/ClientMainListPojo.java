@@ -2,6 +2,7 @@ package com.insurance.todojee.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class ClientMainListPojo implements Serializable {
 
@@ -215,6 +216,14 @@ public class ClientMainListPojo implements Serializable {
         isChecked = checked;
     }
 
+    public static Comparator<ClientMainListPojo> NameComparator = new Comparator<ClientMainListPojo>() {
+
+        @Override
+        public int compare(ClientMainListPojo e1, ClientMainListPojo e2) {
+            return e1.getFirst_name().toLowerCase().compareTo(e2.getFirst_name().toLowerCase());
+        }
+    };
+
     public static class ClientFamilyDetailsPojo implements Serializable {
 
         private String dob;
@@ -223,9 +232,19 @@ public class ClientMainListPojo implements Serializable {
 
         private String relation;
 
+        private String mobile;
+
         private String family_details_id;
 
         private boolean isChecked;
+
+        public String getMobile() {
+            return mobile;
+        }
+
+        public void setMobile(String mobile) {
+            this.mobile = mobile;
+        }
 
         public String getDob() {
             return dob;

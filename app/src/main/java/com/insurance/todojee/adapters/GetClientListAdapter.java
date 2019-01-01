@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -48,6 +49,11 @@ public class GetClientListAdapter extends RecyclerView.Adapter<GetClientListAdap
         ClientMainListPojo clientDetails = new ClientMainListPojo();
         clientDetails = resultArrayList.get(position);
         final ClientMainListPojo finalClientDetails = clientDetails;
+        if (position % 2 == 0)
+            holder.ll_mainlayout.setBackground(ContextCompat.getDrawable(context, R.drawable.gradientcard2));
+        else
+            holder.ll_mainlayout.setBackground(ContextCompat.getDrawable(context, R.drawable.gradientcard2));
+
 
         holder.tv_clientname.setText(clientDetails.getFirst_name());
 

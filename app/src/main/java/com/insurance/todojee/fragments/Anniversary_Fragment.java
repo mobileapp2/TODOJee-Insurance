@@ -5,16 +5,22 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -41,6 +47,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -65,6 +72,7 @@ public class Anniversary_Fragment extends Fragment {
     private EditText dialog_edt_whatsappmessage, edt_date;
     private ImageView dialog_imv_whatsapppic;
     private CheckBox cb_checkall;
+    private static boolean isImageSet = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -73,6 +81,7 @@ public class Anniversary_Fragment extends Fragment {
         init(rootView);
         getSessionData();
         setDefault();
+        new GetAnniWhatsappSettings().execute(user_id, "");
         setEventHandlers();
         return rootView;
     }
@@ -155,7 +164,8 @@ public class Anniversary_Fragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (Utilities.isInternetAvailable(context)) {
-                    new GetAnniWhatsappSettings().execute(user_id, "");
+                    //  new GetAnniWhatsappSettings().execute(user_id, "");
+                    showDialog("", "fab");
                 } else {
                     Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
                 }
@@ -372,7 +382,18 @@ public class Anniversary_Fragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     if (Utilities.isInternetAvailable(context)) {
-                        new GetAnniWhatsappSettings().execute(user_id, annivarsaryList.get(position).getId());
+                        // new GetAnniWhatsappSettings().execute(user_id, annivarsaryList.get(position).getId());
+                        showDialog(annivarsaryList.get(position).getId(), "holder");
+                    } else {
+                        Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                    }
+                }
+            });
+            holder.imv_share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (Utilities.isInternetAvailable(context)) {
+                        shareImageAniversary();
                     } else {
                         Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
                     }
@@ -389,7 +410,7 @@ public class Anniversary_Fragment extends Fragment {
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private TextView tv_clientname;
-            private ImageView imv_sms, imv_whatsapp;
+            private ImageView imv_sms, imv_whatsapp, imv_share;
             private CheckBox cb_wish;
 
             public MyViewHolder(View view) {
@@ -397,6 +418,7 @@ public class Anniversary_Fragment extends Fragment {
                 tv_clientname = view.findViewById(R.id.tv_clientname);
                 imv_sms = view.findViewById(R.id.imv_sms);
                 imv_whatsapp = view.findViewById(R.id.imv_whatsapp);
+                imv_share = view.findViewById(R.id.imv_share);
                 cb_wish = view.findViewById(R.id.cb_wish);
             }
         }
@@ -464,8 +486,18 @@ public class Anniversary_Fragment extends Fragment {
 
                     final EditText edt_smsmessage = new EditText(context);
                     float dpi = context.getResources().getDisplayMetrics().density;
-                    edt_smsmessage.setText(smsMessage);
-                    edt_smsmessage.setSelection(smsMessage.length());
+                    //edt_smsmessage.setText(smsMessage);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        edt_smsmessage.setText(Html.fromHtml(smsMessage, Html.FROM_HTML_MODE_COMPACT));
+                    } else {
+                        edt_smsmessage.setText(Html.fromHtml(smsMessage));
+                    }
+                    if (edt_smsmessage.getText().length() > 0)
+                        edt_smsmessage.setSelection(edt_smsmessage.getText().length() - 1);
+                    else
+                        edt_smsmessage.setSelection(0);
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                     builder.setTitle("SMS Message");
                     builder.setCancelable(false);
@@ -646,75 +678,7 @@ public class Anniversary_Fragment extends Fragment {
                         }
                     }
 
-                    LayoutInflater layoutInflater = LayoutInflater.from(context);
-                    View promptView = layoutInflater.inflate(R.layout.prompt_send_whatsappmsg, null);
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    alertDialogBuilder.setTitle("Whatsapp Message");
-                    alertDialogBuilder.setView(promptView);
 
-                    dialog_edt_whatsappmessage = promptView.findViewById(R.id.dialog_edt_whatsappmessage);
-                    dialog_imv_whatsapppic = promptView.findViewById(R.id.dialog_imv_whatsapppic);
-                    CheckBox cb_whatsappmsg = promptView.findViewById(R.id.cb_whatsappmsg);
-                    CheckBox cb_whatsappimg = promptView.findViewById(R.id.cb_whatsappimg);
-
-                    dialog_edt_whatsappmessage.setText(whatsappMessage);
-
-                    if (!whatsappPicUrl.equals("")) {
-                        Picasso.with(context)
-                                .load(whatsappPicUrl)
-                                .placeholder(R.drawable.img_photo)
-                                .into(dialog_imv_whatsapppic);
-                    }
-
-                    alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (!cb_whatsappmsg.isChecked() && !cb_whatsappimg.isChecked()) {
-                                Utilities.showMessageString(context, "Please Check Atleast One");
-                                return;
-                            }
-
-                            String whatsappPicSend = "", whatsappMsgSend = "";
-                            if (cb_whatsappmsg.isChecked()) {
-                                whatsappMsgSend = dialog_edt_whatsappmessage.getText().toString().trim();
-                            }
-                            if (cb_whatsappimg.isChecked()) {
-                                whatsappPicSend = whatsappPic;
-                            }
-                            sendWhatsapp(whatsappMsgSend, whatsappPicSend, singleReceiverID);
-                        }
-                    });
-
-                    alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    AlertDialog alertD = alertDialogBuilder.create();
-                    alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-                    alertD.show();
-
-                    dialog_edt_whatsappmessage.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        }
-
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable s) {
-                            if (TextUtils.isEmpty(s)) {
-                                alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-                            } else {
-                                alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-                            }
-
-                        }
-                    });
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -808,5 +772,207 @@ public class Anniversary_Fragment extends Fragment {
         }
     }
 
+    private void showDialog(String singleReceiverID, String callfrom) {
+        if (!callfrom.equals("share")) {
+            LayoutInflater layoutInflater = LayoutInflater.from(context);
+            View promptView = layoutInflater.inflate(R.layout.prompt_send_whatsappmsg, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+            alertDialogBuilder.setTitle("Whatsapp Message");
+            alertDialogBuilder.setView(promptView);
+
+            dialog_edt_whatsappmessage = promptView.findViewById(R.id.dialog_edt_whatsappmessage);
+            dialog_imv_whatsapppic = promptView.findViewById(R.id.dialog_imv_whatsapppic);
+            CheckBox cb_whatsappmsg = promptView.findViewById(R.id.cb_whatsappmsg);
+            CheckBox cb_whatsappimg = promptView.findViewById(R.id.cb_whatsappimg);
+
+            //dialog_edt_whatsappmessage.setText(whatsappMessage);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                dialog_edt_whatsappmessage.setText(Html.fromHtml(whatsappMessage, Html.FROM_HTML_MODE_COMPACT));
+            } else {
+                dialog_edt_whatsappmessage.setText(Html.fromHtml(whatsappMessage));
+            }
+
+            if (!whatsappPicUrl.equals("")) {
+                isImageSet = true;
+                Picasso.with(context)
+                        .load(whatsappPicUrl)
+                        .placeholder(R.drawable.img_photo)
+                        .into(dialog_imv_whatsapppic);
+            }
+
+            alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (!cb_whatsappmsg.isChecked() && !cb_whatsappimg.isChecked()) {
+                        Utilities.showMessageString(context, "Please Check Atleast One");
+                        return;
+                    }
+
+                    String whatsappPicSend = "", whatsappMsgSend = "";
+                    if (cb_whatsappmsg.isChecked()) {
+                        whatsappMsgSend = dialog_edt_whatsappmessage.getText().toString().trim();
+                    }
+                    if (cb_whatsappimg.isChecked()) {
+                        whatsappPicSend = whatsappPic;
+                    }
+                    sendWhatsapp(whatsappMsgSend, whatsappPicSend, singleReceiverID);
+                }
+            });
+
+            alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            AlertDialog alertD = alertDialogBuilder.create();
+            alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+            alertD.show();
+
+            dialog_edt_whatsappmessage.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (TextUtils.isEmpty(s)) {
+                        alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                    } else {
+                        alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                    }
+
+                }
+            });
+        } else {
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("image/*");
+
+            // Make sure you put example png image named myImage.png in your
+            // directory
+            String imagePath = Environment.getExternalStorageDirectory()
+                    + "/Insurance/"
+                    + "/Settings/" + File.separatorChar + "uplimg.png";
+
+            File imageFileToShare = new File(imagePath);
+
+            //Uri uri = Uri.fromFile(imageFileToShare);
+
+            Uri uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".com.insurance.todojee.provider", imageFileToShare);
+
+//        share.putExtra(Intent.EXTRA_STREAM, uri);
+//        share.putExtra(Intent.EXTRA_TEXT, "Happy Birthday");
+//        startActivity(Intent.createChooser(share, "Share Image!"));
+
+
+            LayoutInflater layoutInflater = LayoutInflater.from(context);
+            View promptView = layoutInflater.inflate(R.layout.prompt_send_whatsappmsg, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+            alertDialogBuilder.setTitle("Whatsapp Message");
+            alertDialogBuilder.setView(promptView);
+
+            dialog_edt_whatsappmessage = promptView.findViewById(R.id.dialog_edt_whatsappmessage);
+            dialog_imv_whatsapppic = promptView.findViewById(R.id.dialog_imv_whatsapppic);
+            CheckBox cb_whatsappmsg = promptView.findViewById(R.id.cb_whatsappmsg);
+            CheckBox cb_whatsappimg = promptView.findViewById(R.id.cb_whatsappimg);
+
+
+            //dialog_edt_whatsappmessage.setText(whatsappMessage);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                dialog_edt_whatsappmessage.setText(Html.fromHtml(whatsappMessage, Html.FROM_HTML_MODE_COMPACT));
+            } else {
+                dialog_edt_whatsappmessage.setText(Html.fromHtml(whatsappMessage));
+            }
+
+            if (!whatsappPicUrl.equals("")) {
+                isImageSet = true;
+               /* Picasso.with(context)
+                        .load(whatsappPicUrl)
+                        .placeholder(R.drawable.img_photo)
+                        .into(dialog_imv_whatsapppic);*/
+            }
+
+            if (isImageSet) {
+                Picasso.with(context)
+                        .load(whatsappPicUrl)
+                        .placeholder(R.drawable.img_photo)
+                        .into(dialog_imv_whatsapppic);
+            }
+
+            alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (!cb_whatsappmsg.isChecked() && !cb_whatsappimg.isChecked()) {
+                        Utilities.showMessageString(context, "Please Check Atleast One");
+                        return;
+                    }
+
+                    String whatsappPicSend = "", whatsappMsgSend = "";
+
+                    if (cb_whatsappimg.isChecked()) {
+                        if (isImageSet) {
+                            share.putExtra(Intent.EXTRA_STREAM, uri);
+                            if (cb_whatsappmsg.isChecked())
+                                whatsappMsgSend = dialog_edt_whatsappmessage.getText().toString().trim();
+                            share.putExtra(Intent.EXTRA_TEXT, whatsappMsgSend);
+                            startActivity(Intent.createChooser(share, "Share Image!"));
+                        } else
+                            Utilities.showAlertDialog(context, "Information", "Please set the image in the Anniversary Settings", false);
+                    } else if (cb_whatsappmsg.isChecked()) {
+                        whatsappMsgSend = dialog_edt_whatsappmessage.getText().toString().trim();
+                        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                        share.setType("text/plain");
+                        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                        share.putExtra(Intent.EXTRA_TEXT, whatsappMsgSend);
+                        startActivity(Intent.createChooser(share, "Share link!"));
+                    }
+
+                }
+            });
+
+            alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            AlertDialog alertD = alertDialogBuilder.create();
+            alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+            alertD.show();
+
+            dialog_edt_whatsappmessage.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (TextUtils.isEmpty(s)) {
+                        alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                    } else {
+                        alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                    }
+
+                }
+            });
+        }
+    }
+
+    private void shareImageAniversary() {
+        // If you want to share a png image only, you can do:
+        // setType("image/png"); OR for jpeg: setType("image/jpeg");
+        showDialog("", "share");
+    }
 
 }

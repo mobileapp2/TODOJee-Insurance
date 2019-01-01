@@ -26,23 +26,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        app:cardBackgroundColor="@android:color/white"
-        app:cardElevation="4dp"
+        app:cardElevation="6dp"
+        app:cardCornerRadius="6dp"
+
         app:cardUseCompatPadding="true"
-        app:contentPadding="10dp">
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@color/white"
+            android:orientation="vertical"
+
+            >
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Birthday Settings"
                 android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -58,6 +64,8 @@
                     android:layout_marginLeft="15dp"
                     android:layout_weight="0.95"
                     android:clickable="false"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:text="Whatsapp Message Setting"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
@@ -94,6 +102,8 @@
                     android:layout_weight="0.95"
                     android:clickable="false"
                     android:text="SMS Message Setting"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
@@ -118,22 +128,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        app:cardBackgroundColor="@android:color/white"
-        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/white"
+
+        app:cardElevation="6dp"
+        app:cardCornerRadius="6dp"
+
         app:cardUseCompatPadding="true"
         app:contentPadding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/white">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Anniversary Settings"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -151,6 +165,8 @@
                     android:layout_weight="0.95"
                     android:clickable="false"
                     android:text="Whatsapp Message Setting"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
@@ -187,6 +203,8 @@
                     android:clickable="false"
                     android:text="SMS Message Setting"
                     android:textColor="@color/black"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:textSize="16sp" />
 
                 <ImageView
@@ -209,8 +227,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        app:cardBackgroundColor="@android:color/white"
-        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardElevation="6dp"
+        app:cardCornerRadius="6dp"
         app:cardUseCompatPadding="true"
         app:contentPadding="10dp">
 
@@ -224,7 +243,7 @@
                 android:layout_height="wrap_content"
                 android:text="Premium Due Settings"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -242,6 +261,8 @@
                     android:layout_weight="0.95"
                     android:clickable="false"
                     android:text="Message Setting"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 

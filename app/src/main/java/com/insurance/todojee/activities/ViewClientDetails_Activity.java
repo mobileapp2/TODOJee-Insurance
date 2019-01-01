@@ -127,6 +127,7 @@ public class ViewClientDetails_Activity extends Activity {
                         "dd/MM/yyyy",
                         familyDetailsList.get(i).getDob()));
                 ((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_familyrelation)).setText(familyDetailsList.get(i).getRelation());
+                ((EditText) familyDetailsLayouts.get(i).findViewById(R.id.edt_mobile)).setText(familyDetailsList.get(i).getMobile());
             }
         } else {
             tv_familydetails.setText("No Family Details Added");

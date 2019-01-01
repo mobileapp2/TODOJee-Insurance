@@ -60,10 +60,14 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_gravity="center_horizontal"
-                            android:layout_margin="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="20dp"
                             android:onClick="openInsuranceCompany"
                             android:src="@drawable/icon_insurancecompany"
-                            android:tint="@color/colorPrimary" />
+                            android:tint="@color/colorPrimary"
+                            />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -76,7 +80,8 @@
                             android:text="Insurance Company"
                             android:textColor="@color/colorPrimary"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:layout_margin="20dp"/>
                     </LinearLayout>
 
 
@@ -101,7 +106,10 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_gravity="center_horizontal"
-                            android:layout_margin="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="20dp"
                             android:onClick="openPolicyType"
                             android:src="@drawable/icon_policy"
                             android:tint="@color/colorPrimary" />
@@ -117,7 +125,8 @@
                             android:text="Policy Type"
                             android:textColor="@color/colorPrimary"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:layout_margin="20dp"/>
                     </LinearLayout>
 
 
@@ -152,7 +161,10 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_gravity="center_horizontal"
-                            android:layout_margin="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="20dp"
                             android:onClick="openNewPoducts"
                             android:src="@drawable/icon_newproduct"
                             android:tint="@color/colorPrimary" />
@@ -168,7 +180,8 @@
                             android:text="New Products"
                             android:textColor="@color/colorPrimary"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:layout_margin="20dp"/>
                     </LinearLayout>
 
 
@@ -193,7 +206,10 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_gravity="center_horizontal"
-                            android:layout_margin="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="20dp"
                             android:onClick="openFamilyCode"
                             android:src="@drawable/icon_familycode"
                             android:tint="@color/colorPrimary" />
@@ -209,7 +225,8 @@
                             android:text="Family Code"
                             android:textColor="@color/colorPrimary"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:layout_margin="20dp"/>
                     </LinearLayout>
 
 

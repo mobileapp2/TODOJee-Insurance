@@ -34,16 +34,16 @@
 
                 <ImageView
                     android:id="@+id/img_finish"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_margin="10dp"
                     android:padding="10dp"
                     android:src="@drawable/icon_backarrow_16p" />
 
                 <ImageView
                     android:id="@+id/img_edit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_alignParentRight="true"
                     android:layout_margin="10dp"
                     android:padding="10dp"
@@ -67,13 +67,15 @@
             card_view:cardBackgroundColor="@android:color/white"
             card_view:cardCornerRadius="5dp"
             card_view:cardElevation="5dp"
-            card_view:cardUseCompatPadding="true">
+            card_view:cardUseCompatPadding="true"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="10dp">
+                android:layout_margin="5dp"
+                android:padding="30dp">
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
@@ -89,7 +91,8 @@
                         android:longClickable="false"
                         android:singleLine="true"
                         android:textColor="@color/darkgrey"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -173,7 +176,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:orientation="horizontal"
-                    android:weightSum="1">
+                    android:weightSum="1"
+                    android:padding="20dp">
 
                     <ImageView
                         android:layout_width="0dp"
@@ -190,8 +194,8 @@
                         android:layout_weight="0.6"
                         android:gravity="center"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textSize="12sp"
+                         />
 
 
                 </LinearLayout>
@@ -213,7 +217,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:orientation="horizontal"
-                    android:weightSum="1">
+                    android:weightSum="1"
+                    android:padding="20dp">
 
                     <ImageView
                         android:layout_width="0dp"
@@ -230,8 +235,8 @@
                         android:layout_weight="0.6"
                         android:gravity="center"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textSize="12sp"
+                       />
 
 
                 </LinearLayout>
@@ -253,7 +258,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:orientation="horizontal"
-                    android:weightSum="1">
+                    android:weightSum="1"
+                    android:padding="20dp">
 
                     <ImageView
                         android:layout_width="0dp"
@@ -270,8 +276,8 @@
                         android:layout_weight="0.6"
                         android:gravity="center"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textSize="12sp"
+                        />
 
 
                 </LinearLayout>

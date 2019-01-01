@@ -62,7 +62,6 @@ public class Reminders_Fragment extends Fragment {
         tabLayout.getTabAt(0).setIcon(R.drawable.icon_birthdays);
         tabLayout.getTabAt(1).setIcon(R.drawable.icon_anniversaries);
         tabLayout.getTabAt(2).setIcon(R.drawable.icon_premium);
-
         tabLayout.getTabAt(0).getIcon().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(1).getIcon().setColorFilter(getResources().getColor(R.color.Battleship_Gray), PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(2).getIcon().setColorFilter(getResources().getColor(R.color.Battleship_Gray), PorterDuff.Mode.SRC_IN);

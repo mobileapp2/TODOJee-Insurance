@@ -21,6 +21,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,6 +71,7 @@ public class WhatsappAnniversarySettings_Activity extends Activity {
     private ProgressDialog pd;
     private final int CAMERA_REQUEST = 100;
     private final int GALLERY_REQUEST = 200;
+    public static boolean isImageSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,8 +141,13 @@ public class WhatsappAnniversarySettings_Activity extends Activity {
                 dialog_edt_whatsappmessage = promptView.findViewById(R.id.dialog_edt_whatsappmessage);
                 dialog_imv_whatsapppic = promptView.findViewById(R.id.dialog_imv_whatsapppic);
 
-                dialog_edt_whatsappmessage.setText(whatsappMessage);
+                //     dialog_edt_whatsappmessage.setText(whatsappMessage);
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    dialog_edt_whatsappmessage.setText(Html.fromHtml(whatsappMessage, Html.FROM_HTML_MODE_COMPACT));
+                } else {
+                    dialog_edt_whatsappmessage.setText(Html.fromHtml(whatsappMessage));
+                }
                 if (!whatsappPicUrl.equals("")) {
                     Picasso.with(context)
                             .load(whatsappPicUrl)
@@ -299,7 +306,7 @@ public class WhatsappAnniversarySettings_Activity extends Activity {
         bm = BitmapFactory.decodeFile(photoFileToUpload.toString());
         bm = Bitmap.createScaledBitmap(bm, 200, 200, false);
         dialog_imv_whatsapppic.setImageBitmap(bm);
-
+        isImageSet = true;
 //        new UploadProfilePic().execute(imageFile);
 //        doc_image_uri = Uri.fromFile(imageFile);
     }
@@ -346,7 +353,13 @@ public class WhatsappAnniversarySettings_Activity extends Activity {
                                 whatsappPicUrl = jsonObj.getString("images");
                                 whatsappPic = jsonObj.getString("image");
 
-                                edt_whatsappmessage.setText(whatsappMessage);
+                                //     edt_whatsappmessage.setText(whatsappMessage);
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    edt_whatsappmessage.setText(Html.fromHtml(whatsappMessage, Html.FROM_HTML_MODE_COMPACT));
+                                } else {
+                                    edt_whatsappmessage.setText(Html.fromHtml(whatsappMessage));
+                                }
 
                                 if (!whatsappPicUrl.equals("")) {
                                     Picasso.with(context)

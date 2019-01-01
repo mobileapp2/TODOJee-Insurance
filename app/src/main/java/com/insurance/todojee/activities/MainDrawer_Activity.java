@@ -1,9 +1,11 @@
 package com.insurance.todojee.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -24,12 +26,17 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 import com.insurance.todojee.R;
 import com.insurance.todojee.adapters.BotNavViewPagerAdapter;
 import com.insurance.todojee.utilities.ApplicationConstants;
+import com.insurance.todojee.utilities.ParamsPojo;
 import com.insurance.todojee.utilities.UserSessionManager;
 import com.insurance.todojee.utilities.Utilities;
+import com.insurance.todojee.utilities.WebServiceCalls;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainDrawer_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -44,6 +51,7 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
     private AHBottomNavigationViewPager view_pager;
     private UserSessionManager session;
     private ImageView img_todolist, img_notifications;
+    public static ArrayList<String> faqLinksList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +98,9 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
     }
 
     private void init() {
+
         context = MainDrawer_Activity.this;
+        new GetFaq().execute();
         session = new UserSessionManager(context);
         bottomNavigation = findViewById(R.id.bottom_navigation);
         view_pager = findViewById(R.id.view_pager);
@@ -210,6 +220,8 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
             startActivity(new Intent(context, Masters_Activity.class));
         } else if (id == R.id.menu_settings) {
             startActivity(new Intent(context, Settings_Activity.class));
+        } else if (id == R.id.menu_FAQ) {
+            startActivity(new Intent(context, FAQ_Activity.class));
         } else if (id == R.id.menu_logout) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
             builder.setMessage("Are you sure you want to log out?");
@@ -249,5 +261,56 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
         toggle.syncState();
     }
 
+    public class GetFaq extends AsyncTask<String, Void, String> {
 
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("type", "getFAQ"));
+            res = WebServiceCalls.FORMDATAAPICall(ApplicationConstants.FAQAPI, param);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        if (jsonarr.length() > 0) {
+                            for (int i = 0; i < jsonarr.length(); i++) {
+
+                                JSONObject jsonObj = jsonarr.getJSONObject(i);
+                                if (!jsonObj.getString("faqImageUrl").equals("")) {
+                                    String link = "https://todojeeinsurance.in/faqImages/" + jsonObj.getString("faqImageUrl");
+                                    faqLinksList.add(link);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

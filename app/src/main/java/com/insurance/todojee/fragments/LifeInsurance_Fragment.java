@@ -15,8 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.insurance.todojee.R;
 import com.insurance.todojee.activities.AddLifeInsurance_Activity;
 import com.insurance.todojee.adapters.GetLifeInsuranceListAdapter;
@@ -42,9 +42,11 @@ public class LifeInsurance_Fragment extends Fragment {
     private static LinearLayout ll_nothingtoshow;
     private FloatingActionButton fab_add_lifeinsurance;
     private LinearLayoutManager layoutManager;
-//    private static ShimmerFrameLayout shimmer_view_container;
+    //    private static ShimmerFrameLayout shimmer_view_container;
     private UserSessionManager session;
     private String user_id;
+    private SearchView searchView;
+    private static ArrayList<LifeGeneralInsuranceMainListPojo> lifeInsuranceList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -67,6 +69,8 @@ public class LifeInsurance_Fragment extends Fragment {
 //        shimmer_view_container = rootView.findViewById(R.id.shimmer_view_container);
         layoutManager = new LinearLayoutManager(context);
         rv_lifeinsurancelist.setLayoutManager(layoutManager);
+        searchView = rootView.findViewById(R.id.searchView);
+        searchView.setFocusable(false);
     }
 
     private void setDefault() {
@@ -92,6 +96,20 @@ public class LifeInsurance_Fragment extends Fragment {
     }
 
     private void setEventHandlers() {
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                return filterList(query);
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return filterList(newText);
+            }
+        });
+
         fab_add_lifeinsurance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,7 +133,7 @@ public class LifeInsurance_Fragment extends Fragment {
     }
 
     public static class GetLifeInsurance extends AsyncTask<String, Void, String> {
-        private ArrayList<LifeGeneralInsuranceMainListPojo> lifeInsuranceList;
+
 
         @Override
         protected void onPreExecute() {
@@ -150,7 +168,7 @@ public class LifeInsurance_Fragment extends Fragment {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
-                    lifeInsuranceList = new ArrayList<LifeGeneralInsuranceMainListPojo>();
+                    lifeInsuranceList.clear();
                     rv_lifeinsurancelist.setAdapter(new GetLifeInsuranceListAdapter(context, lifeInsuranceList));
                     if (type.equalsIgnoreCase("success")) {
                         JSONArray jsonarr = mainObj.getJSONArray("result");
@@ -235,4 +253,20 @@ public class LifeInsurance_Fragment extends Fragment {
         }
     }
 
+    public boolean filterList(String filterKeyword) {
+        if (!filterKeyword.equals("")) {
+            ArrayList<LifeGeneralInsuranceMainListPojo> searchedProductsList = new ArrayList<>();
+            for (LifeGeneralInsuranceMainListPojo product : lifeInsuranceList) {
+
+                if (product.getClient_name().toLowerCase().contains(filterKeyword.toLowerCase()) ||
+                        product.getPolicy_no().toLowerCase().contains(filterKeyword.toLowerCase())) {
+                    searchedProductsList.add(product);
+                }
+            }
+            rv_lifeinsurancelist.setAdapter(new GetLifeInsuranceListAdapter(context, searchedProductsList));
+        } else {
+            rv_lifeinsurancelist.setAdapter(new GetLifeInsuranceListAdapter(context, lifeInsuranceList));
+        }
+        return true;
+    }
 }

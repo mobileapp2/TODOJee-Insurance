@@ -7,28 +7,28 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/white">
-
-        <CheckBox
-            android:id="@+id/cb_checkall"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal">
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Select Date: "
+            android:textSize="17sp"
+            android:textStyle="bold"
+
+            android:layout_marginRight="10dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:text="Select All"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_marginLeft="15dp"/>
 
         <EditText
             android:id="@+id/edt_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
+
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:drawableRight="@drawable/icon_date"
@@ -36,10 +36,45 @@
             android:longClickable="false"
             android:padding="10dp"
             android:text="01/01/2018"
-            android:textSize="16sp"
+            android:textSize="17sp"
             android:textStyle="bold" />
-    </RelativeLayout>
+    </LinearLayout>
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/grey" />
 
+    <android.support.v7.widget.CardView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:elevation="10dp"
+        app:cardElevation="10dp"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="20dp"
+        app:cardBackgroundColor="@color/colorButton"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <CheckBox
+                android:id="@+id/cb_checkall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:padding="10dp"
+                android:text="Select All"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -96,7 +131,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="10dp"
-            android:src="@drawable/icon_whatsapp"
+            android:src="@drawable/icon_watsapp"
             android:tint="@color/white"
             app:fab_size="mini" />
 
@@ -107,7 +142,7 @@
             android:layout_gravity="bottom|end"
             android:layout_marginRight="80dp"
             android:layout_marginBottom="10dp"
-            android:src="@drawable/icon_sms"
+            android:src="@drawable/icon_smsthin"
             android:tint="@color/white"
             app:fab_size="mini" />
 
