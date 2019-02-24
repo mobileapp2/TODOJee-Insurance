@@ -23,6 +23,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".ccavenue.StatusActivity"></activity>
+        <activity android:name=".ccavenue.WebViewActivity" />
+        <activity android:name=".activities.SelectPremiumPlan_Activity" />
+
         <meta-data
             android:name="firebase_crash_collection_enabled"
             android:value="false" />

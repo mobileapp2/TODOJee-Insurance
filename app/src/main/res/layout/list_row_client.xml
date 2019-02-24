@@ -3,28 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="10dp"
-    android:elevation="5dp"
-    app:cardElevation="5dp"
-    app:cardBackgroundColor="@color/colorCard1"
+    android:layout_margin="6dp"
     android:background="@color/colorCard1"
+    android:elevation="5dp"
     android:padding="5dp"
-    android:layout_margin="6dp">
-
-    <FrameLayout
-        android:background="@color/colorPrimary"
-        android:layout_width="4dp"
-        android:layout_marginRight="2dp"
-        android:layout_height="match_parent" />
+    app:cardBackgroundColor="@color/colorCard1"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="5dp">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/ll_mainlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:background="@drawable/gradientcard2"
-
+        android:orientation="vertical"
         android:paddingLeft="10dp"
         android:paddingTop="5dp"
         android:paddingRight="10dp"
@@ -45,13 +38,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.1"
                 android:gravity="center_vertical"
-                android:textAlignment="center"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:paddingBottom="5dp"
+                android:text="Client Name"
+                android:textAlignment="center"
                 android:textColor="@color/textColor"
                 android:textSize="20sp"
-                android:text="Client Name"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -69,23 +62,21 @@
                     android:layout_height="22dp"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.12"
-                    android:paddingRight="15dp"
                     android:paddingLeft="5dp"
-                    android:tint="@color/grey"
-                    android:src="@drawable/icon_phone" />
-
-                />
+                    android:paddingRight="15dp"
+                    android:src="@drawable/icon_phone"
+                    android:tint="@color/grey" />
 
                 <ImageView
                     android:id="@+id/imv_sms"
                     android:layout_width="0dp"
                     android:layout_height="28dp"
                     android:layout_weight="0.12"
-                    android:tint="@color/grey"
                     android:paddingLeft="5dp"
+                    android:paddingRight="15dp"
 
                     android:src="@drawable/icon_smsthin"
-                    android:paddingRight="15dp" />
+                    android:tint="@color/grey" />
 
                 <ImageView
                     android:id="@+id/imv_whatsapp"
@@ -93,20 +84,14 @@
                     android:layout_height="22dp"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.12"
-                    android:tint="@color/grey"
                     android:paddingLeft="5dp"
+                    android:paddingRight="15dp"
                     android:src="@drawable/icon_watsapp"
-                    android:paddingRight="15dp" />
+                    android:tint="@color/grey" />
             </LinearLayout>
 
         </LinearLayout>
 
-        <!--<View-->
-        <!--android:id="@+id/view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0.5dp"-->
-        <!--android:layout_marginTop="5dp"-->
-        <!--android:background="@color/grey" />-->
-
     </LinearLayout>
+
 </android.support.v7.widget.CardView>

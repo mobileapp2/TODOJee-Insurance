@@ -71,7 +71,7 @@ public class Profile_Activity extends Activity {
     private CheckBox cb_sms, cb_whatsApp;
     private TextInputLayout til_whatsapp;
 
-    private TextView tv_messagecount, tv_whatsappcount, tv_memorycount;
+    private TextView tv_messagecount, tv_whatsappcount, tv_memorycount, tv_pro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +106,7 @@ public class Profile_Activity extends Activity {
         tv_messagecount = findViewById(R.id.tv_messagecount);
         tv_whatsappcount = findViewById(R.id.tv_whatsappcount);
         tv_memorycount = findViewById(R.id.tv_memorycount);
+        tv_pro = findViewById(R.id.tv_pro);
     }
 
     private void getSessionData() {
@@ -215,6 +216,7 @@ public class Profile_Activity extends Activity {
                 finish();
             }
         });
+
         img_share_referral_code.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -233,6 +235,13 @@ public class Profile_Activity extends Activity {
                 share.putExtra(Intent.EXTRA_STREAM, imageUri);
 
                 startActivity(Intent.createChooser(share, "Share Referral Code!"));
+            }
+        });
+
+        tv_pro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(context, SelectPremiumPlan_Activity.class));
             }
         });
 
