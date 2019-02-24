@@ -140,6 +140,12 @@
 
                     </android.support.design.widget.TextInputLayout>
 
+                    <CheckBox
+                        android:id="@+id/cb_showClient"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Show to Client" />
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -314,7 +320,7 @@
                             android:longClickable="false"
                             android:textColor="@color/black"
                             android:textSize="14sp"
-                            android:visibility="gone"/>
+                            android:visibility="gone" />
 
                     </android.support.design.widget.TextInputLayout>
 

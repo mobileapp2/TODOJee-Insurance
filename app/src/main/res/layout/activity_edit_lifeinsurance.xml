@@ -140,6 +140,12 @@
 
                     </android.support.design.widget.TextInputLayout>
 
+                    <CheckBox
+                        android:id="@+id/cb_showClient"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Show to Client" />
+
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"

@@ -55,6 +55,7 @@ public class Policy_Fragment extends Fragment {
     private void setDefault() {
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
+
         //change the background color of tab
         tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         setupTabIcons();
@@ -63,8 +64,11 @@ public class Policy_Fragment extends Fragment {
     private void setupTabIcons() {
         tabLayout.getTabAt(0).setIcon(R.drawable.icon_lifeinsurance);
         tabLayout.getTabAt(1).setIcon(R.drawable.icon_generalinsurance);
+        tabLayout.getTabAt(2).setIcon(R.drawable.policy_share);
+
         tabLayout.getTabAt(0).getIcon().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(1).getIcon().setColorFilter(getResources().getColor(R.color.Battleship_Gray), PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(2).getIcon().setColorFilter(getResources().getColor(R.color.Battleship_Gray), PorterDuff.Mode.SRC_IN);
 
     }
 
@@ -72,6 +76,8 @@ public class Policy_Fragment extends Fragment {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFrag(new LifeInsurance_Fragment(), "Life Insurance");
         adapter.addFrag(new GeneralInsurance_Fragment(), "General Insurance");
+        adapter.addFrag(new SharedInsurance_Fragment(), "Shared Insurance");
+
         viewPager.setAdapter(adapter);
     }
 

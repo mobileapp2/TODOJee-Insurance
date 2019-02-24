@@ -165,4 +165,52 @@ public class Utilities {
 
     }
 
+    public static void buildDialogForSmsValidation(Context context, int total) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setMessage("You can not send  " + total + " message(s) as it exceeds your allowed limit. To increase limit, buy a plan .");
+        builder.setIcon(R.drawable.ic_alert_red_24dp);
+        builder.setTitle("Failure");
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        });
+        AlertDialog alertD = builder.create();
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+    }
+
+    public static void buildDialogForClientValidation(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setMessage("You can not add client as it exceeds your allowed limit. To increase limit, buy a plan .");
+        builder.setIcon(R.drawable.ic_alert_red_24dp);
+        builder.setTitle("Failure");
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        });
+        AlertDialog alertD = builder.create();
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+    }
+
+    public static void buildDialogForPolicyValidation(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setMessage("You can not add policy as it exceeds your allowed limit. To increase limit, buy a plan .");
+        builder.setIcon(R.drawable.ic_alert_red_24dp);
+        builder.setTitle("Failure");
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        });
+        AlertDialog alertD = builder.create();
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+    }
+
 }

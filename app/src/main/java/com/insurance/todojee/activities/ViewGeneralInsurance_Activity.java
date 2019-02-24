@@ -15,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,6 +32,7 @@ import com.insurance.todojee.utilities.Utilities;
 import com.insurance.todojee.utilities.WebServiceCalls;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -51,6 +53,7 @@ public class ViewGeneralInsurance_Activity extends Activity {
     private LinearLayout ll_parent;
     private EditText edt_insurancecompany, edt_clientname, edt_insurername, edt_insurepolicyno, edt_policytype,
             edt_startdate, edt_enddate, edt_frequency, edt_suminsured, edt_premiumamt, edt_link, edt_description, edt_remark;
+    private CheckBox cb_showClient;
     private LinearLayout ll_documents;
     private ImageView img_delete, img_edit;
     private TextView tv_documents;
@@ -61,7 +64,7 @@ public class ViewGeneralInsurance_Activity extends Activity {
     private List<LinearLayout> documentsLayoutsList;
 
     private UserSessionManager session;
-    private String user_id, callType;
+    private String user_id, callType, is_shared = "0";
 
     private File file, generalInsurancePicFolder;
 
@@ -95,6 +98,7 @@ public class ViewGeneralInsurance_Activity extends Activity {
         edt_link = findViewById(R.id.edt_link);
         edt_description = findViewById(R.id.edt_description);
         edt_remark = findViewById(R.id.edt_remark);
+        cb_showClient = findViewById(R.id.cb_showClient);
 
         tv_documents = findViewById(R.id.tv_documents);
 
@@ -154,6 +158,12 @@ public class ViewGeneralInsurance_Activity extends Activity {
         } else if (generalInsuranceDetails.getInsurer_type_id().equals("F")) {
             rb_firm.setChecked(true);
             edt_insurername.setText(generalInsuranceDetails.getInsurer_firm_name());
+        }
+        is_shared = generalInsuranceDetails.getIs_shared();
+        if (is_shared.equals("1")) {
+            cb_showClient.setChecked(true);
+        } else {
+            cb_showClient.setChecked(false);
         }
 
 //        ArrayList<LifeGeneralInsuranceMainListPojo.MaturityDatesListPojo> maturityDatesList = new ArrayList<>();
@@ -408,6 +418,7 @@ public class ViewGeneralInsurance_Activity extends Activity {
             String res = "[]";
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "delete");
+            obj.addProperty("user_id", user_id);
             obj.addProperty("id", params[0]);
             res = WebServiceCalls.JSONAPICall(ApplicationConstants.INSURANCEAPI, obj.toString());
             return res.trim();
@@ -424,6 +435,9 @@ public class ViewGeneralInsurance_Activity extends Activity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        JSONObject obj = jsonarr.getJSONObject(0);
+                        changeSessionPolicyCount(obj.getString("policyCount"), obj.getString("policyLimit"));
 
                         new GeneralInsurance_Fragment.GetGeneralInsurance().execute(user_id);
 
@@ -449,6 +463,22 @@ public class ViewGeneralInsurance_Activity extends Activity {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void changeSessionPolicyCount(String policyCount, String policyLimit) {
+        JSONArray user_info = null;
+        try {
+            user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            json.put("policyCount", policyCount);
+            json.put("policyLimit", policyLimit);
+            session.updateSession(user_info.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 

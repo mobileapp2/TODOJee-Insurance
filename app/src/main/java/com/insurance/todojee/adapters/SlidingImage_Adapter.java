@@ -40,9 +40,13 @@ public class SlidingImage_Adapter extends PagerAdapter {
         View imageLayout = inflater.inflate(R.layout.slidingimages_layout, view, false);
 
         assert imageLayout != null;
-        final ImageView imageView = (ImageView) imageLayout.findViewById(R.id.image);
+        final ImageView imageView = (ImageView) imageLayout
+                .findViewById(R.id.image);
 
-        Glide.with(context).load(urls[position]).into(imageView);
+
+        Glide.with(context)
+                .load(urls[position])
+                .into(imageView);
 
         view.addView(imageLayout, 0);
 

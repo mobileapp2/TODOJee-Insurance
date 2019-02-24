@@ -23,6 +23,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,8 @@ import android.widget.TextView;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.insurance.todojee.R;
+import com.insurance.todojee.activities.WhatsappAnniversarySettings_Activity;
+import com.insurance.todojee.activities.WhatsappBirthdaySettings_Activity;
 import com.insurance.todojee.models.BirthdayAnnivarsaryListPojo;
 import com.insurance.todojee.utilities.ApplicationConstants;
 import com.insurance.todojee.utilities.ParamsPojo;
@@ -45,12 +48,14 @@ import com.insurance.todojee.utilities.WebServiceCalls;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static com.insurance.todojee.utilities.Utilities.changeDateFormat;
 
@@ -68,7 +73,7 @@ public class Anniversary_Fragment extends Fragment {
     private int mYear, mMonth, mDay;
     private String user_id, date;
     private ArrayList<BirthdayAnnivarsaryListPojo> annivarsaryList;
-    private String id = "", smsMessage = "", whatsappMessage = "", whatsappPicUrl = "", whatsappPic = "";
+    private String id = "", smsMessage = "", whatsappMessage = "", whatsappPicUrl = "", whatsappPic = "", sign = "";
     private EditText dialog_edt_whatsappmessage, edt_date;
     private ImageView dialog_imv_whatsapppic;
     private CheckBox cb_checkall;
@@ -82,8 +87,16 @@ public class Anniversary_Fragment extends Fragment {
         getSessionData();
         setDefault();
         new GetAnniWhatsappSettings().execute(user_id, "");
+        new GetSignature().execute();
         setEventHandlers();
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        Log.e("DEBUG", "onResume of anniv");
+        setDefault();
+        super.onResume();
     }
 
     private void init(View rootView) {
@@ -140,6 +153,7 @@ public class Anniversary_Fragment extends Fragment {
         fab_wish_whatsapp.setVisibility(View.GONE);
         fab_wish_sms.setVisibility(View.GONE);
         cb_checkall.setVisibility(View.GONE);
+        cb_checkall.setChecked(false);
     }
 
     private void setEventHandlers() {
@@ -483,15 +497,15 @@ public class Anniversary_Fragment extends Fragment {
                             }
                         }
                     }
-
+                    // String sign = new GetSignature().execute().get();
                     final EditText edt_smsmessage = new EditText(context);
                     float dpi = context.getResources().getDisplayMetrics().density;
                     //edt_smsmessage.setText(smsMessage);
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        edt_smsmessage.setText(Html.fromHtml(smsMessage, Html.FROM_HTML_MODE_COMPACT));
+                        edt_smsmessage.setText(Html.fromHtml(smsMessage + "\nFrom :" + sign, Html.FROM_HTML_MODE_COMPACT));
                     } else {
-                        edt_smsmessage.setText(Html.fromHtml(smsMessage));
+                        edt_smsmessage.setText(Html.fromHtml(smsMessage + "\nFrom :" + sign));
                     }
                     if (edt_smsmessage.getText().length() > 0)
                         edt_smsmessage.setSelection(edt_smsmessage.getText().length() - 1);
@@ -560,18 +574,30 @@ public class Anniversary_Fragment extends Fragment {
             childObj.addProperty("id", singleReceiverID);
             clientIdJSONArray.add(childObj);
         }
+        JSONArray user_info = null;
+        try {
+            user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            if (Integer.parseInt(json.getString("smsCount")) + clientIdJSONArray.size() <= Integer.parseInt(json.getString("smsLimit"))) {
+                JsonObject mainObj = new JsonObject();
+                mainObj.addProperty("type", "sendAnniversarySMS");
+                mainObj.add("client_id", clientIdJSONArray);
+                mainObj.addProperty("message", message);
+                mainObj.addProperty("user_id", user_id);
 
-        JsonObject mainObj = new JsonObject();
-        mainObj.addProperty("type", "sendAnniversarySMS");
-        mainObj.add("client_id", clientIdJSONArray);
-        mainObj.addProperty("message", message);
-        mainObj.addProperty("user_id", user_id);
-
-        if (Utilities.isInternetAvailable(context)) {
-            new SendAnniversarySMS().execute(mainObj.toString());
-        } else {
-            Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                if (Utilities.isInternetAvailable(context)) {
+                    new SendAnniversarySMS().execute(mainObj.toString());
+                } else {
+                    Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                }
+            } else {
+                Utilities.buildDialogForSmsValidation(context, clientIdJSONArray.size());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
 
     }
 
@@ -605,6 +631,10 @@ public class Anniversary_Fragment extends Fragment {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        JSONObject obj = jsonarr.getJSONObject(0);
+                        changeSessionSMSCount(obj.getString("smsCount"), obj.getString("whatsAppCount"), obj.getString("smsLimit"), obj.getString("whatsAppLimit"));
+
                         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                         builder.setMessage("SMS Sent Successfully");
                         builder.setIcon(R.drawable.ic_success_24dp);
@@ -702,19 +732,31 @@ public class Anniversary_Fragment extends Fragment {
             childObj.addProperty("id", singleReceiverID);
             clientIdJSONArray.add(childObj);
         }
+        JSONArray user_info = null;
+        try {
+            user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            if (Integer.parseInt(json.getString("whatsAppCount")) + clientIdJSONArray.size() <= Integer.parseInt(json.getString("whatsAppLimit"))) {
+                JsonObject mainObj = new JsonObject();
+                mainObj.addProperty("type", "sendAnniversaryWhtasAppMsg");
+                mainObj.add("client_id", clientIdJSONArray);
+                mainObj.addProperty("message", message);
+                mainObj.addProperty("image", whatsappPic);
+                mainObj.addProperty("user_id", user_id);
 
-        JsonObject mainObj = new JsonObject();
-        mainObj.addProperty("type", "sendAnniversaryWhtasAppMsg");
-        mainObj.add("client_id", clientIdJSONArray);
-        mainObj.addProperty("message", message);
-        mainObj.addProperty("image", whatsappPic);
-        mainObj.addProperty("user_id", user_id);
-
-        if (Utilities.isInternetAvailable(context)) {
-            new SendAnniversaryWhatsapp().execute(mainObj.toString());
-        } else {
-            Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                if (Utilities.isInternetAvailable(context)) {
+                    new SendAnniversaryWhatsapp().execute(mainObj.toString());
+                } else {
+                    Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                }
+            } else {
+                Utilities.buildDialogForSmsValidation(context, clientIdJSONArray.size());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
 
     }
 
@@ -748,6 +790,10 @@ public class Anniversary_Fragment extends Fragment {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        JSONObject obj = jsonarr.getJSONObject(0);
+                        changeSessionSMSCount(obj.getString("smsCount"), obj.getString("whatsAppCount"), obj.getString("smsLimit"), obj.getString("whatsAppLimit"));
+
                         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                         builder.setMessage("Whatsapp Message Sent Successfully");
                         builder.setIcon(R.drawable.ic_success_24dp);
@@ -772,8 +818,27 @@ public class Anniversary_Fragment extends Fragment {
         }
     }
 
+    public void changeSessionSMSCount(String smsCount, String whatsappCount, String maxSMS, String maxWhatsapp) {
+        JSONArray user_info = null;
+        try {
+            user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            json.put("smsCount", smsCount);
+            json.put("whatsAppCount", whatsappCount);
+            json.put("smsLimit", maxSMS);
+            json.put("whatsAppLimit", maxWhatsapp);
+            session.updateSession(user_info.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
     private void showDialog(String singleReceiverID, String callfrom) {
         if (!callfrom.equals("share")) {
+
             LayoutInflater layoutInflater = LayoutInflater.from(context);
             View promptView = layoutInflater.inflate(R.layout.prompt_send_whatsappmsg, null);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -788,9 +853,9 @@ public class Anniversary_Fragment extends Fragment {
             //dialog_edt_whatsappmessage.setText(whatsappMessage);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                dialog_edt_whatsappmessage.setText(Html.fromHtml(whatsappMessage, Html.FROM_HTML_MODE_COMPACT));
+                dialog_edt_whatsappmessage.setText(Html.fromHtml(whatsappMessage + "\nFrom :" + sign, Html.FROM_HTML_MODE_COMPACT));
             } else {
-                dialog_edt_whatsappmessage.setText(Html.fromHtml(whatsappMessage));
+                dialog_edt_whatsappmessage.setText(Html.fromHtml(whatsappMessage + "\nFrom :" + sign));
             }
 
             if (!whatsappPicUrl.equals("")) {
@@ -973,6 +1038,63 @@ public class Anniversary_Fragment extends Fragment {
         // If you want to share a png image only, you can do:
         // setType("image/png"); OR for jpeg: setType("image/jpeg");
         showDialog("", "share");
+    }
+
+    public class GetSignature extends AsyncTask<String, String, String> {
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+
+        @Override
+        protected String doInBackground(String... strings) {
+            pd.dismiss();
+            String result = "[]";
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("type", "getSign");
+                obj.put("userid", user_id);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            result = WebServiceCalls.JSONAPICall(ApplicationConstants.SIGNATURE, obj.toString());
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            if (!result.equals("")) {
+                JSONObject mainObj = null;
+                try {
+                    mainObj = new JSONObject(result);
+                    String type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        if (jsonarr.length() > 0) {
+                            for (int i = 0; i < jsonarr.length(); i++) {
+                                JSONObject jsonObj = jsonarr.getJSONObject(i);
+                                sign = jsonObj.getString("signature");
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
     }
 
 }

@@ -66,8 +66,7 @@
                             android:layout_marginTop="20dp"
                             android:onClick="openInsuranceCompany"
                             android:src="@drawable/icon_insurancecompany"
-                            android:tint="@color/colorPrimary"
-                            />
+                            android:tint="@color/colorPrimary" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -81,7 +80,7 @@
                             android:textColor="@color/colorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold"
-                            android:layout_margin="20dp"/>
+                            android:layout_margin="20dp" />
                     </LinearLayout>
 
 
@@ -126,7 +125,7 @@
                             android:textColor="@color/colorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold"
-                            android:layout_margin="20dp"/>
+                            android:layout_margin="20dp" />
                     </LinearLayout>
 
 
@@ -181,7 +180,7 @@
                             android:textColor="@color/colorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold"
-                            android:layout_margin="20dp"/>
+                            android:layout_margin="20dp" />
                     </LinearLayout>
 
 
@@ -226,7 +225,7 @@
                             android:textColor="@color/colorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold"
-                            android:layout_margin="20dp"/>
+                            android:layout_margin="20dp" />
                     </LinearLayout>
 
 

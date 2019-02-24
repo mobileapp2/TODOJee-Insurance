@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.insurance.todojee.R;
 import com.insurance.todojee.activities.AddInsuranceCompany_Activity;
 import com.insurance.todojee.adapters.GetLifeInsurCompListAdapter;

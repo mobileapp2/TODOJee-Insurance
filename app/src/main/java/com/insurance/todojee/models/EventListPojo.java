@@ -14,6 +14,58 @@ public class EventListPojo {
 
     public boolean isChecked;
 
+    public String getInsurance_company() {
+        return insurance_company;
+    }
+
+    public void setInsurance_company(String insurance_company) {
+        this.insurance_company = insurance_company;
+    }
+
+    public String getPremium_amount() {
+        return premium_amount;
+    }
+
+    public void setPremium_amount(String premium_amount) {
+        this.premium_amount = premium_amount;
+    }
+
+    public String getInsurance_policy_number() {
+        return insurance_policy_number;
+    }
+
+    public void setInsurance_policy_number(String insurance_policy_number) {
+        this.insurance_policy_number = insurance_policy_number;
+    }
+
+    private String insurance_company, premium_amount, insurance_policy_number;
+
+    public String getClient_name() {
+        return client_name;
+    }
+
+    public void setClient_name(String client_name) {
+        this.client_name = client_name;
+    }
+
+    public String getClient_mobile() {
+        return client_mobile;
+    }
+
+    public void setClient_mobile(String client_mobile) {
+        this.client_mobile = client_mobile;
+    }
+
+    public String getClient_whatsapp() {
+        return client_whatsapp;
+    }
+
+    public void setClient_whatsapp(String client_whatsapp) {
+        this.client_whatsapp = client_whatsapp;
+    }
+
+    private String client_name, client_mobile, client_whatsapp;
+
     public String getId() {
         return id;
     }

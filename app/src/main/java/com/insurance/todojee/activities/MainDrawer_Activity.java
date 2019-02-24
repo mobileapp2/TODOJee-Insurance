@@ -43,7 +43,7 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
     private Context context;
     private TextView tv_name;
     private ImageView imv_profile;
-    private String name, photo;
+    private String name, photo, mode;
     private AHBottomNavigation bottomNavigation;
     private AHBottomNavigationItem botNavClent, botNavPolicy, botNavCalendar, botNavReminder, botFilter;
     private Fragment currentFragment;
@@ -116,6 +116,13 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
             JSONObject json = user_info.getJSONObject(0);
             name = json.getString("name");
             photo = json.getString("photo");
+            mode = json.getString("communication_mode");
+
+            if (mode.equals("first_time")) {
+                startActivity(new Intent(context, FirstTime_Activity.class));
+                finish();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

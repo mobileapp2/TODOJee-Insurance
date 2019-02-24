@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.insurance.todojee.R;
 import com.insurance.todojee.activities.AddGeneralInsurance_Activity;
 import com.insurance.todojee.adapters.GetGeneralInsuranceListAdapter;
@@ -28,6 +29,7 @@ import com.insurance.todojee.utilities.Utilities;
 import com.insurance.todojee.utilities.WebServiceCalls;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -111,7 +113,19 @@ public class GeneralInsurance_Fragment extends Fragment {
         fab_add_generalinsurance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(context, AddGeneralInsurance_Activity.class));
+                JSONArray user_info = null;
+                try {
+                    user_info = new JSONArray(session.getUserDetails().get(
+                            ApplicationConstants.KEY_LOGIN_INFO));
+                    JSONObject json = user_info.getJSONObject(0);
+                    if (Integer.parseInt(json.getString("policyCount")) < Integer.parseInt(json.getString("policyLimit"))) {
+                        startActivity(new Intent(context, AddGeneralInsurance_Activity.class));
+                    } else {
+                        Utilities.buildDialogForPolicyValidation(context);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -204,6 +218,7 @@ public class GeneralInsurance_Fragment extends Fragment {
                                     lifeInsuranceMainObj.setLink(jsonObj.getString("link"));
                                     lifeInsuranceMainObj.setRemark(jsonObj.getString("remark"));
                                     lifeInsuranceMainObj.setDescription(jsonObj.getString("description"));
+                                    lifeInsuranceMainObj.setIs_shared(jsonObj.getString("is_shared"));
 
                                     ArrayList<LifeGeneralInsuranceMainListPojo.MaturityDatesListPojo> maturityDatesList = new ArrayList<>();
 

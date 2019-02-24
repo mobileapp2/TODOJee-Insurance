@@ -10,13 +10,15 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -24,6 +26,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,8 +67,10 @@ public class EditProfile_Activity extends Activity {
     private ScrollView scrollView;
     private LinearLayout ll_parent;
     private ImageView img_save, imv_profile;
-    private String user_id, photo, name, alias, mobile, email, password, is_email_verified;
-    private EditText edt_name, edt_aliasname, edt_mobile, edt_email, edt_changepassword;
+    private String user_id, photo, name, alias, mobile, email, password, is_email_verified, mode, whatsApp;
+    private EditText edt_name, edt_aliasname, edt_mobile, edt_email, edt_changepassword, edt_whatsapp_number;
+    private CheckBox cb_sms, cb_whatsApp;
+    private TextInputLayout til_whatsapp;
 
     private Uri photoURI;
     private final int CAMERA_REQUEST = 100;
@@ -102,6 +107,11 @@ public class EditProfile_Activity extends Activity {
         edt_mobile = findViewById(R.id.edt_mobile);
         edt_email = findViewById(R.id.edt_email);
         edt_changepassword = findViewById(R.id.edt_changepassword);
+        cb_sms = findViewById(R.id.cb_sms);
+        cb_whatsApp = findViewById(R.id.cb_whatsApp);
+        til_whatsapp = findViewById(R.id.til_whatsapp);
+        edt_whatsapp_number = findViewById(R.id.edt_whatsapp_number);
+
 
         profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Insurance/" + "Profile Pic");
         if (!profilPicFolder.exists())
@@ -127,6 +137,9 @@ public class EditProfile_Activity extends Activity {
             password = json.getString("password");
             photo = json.getString("photo");
             is_email_verified = json.getString("is_email_verified");
+            mode = json.getString("communication_mode");
+            whatsApp = json.getString("whatsApp_number");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -147,6 +160,25 @@ public class EditProfile_Activity extends Activity {
         edt_mobile.setText(mobile);
         edt_email.setText(email);
 
+        if (whatsApp.equals("") || whatsApp.equals("null")) {
+            edt_whatsapp_number.setText(mobile);
+        } else {
+            edt_whatsapp_number.setText(whatsApp);
+        }
+        if (mode.equals("sms")) {
+            cb_sms.setChecked(true);
+        } else if (mode.equals("whatsApp")) {
+            cb_whatsApp.setChecked(true);
+            til_whatsapp.setVisibility(View.VISIBLE);
+            edt_whatsapp_number.setText(whatsApp);
+        } else if (mode.equals("both")) {
+            cb_sms.setChecked(true);
+            cb_whatsApp.setChecked(true);
+            til_whatsapp.setVisibility(View.VISIBLE);
+            edt_whatsapp_number.setText(whatsApp);
+        }
+
+
     }
 
     private void setEventHandler() {
@@ -162,6 +194,15 @@ public class EditProfile_Activity extends Activity {
                 } else {
                     Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
                 }
+            }
+        });
+        cb_whatsApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cb_whatsApp.isChecked())
+                    til_whatsapp.setVisibility(View.VISIBLE);
+                else
+                    til_whatsapp.setVisibility(View.GONE);
             }
         });
 
@@ -191,6 +232,25 @@ public class EditProfile_Activity extends Activity {
                         return;
                     }
                 }
+
+                if (!cb_sms.isChecked() && !cb_whatsApp.isChecked()) {
+                    Utilities.showSnackBar(ll_parent, "Please select at list one mode of communication.");
+                    return;
+                }
+                if (cb_whatsApp.isChecked() && edt_whatsapp_number.getText().toString().equals("")) {
+                    Utilities.showSnackBar(ll_parent, "Please provide whats app number.");
+                    return;
+                }
+                if (cb_whatsApp.isChecked() && !Utilities.isMobileNo(edt_whatsapp_number)) {
+                    Utilities.showSnackBar(ll_parent, "Please Enter Valid WhatsApp Number");
+                    return;
+                }
+                if (cb_whatsApp.isChecked())
+                    mode = "whatsApp";
+                else if (cb_sms.isChecked())
+                    mode = "sms";
+                if (cb_sms.isChecked() && cb_whatsApp.isChecked())
+                    mode = "both";
 
 
                 if (!edt_mobile.getText().toString().trim().equals(mobile)) {
@@ -674,6 +734,8 @@ public class EditProfile_Activity extends Activity {
                 obj.put("alias", edt_aliasname.getText().toString().trim());
                 obj.put("email", edt_email.getText().toString().trim());
                 obj.put("mobile", edt_mobile.getText().toString().trim());
+                obj.put("whatsApp", edt_whatsapp_number.getText().toString().trim());
+                obj.put("mode", mode);
                 obj.put("user_id", user_id);
             } catch (JSONException e) {
                 e.printStackTrace();

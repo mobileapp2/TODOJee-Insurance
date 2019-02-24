@@ -28,7 +28,7 @@
             android:hint="Whatsapp Message"
             android:textColor="@color/black"
             android:layout_marginTop="20dp"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
     </android.support.design.widget.TextInputLayout>
 

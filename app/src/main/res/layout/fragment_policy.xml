@@ -22,7 +22,7 @@
             app:tabTextAppearance="@style/TabLayoutTextStyle"
             app:tabTextColor="@color/Battleship_Gray"
 
-           />
+            />
     </android.support.design.widget.AppBarLayout>
 
     <com.insurance.todojee.utilities.NonSwipeableViewPager

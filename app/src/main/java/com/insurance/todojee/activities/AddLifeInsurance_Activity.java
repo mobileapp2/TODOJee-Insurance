@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -23,16 +24,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.insurance.todojee.R;
+import com.insurance.todojee.adapters.listClientsAdapter;
 import com.insurance.todojee.fragments.LifeInsurance_Fragment;
 import com.insurance.todojee.models.ClientMainListPojo;
 import com.insurance.todojee.models.FamilyInsurerNameListPojo;
@@ -51,6 +58,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -82,6 +90,7 @@ public class AddLifeInsurance_Activity extends Activity {
     private EditText edt_insurancecompany, edt_clientname, edt_insurername, edt_insurepolicyno, edt_policytype,
             edt_startdate, edt_enddate, edt_frequency, edt_suminsured, edt_premiumamt, edt_policystatus,
             edt_link, edt_description, edt_remark;
+    private CheckBox cb_showClient;
 
     private int mYear, mMonth, mDay;
     private int mYear1, mMonth1, mDay1;
@@ -98,7 +107,7 @@ public class AddLifeInsurance_Activity extends Activity {
     private ArrayList<PolicyStatusListPojo> policyStatusList;
     private UserSessionManager session;
     private String companyAliasName = "";
-    private String user_id, companyId, clientId, insurerId, policyTypeID = "0", frequencyId, policyStatusId = "0";
+    private String user_id, companyId, clientId, insurerId, policyTypeID = "0", frequencyId, policyStatusId = "0", is_shared = "0";
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
     private Uri photoURI;
     private File photoFile, lifeInsurancePicFolder;
@@ -141,6 +150,7 @@ public class AddLifeInsurance_Activity extends Activity {
         edt_link = findViewById(R.id.edt_link);
         edt_description = findViewById(R.id.edt_description);
         edt_remark = findViewById(R.id.edt_remark);
+        cb_showClient = findViewById(R.id.cb_showClient);
 
         ll_maturitydates = findViewById(R.id.ll_maturitydates);
         ll_documents = findViewById(R.id.ll_documents);
@@ -200,6 +210,17 @@ public class AddLifeInsurance_Activity extends Activity {
     @SuppressLint("ClickableViewAccessibility")
     private void setEventHandler() {
 
+        cb_showClient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cb_showClient.isChecked()) {
+                    is_shared = "1";
+                } else {
+                    is_shared = "0";
+                }
+            }
+        });
+
         edt_insurancecompany.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -225,7 +246,8 @@ public class AddLifeInsurance_Activity extends Activity {
                         Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
                     }
                 } else {
-                    clientListDialog(clientList);
+                    // clientListDialog(clientList);
+                    newClientListDialog(clientList);
                 }
             }
         });
@@ -472,6 +494,104 @@ public class AddLifeInsurance_Activity extends Activity {
         AlertDialog alertD = builderSingle.create();
         alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
         alertD.show();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void newClientListDialog(final ArrayList<ClientMainListPojo> clientListMain) {
+        final listClientsAdapter[] adapter = new listClientsAdapter[1];
+        final AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Client");
+        builderSingle.setCancelable(true);
+        final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        final View view = inflater.inflate(R.layout.alert_dialog_listview_search, null);
+        builderSingle.setView(view);
+        final ListView listView = (ListView) view.findViewById(R.id.alertSearchListView);
+        SearchView searchView = (SearchView) view.findViewById(R.id.searchView);
+        searchView.setFocusedByDefault(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                if (!query.equals("")) {
+                    ArrayList<ClientMainListPojo> SearchedClients = new ArrayList<>();
+                    for (ClientMainListPojo list : clientListMain) {
+                        String listToBeSearched = list.getFirst_name().toLowerCase() + list.getAlias().toLowerCase();
+                        if (listToBeSearched.contains(query.toLowerCase())) {
+                            SearchedClients.add(list);
+                        }
+                    }
+                    adapter[0] = new listClientsAdapter(context, SearchedClients);
+                    listView.setAdapter(adapter[0]);
+                } else {
+                    adapter[0] = new listClientsAdapter(context, clientListMain);
+                    listView.setAdapter(adapter[0]);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!newText.equals("")) {
+                    ArrayList<ClientMainListPojo> SearchedList = new ArrayList<>();
+                    for (ClientMainListPojo list : clientListMain) {
+                        String listToBeSearched = list.getFirst_name().toLowerCase() + list.getAlias().toLowerCase();
+                        if (listToBeSearched.contains(newText.toLowerCase())) {
+                            SearchedList.add(list);
+                        }
+                    }
+                    adapter[0] = new listClientsAdapter(context, SearchedList);
+                    listView.setAdapter(adapter[0]);
+                } else if (newText.equals("")) {
+                    adapter[0] = new listClientsAdapter(context, clientListMain);
+                    listView.setAdapter(adapter[0]);
+                }
+                return true;
+            }
+        });
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listView.setFastScrollEnabled(true);
+
+        adapter[0] = new listClientsAdapter(context, clientListMain);
+        listView.setAdapter(adapter[0]);
+
+        final TextView emptyText = (TextView) view.findViewById(R.id.empty);
+        listView.setEmptyView(emptyText);
+
+        builderSingle.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ClientMainListPojo selected_client = adapter[0].getSelected();
+                if (selected_client != null) {
+                    edt_insurername.setText("");
+                    insurerId = "";
+
+                    edt_clientname.setText(selected_client.getFirst_name());
+                    clientId = selected_client.getId();
+                } else {
+                    Utilities.showSnackBar(ll_parent, "Please select client");
+
+                }
+
+
+            }
+        });
+        builderSingle.setNegativeButton("CANCLE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builderSingle.setNegativeButton("ADD NEW", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                clientList = new ArrayList<>();
+                startActivity(new Intent(context, AddClientDetails_Activity.class));
+
+            }
+        });
+        builderSingle.show();
+
     }
 
     private void clientListDialog(final ArrayList<ClientMainListPojo> clientListMain) {
@@ -979,6 +1099,7 @@ public class AddLifeInsurance_Activity extends Activity {
         mainObj.addProperty("policy_status", policyStatusId);
         mainObj.addProperty("insurer_name_id", insurerId);
         mainObj.addProperty("insurer_type", "R");
+        mainObj.addProperty("is_shared", is_shared);
         mainObj.addProperty("user_id", user_id);
 
         Log.i("LifeInsuranceJson", mainObj.toString());
@@ -1134,7 +1255,8 @@ public class AddLifeInsurance_Activity extends Activity {
                         }
 
                         if (clientList.size() != 0) {
-                            clientListDialog(clientList);
+                            //clientListDialog(clientList);
+                            newClientListDialog(clientList);
                         }
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -1546,6 +1668,10 @@ public class AddLifeInsurance_Activity extends Activity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        JSONObject obj = jsonarr.getJSONObject(0);
+                        changeSessionPolicyCount(obj.getString("policyCount"), obj.getString("policyLimit"));
+
 
                         new LifeInsurance_Fragment.GetLifeInsurance().execute(user_id);
 
@@ -1571,6 +1697,22 @@ public class AddLifeInsurance_Activity extends Activity {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void changeSessionPolicyCount(String policyCount, String policyLimit) {
+        JSONArray user_info = null;
+        try {
+            user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            json.put("policyCount", policyCount);
+            json.put("policyLimit", policyLimit);
+            session.updateSession(user_info.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override

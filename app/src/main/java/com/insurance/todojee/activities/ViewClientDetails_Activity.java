@@ -27,6 +27,7 @@ import com.insurance.todojee.utilities.Utilities;
 import com.insurance.todojee.utilities.WebServiceCalls;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -242,6 +243,9 @@ public class ViewClientDetails_Activity extends Activity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        JSONObject obj = jsonarr.getJSONObject(0);
+                        changeSessionClientCount(obj.getString("customerCount"), obj.getString("customerLimit"));
 
                         new Clients_Fragment.GetClientList().execute(user_id);
 
@@ -267,5 +271,21 @@ public class ViewClientDetails_Activity extends Activity {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void changeSessionClientCount(String customerCount, String customerLimit) {
+        JSONArray user_info = null;
+        try {
+            user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            json.put("customerCount", customerCount);
+            json.put("customerLimit", customerLimit);
+            session.updateSession(user_info.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

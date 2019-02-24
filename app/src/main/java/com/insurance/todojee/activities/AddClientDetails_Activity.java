@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -36,6 +37,7 @@ import com.insurance.todojee.utilities.Utilities;
 import com.insurance.todojee.utilities.WebServiceCalls;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -65,6 +67,7 @@ public class AddClientDetails_Activity extends Activity {
     private String user_id, familyCodeId = "0";
     private ImageView img_save;
     private EditText edt_relation = null;
+    private TextView tv_contacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,7 @@ public class AddClientDetails_Activity extends Activity {
         init();
         setUpToolbar();
         getSessionData();
+        getIntentData();
         setDefaults();
         setEventHandler();
     }
@@ -90,6 +94,7 @@ public class AddClientDetails_Activity extends Activity {
         scrollView = findViewById(R.id.scrollView);
         ll_parent = findViewById(R.id.ll_parent);
 
+        tv_contacts = findViewById(R.id.tv_contacts);
         edt_name = findViewById(R.id.edt_name);
         edt_alias = findViewById(R.id.edt_alias);
         edt_mobile = findViewById(R.id.edt_mobile);
@@ -114,6 +119,16 @@ public class AddClientDetails_Activity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void getIntentData() {
+        if (getIntent().hasExtra("type")) {
+            edt_name.setText(getIntent().getStringExtra("contact_name"));
+            edt_mobile.setText(getIntent().getStringExtra("contact_mobile"));
+            edt_whatsapp.setText(getIntent().getStringExtra("contact_mobile"));
+            edt_email.setText(getIntent().getStringExtra("contact_email"));
+        }
+
     }
 
     private void setDefaults() {
@@ -146,6 +161,13 @@ public class AddClientDetails_Activity extends Activity {
 
     private void setEventHandler() {
 
+        tv_contacts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, Contacts_Activity.class);
+                context.startActivity(intent);
+            }
+        });
         edt_name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -788,6 +810,10 @@ public class AddClientDetails_Activity extends Activity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        JSONObject obj = jsonarr.getJSONObject(0);
+                        changeSessionClientCount(obj.getString("customerCount"), obj.getString("customerLimit"));
+
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                         builder.setMessage("Client Details Saved Successfully");
@@ -815,5 +841,20 @@ public class AddClientDetails_Activity extends Activity {
         }
     }
 
+    public void changeSessionClientCount(String customerCount, String customerLimit) {
+        JSONArray user_info = null;
+        try {
+            user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            json.put("customerCount", customerCount);
+            json.put("customerLimit", customerLimit);
+            session.updateSession(user_info.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
 }

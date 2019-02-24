@@ -1,17 +1,30 @@
 package com.insurance.todojee.activities;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.insurance.todojee.R;
 import com.insurance.todojee.adapters.SlidingImage_Adapter;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class FAQ_Activity extends Activity {
 

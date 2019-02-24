@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +26,7 @@ public class Reminders_Fragment extends Fragment {
     private Context context;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    ViewPagerAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -69,7 +71,7 @@ public class Reminders_Fragment extends Fragment {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
+        adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFrag(new Birthday_Fragment(), "Birthday");
         adapter.addFrag(new Anniversary_Fragment(), "Anniversary");
         adapter.addFrag(new PremiumDue_Fragment(), "Premium");
@@ -90,6 +92,10 @@ public class Reminders_Fragment extends Fragment {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 tab.getIcon().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
+                Fragment fragment = adapter.getItem(tab.getPosition());
+                if (fragment != null) {
+                    fragment.onResume();
+                }
 
             }
 
@@ -100,7 +106,7 @@ public class Reminders_Fragment extends Fragment {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                Log.d("Selected tab", tab.getText().toString());
             }
         });
 
@@ -133,5 +139,7 @@ public class Reminders_Fragment extends Fragment {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+
+
     }
 }

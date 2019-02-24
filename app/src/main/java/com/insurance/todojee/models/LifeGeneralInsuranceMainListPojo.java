@@ -8,8 +8,17 @@ public class LifeGeneralInsuranceMainListPojo implements Serializable {
     private String id;
 
     private String insurance_type_id;
-
     private String insurance_company_id;
+
+    private String lic_created_by;
+
+    public String getLic_created_by() {
+        return lic_created_by;
+    }
+
+    public void setLic_created_by(String lic_created_by) {
+        this.lic_created_by = lic_created_by;
+    }
 
     private String insurance_company_name;
 
@@ -64,6 +73,15 @@ public class LifeGeneralInsuranceMainListPojo implements Serializable {
     private String created_at;
 
     private String updated_at;
+    private String is_shared;
+
+    public String getIs_shared() {
+        return is_shared;
+    }
+
+    public void setIs_shared(String is_shared) {
+        this.is_shared = is_shared;
+    }
 
     private ArrayList<MaturityDatesListPojo> maturity_date;
 

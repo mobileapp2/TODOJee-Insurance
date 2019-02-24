@@ -613,7 +613,14 @@ public class Login_Activity extends Activity {
                     String success = obj1.getString("success");
                     String message = obj1.getString("message");
                     if (success.equalsIgnoreCase("1")) {
-                        startActivity(new Intent(context, MainDrawer_Activity.class));
+                        JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                                ApplicationConstants.KEY_LOGIN_INFO));
+                        JSONObject json = user_info.getJSONObject(0);
+                        String mode = json.getString("communication_mode");
+                        if (mode.equals("first_time")) {
+                            startActivity(new Intent(context, FirstTime_Activity.class));
+                        } else
+                            startActivity(new Intent(context, MainDrawer_Activity.class));
                         finish();
                     } else {
                         Utilities.showAlertDialog(context, "Server Not Responding", "Please Try After Sometime", false);

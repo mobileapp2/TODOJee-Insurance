@@ -1,18 +1,22 @@
 package com.insurance.todojee.fragments;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,6 +27,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +41,7 @@ import android.widget.TextView;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.insurance.todojee.R;
+import com.insurance.todojee.activities.WhatsappBirthdaySettings_Activity;
 import com.insurance.todojee.models.EventListPojo;
 import com.insurance.todojee.utilities.ApplicationConstants;
 import com.insurance.todojee.utilities.ParamsPojo;
@@ -45,12 +51,14 @@ import com.insurance.todojee.utilities.WebServiceCalls;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static com.insurance.todojee.utilities.Utilities.changeDateFormat;
 
@@ -66,9 +74,9 @@ public class PremiumDue_Fragment extends Fragment {
     private LinearLayoutManager layoutManager;
     private UserSessionManager session;
     private int mYear, mMonth, mDay;
-    private String user_id, date;
+    private String user_id, date, user_name;
     private ArrayList<EventListPojo> premiumDueList;
-    private String id = "", message = "", whatsappPicUrl = "", whatsappPic = "";
+    private String id = "", message = "", whatsappPicUrl = "", whatsappPic = "", sign = "";
     private EditText edt_date, dialog_edt_whatsappmessage;
     private CheckBox cb_checkall;
     private ImageView dialog_imv_whatsapppic;
@@ -84,7 +92,15 @@ public class PremiumDue_Fragment extends Fragment {
         setDefault();
         setEventHandlers();
         new GetPremiumMessage().execute(user_id);
+        new GetSignature().execute();
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        Log.e("DEBUG", "onResume of premium");
+        setDefault();
+        super.onResume();
     }
 
     private void init(View rootView) {
@@ -110,6 +126,7 @@ public class PremiumDue_Fragment extends Fragment {
                     ApplicationConstants.KEY_LOGIN_INFO));
             JSONObject json = user_info.getJSONObject(0);
             user_id = json.getString("id");
+            user_name = json.getString("name");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -141,6 +158,7 @@ public class PremiumDue_Fragment extends Fragment {
         fab_wish_whatsapp.setVisibility(View.GONE);
         fab_wish_sms.setVisibility(View.GONE);
         cb_checkall.setVisibility(View.GONE);
+        cb_checkall.setChecked(false);
     }
 
     private void setEventHandlers() {
@@ -165,7 +183,9 @@ public class PremiumDue_Fragment extends Fragment {
             public void onClick(View view) {
                 if (Utilities.isInternetAvailable(context)) {
                     // new GetPremiumMessage().execute(user_id, "", "WHATSAPP");
-                    showDialog("", "WHATSAPP", "fab");
+                    //   showDialog("","WHATSAPP", "fab");
+                    confirmDialogForWhatsapp("", "all selected clients.", "all");
+
                 } else {
                     Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
                 }
@@ -177,7 +197,9 @@ public class PremiumDue_Fragment extends Fragment {
             public void onClick(View view) {
                 if (Utilities.isInternetAvailable(context)) {
                     // new GetPremiumMessage().execute(user_id, "", "SMS");
-                    showDialog("", "SMS", "fab");
+                    //  showDialog("","SMS", "fab");
+                    confirmDialogForSMS("", "all selected clients.", "all");
+
                 } else {
                     Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
                 }
@@ -293,6 +315,13 @@ public class PremiumDue_Fragment extends Fragment {
                                 eventMainObj.setStatus(jsonObj.getString("status"));
                                 eventMainObj.setDate(jsonObj.getString("date"));
                                 eventMainObj.setClient_id(jsonObj.getString("client_id"));
+                                eventMainObj.setClient_name(jsonObj.getString("client_name"));
+                                eventMainObj.setClient_mobile(jsonObj.getString("client_mobile"));
+                                eventMainObj.setClient_whatsapp(jsonObj.getString("client_whatsapp"));
+                                eventMainObj.setInsurance_company(jsonObj.getString("insurance_company"));
+                                eventMainObj.setPremium_amount(jsonObj.getString("premium_amount"));
+                                eventMainObj.setInsurance_policy_number(jsonObj.getString("insurance_policy_number"));
+
                                 premiumDueList.add(eventMainObj);
                             }
                             if (premiumDueList.size() == 0) {
@@ -335,7 +364,8 @@ public class PremiumDue_Fragment extends Fragment {
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
             EventListPojo annivarsaryDetails = new EventListPojo();
             annivarsaryDetails = premiumDueList.get(position);
-
+            String client_name = annivarsaryDetails.getClient_name();
+            String client_mobile = annivarsaryDetails.getClient_mobile();
             holder.tv_clientname.setText(annivarsaryDetails.getDescription());
 
             holder.cb_wish.setOnClickListener(new View.OnClickListener() {
@@ -368,12 +398,49 @@ public class PremiumDue_Fragment extends Fragment {
                 }
             });
 
+            holder.imv_call.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        context.startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                Uri.fromParts("package", context.getPackageName(), null)));
+                        Utilities.showMessageString(context, "Please provide permission for making call");
+                    } else {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setTitle("Make a Call");
+                        alertDialogBuilder.setIcon(R.drawable.icon_call_24dp);
+                        alertDialogBuilder.setMessage("Are you sure you want to call " + client_name + " ?");
+                        alertDialogBuilder.setCancelable(true);
+                        alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @SuppressLint("MissingPermission")
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                context.startActivity(new Intent(Intent.ACTION_CALL,
+                                        Uri.parse("tel:" + client_mobile)));
+                            }
+                        });
+                        alertDialogBuilder.setNegativeButton(
+                                "No", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        AlertDialog alert11 = alertDialogBuilder.create();
+                        alert11.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+                        alert11.show();
+                    }
+                }
+            });
+
             holder.imv_sms.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (Utilities.isInternetAvailable(context)) {
                         //    new GetPremiumMessage().execute(user_id, premiumDueList.get(position).getClient_id(), "SMS");
-                        showDialog(premiumDueList.get(position).getClient_id(), "SMS", "holder");
+                        // showDialog(premiumDueList.get(position).getClient_id(),"SMS", "holder");
+                        confirmDialogForSMS(premiumDueList.get(position).getId(), "selected client", "single");
+
                     } else {
                         Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
                     }
@@ -385,7 +452,9 @@ public class PremiumDue_Fragment extends Fragment {
                 public void onClick(View view) {
                     if (Utilities.isInternetAvailable(context)) {
                         //   new GetPremiumMessage().execute(user_id, premiumDueList.get(position).getClient_id(), "WHATSAPP");
-                        showDialog(premiumDueList.get(position).getClient_id(), "WHATSAPP", "holder");
+                        // showDialog(premiumDueList.get(position).getClient_id(),"WHATSAPP", "holder");
+                        confirmDialogForWhatsapp(premiumDueList.get(position).getId(), "selected client.", "single");
+
 
                     } else {
                         Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
@@ -393,11 +462,12 @@ public class PremiumDue_Fragment extends Fragment {
                 }
             });
 
+            EventListPojo finalAnnivarsaryDetails = annivarsaryDetails;
             holder.imv_share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (Utilities.isInternetAvailable(context)) {
-                        shareImage();
+                        shareImage(client_name, finalAnnivarsaryDetails.getInsurance_company(), finalAnnivarsaryDetails.getPremium_amount(), finalAnnivarsaryDetails.getInsurance_policy_number());
                     } else {
                         Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
                     }
@@ -413,7 +483,7 @@ public class PremiumDue_Fragment extends Fragment {
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private TextView tv_clientname;
-            private ImageView imv_sms, imv_whatsapp, imv_share;
+            private ImageView imv_sms, imv_whatsapp, imv_share, imv_call;
             private CheckBox cb_wish;
 
             public MyViewHolder(View view) {
@@ -423,6 +493,7 @@ public class PremiumDue_Fragment extends Fragment {
                 imv_whatsapp = view.findViewById(R.id.imv_whatsapp);
                 imv_share = view.findViewById(R.id.imv_share);
                 cb_wish = view.findViewById(R.id.cb_wish);
+                imv_call = view.findViewById(R.id.imv_call);
             }
         }
 
@@ -501,6 +572,48 @@ public class PremiumDue_Fragment extends Fragment {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void confirmDialogForWhatsapp(String singleReceiverID, String name, String type) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setIcon(R.drawable.icons_success_color);
+        builder.setTitle("Confirm");
+        builder.setMessage("WhatsApp message will be sent to " + name);
+        builder.setPositiveButton("SEND", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                sendWhatsapp("", "", singleReceiverID);
+            }
+        });
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog alertD = builder.create();
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+    }
+
+    private void confirmDialogForSMS(String singleReceiverID, String name, String type) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setIcon(R.drawable.icons_success_color);
+        builder.setTitle("Confirm");
+        builder.setMessage("Message will be sent to " + name);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                sendSMS("", singleReceiverID);
+            }
+        });
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog alertD = builder.create();
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
     }
 
     private void showDialog(String singleReceiverID, String messageType, String caller) {
@@ -767,7 +880,7 @@ public class PremiumDue_Fragment extends Fragment {
             for (int i = 0; i < premiumDueList.size(); i++) {
                 if (premiumDueList.get(i).isChecked()) {
                     JsonObject childObj = new JsonObject();
-                    childObj.addProperty("id", premiumDueList.get(i).getClient_id());
+                    childObj.addProperty("id", premiumDueList.get(i).getId());
                     clientIdJSONArray.add(childObj);
                 }
             }
@@ -776,17 +889,29 @@ public class PremiumDue_Fragment extends Fragment {
             childObj.addProperty("id", singleReceiverID);
             clientIdJSONArray.add(childObj);
         }
+        JSONArray user_info = null;
+        try {
+            user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            if (Integer.parseInt(json.getString("smsCount")) + clientIdJSONArray.size() <= Integer.parseInt(json.getString("smsLimit"))) {
+                JsonObject mainObj = new JsonObject();
+                mainObj.addProperty("type", "premiumdueSMS");
+                mainObj.add("client_id", clientIdJSONArray);
+                mainObj.addProperty("message", message);
+                mainObj.addProperty("date", date);
+                mainObj.addProperty("user_id", user_id);
 
-        JsonObject mainObj = new JsonObject();
-        mainObj.addProperty("type", "sendAnniversarySMS");
-        mainObj.add("client_id", clientIdJSONArray);
-        mainObj.addProperty("message", message);
-        mainObj.addProperty("user_id", user_id);
-
-        if (Utilities.isInternetAvailable(context)) {
-            new SendAnniversarySMS().execute(mainObj.toString());
-        } else {
-            Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                if (Utilities.isInternetAvailable(context)) {
+                    new SendAnniversarySMS().execute(mainObj.toString());
+                } else {
+                    Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                }
+            } else {
+                Utilities.buildDialogForSmsValidation(context, clientIdJSONArray.size());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
     }
@@ -862,18 +987,30 @@ public class PremiumDue_Fragment extends Fragment {
             childObj.addProperty("id", singleReceiverID);
             clientIdJSONArray.add(childObj);
         }
+        JSONArray user_info = null;
+        try {
+            user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            if (Integer.parseInt(json.getString("whatsAppCount")) + clientIdJSONArray.size() <= Integer.parseInt(json.getString("whatsAppLimit"))) {
+                JsonObject mainObj = new JsonObject();
+                mainObj.addProperty("type", "premiumDue");
+                mainObj.add("client_id", clientIdJSONArray);
+                mainObj.addProperty("message", message);
+                mainObj.addProperty("image", whatsappPic);
+                mainObj.addProperty("user_id", user_id);
+                mainObj.addProperty("date", date);
 
-        JsonObject mainObj = new JsonObject();
-        mainObj.addProperty("type", "premiumDue");
-        mainObj.add("client_id", clientIdJSONArray);
-        mainObj.addProperty("message", message);
-        mainObj.addProperty("image", whatsappPic);
-        mainObj.addProperty("user_id", user_id);
-
-        if (Utilities.isInternetAvailable(context)) {
-            new SendAnniversaryWhatsapp().execute(mainObj.toString());
-        } else {
-            Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                if (Utilities.isInternetAvailable(context)) {
+                    new SendAnniversaryWhatsapp().execute(mainObj.toString());
+                } else {
+                    Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
+                }
+            } else {
+                Utilities.buildDialogForSmsValidation(context, clientIdJSONArray.size());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
     }
@@ -908,6 +1045,10 @@ public class PremiumDue_Fragment extends Fragment {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        JSONObject obj = jsonarr.getJSONObject(0);
+                        changeSessionSMSCount(obj.getString("smsCount"), obj.getString("whatsAppCount"), obj.getString("smsLimit"), obj.getString("whatsAppLimit"));
+
                         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                         builder.setMessage("Whatsapp Message Sent Successfully");
                         builder.setIcon(R.drawable.ic_success_24dp);
@@ -930,9 +1071,198 @@ public class PremiumDue_Fragment extends Fragment {
         }
     }
 
-    private void shareImage() {
+    public void changeSessionSMSCount(String smsCount, String whatsappCount, String maxSMS, String maxWhatsapp) {
+        JSONArray user_info = null;
+        try {
+            user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            json.put("smsCount", smsCount);
+            json.put("whatsAppCount", whatsappCount);
+            json.put("smsLimit", maxSMS);
+            json.put("whatsAppLimit", maxWhatsapp);
+            session.updateSession(user_info.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        showDialog("", "", "share");
+
+    }
+
+    private void shareImage(String client_name, String company, String premium_amount, String policy) {
+
+//        showDialog("", "", "share");
+        Intent share = new Intent(Intent.ACTION_SEND);
+
+        // If you want to share a png image only, you can do:
+        // setType("image/png"); OR for jpeg: setType("image/jpeg");
+        share.setType("image/*");
+
+        // Make sure you put example png image named myImage.png in your
+        // directory
+        String imagePath = Environment.getExternalStorageDirectory() + "/Insurance/"
+                + "/Settings/" + File.separatorChar + "uplimg1.png";
+
+        File imageFileToShare = new File(imagePath);
+        Uri uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".com.insurance.todojee.provider", imageFileToShare);
+        /*try {
+            sign = new GetSignature().execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }*/
+
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.prompt_send_whatsappmsg, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setTitle("Share Message");
+        alertDialogBuilder.setView(promptView);
+        dialog_imv_whatsapppic = promptView.findViewById(R.id.dialog_imv_whatsapppic);
+        dialog_edt_whatsappmessage = promptView.findViewById(R.id.dialog_edt_whatsappmessage);
+        CheckBox cb_whatsappmsg = promptView.findViewById(R.id.cb_whatsappmsg);
+        CheckBox cb_whatsappimg = promptView.findViewById(R.id.cb_whatsappimg);
+        dialog_imv_whatsapppic.setVisibility(View.GONE);
+        cb_whatsappimg.setVisibility(View.GONE);
+        cb_whatsappimg.setChecked(false);
+        cb_whatsappmsg.setVisibility(View.GONE);
+
+        dialog_edt_whatsappmessage.setText("Dear " + client_name + ",\n You have premium due for " + company + " policy with policy number : " + policy + ". Please pay the premium of amount Rs. " + premium_amount + ". If you have already paid the amount, please ignore the message.\n From " + sign + "");
+
+       /* if (!whatsappPicUrl.equals("")) {
+            isImageSet = true;
+            Picasso.with(context)
+                    .load(whatsappPicUrl)
+                    .placeholder(R.drawable.img_photo)
+                    .into(dialog_imv_whatsapppic);
+        }*/
+
+
+        alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if (!cb_whatsappmsg.isChecked() && !cb_whatsappimg.isChecked()) {
+                    Utilities.showMessageString(context, "Please Check Atleast One");
+                    return;
+                }
+
+                String whatsappPicSend = "", whatsappMsgSend = "";
+
+                if (cb_whatsappimg.isChecked()) {
+                    if (isImageSet) {
+                     /*   share.putExtra(Intent.EXTRA_STREAM, uri);
+                        if (cb_whatsappmsg.isChecked())
+                            whatsappMsgSend = dialog_edt_whatsappmessage.getText().toString().trim();
+                        share.putExtra(Intent.EXTRA_TEXT, whatsappMsgSend);
+                        startActivity(Intent.createChooser(share, "Share Image!"));*/
+                    } else {
+                        // Utilities.showAlertDialog(context, "Information", "Please set the image in the Birthday Settings", false);
+                    }
+                } else if (cb_whatsappmsg.isChecked()) {
+                    whatsappMsgSend = dialog_edt_whatsappmessage.getText().toString().trim();
+                    Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                    share.setType("text/plain");
+                    share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                    //added by Varsha
+                    share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    share.putExtra(Intent.EXTRA_TEXT, whatsappMsgSend);
+                    startActivity(Intent.createChooser(share, "Share message!"));
+                }
+
+            }
+        });
+
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertD = alertDialogBuilder.create();
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+
+        dialog_edt_whatsappmessage.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(s)) {
+                    alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                } else {
+                    alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                }
+
+            }
+        });
+
+    }
+
+    public class GetSignature extends AsyncTask<String, String, String> {
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            String result = "[]";
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("type", "getSign");
+                obj.put("userid", user_id);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            result = WebServiceCalls.JSONAPICall(ApplicationConstants.SIGNATURE, obj.toString());
+
+            return result;
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            if (!result.equals("")) {
+                JSONObject mainObj = null;
+                try {
+                    mainObj = new JSONObject(result);
+                    String type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        if (jsonarr.length() > 0) {
+                            for (int i = 0; i < jsonarr.length(); i++) {
+                                JSONObject jsonObj = jsonarr.getJSONObject(i);
+                                sign = jsonObj.getString("signature");
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
 
     }
 

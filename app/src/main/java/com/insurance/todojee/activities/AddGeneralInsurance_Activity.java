@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -53,6 +54,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -84,6 +86,7 @@ public class AddGeneralInsurance_Activity extends Activity {
     private static final int GALLERY_REQUEST = 200;
     private EditText edt_insurancecompany, edt_clientname, edt_insurername, edt_insurepolicyno, edt_policytype,
             edt_startdate, edt_enddate, edt_frequency, edt_suminsured, edt_premiumamt, edt_link, edt_description, edt_remark;
+    private CheckBox cb_showClient;
 
     private int mYear, mMonth, mDay;
     private int mYear1, mMonth1, mDay1;
@@ -98,7 +101,7 @@ public class AddGeneralInsurance_Activity extends Activity {
     private ArrayList<FrequencyListPojo> frequencyList;
     private UserSessionManager session;
     private String companyAliasName = "";
-    private String user_id, companyId, clientId, insurerId, policyTypeID = "0", frequencyId, insurerTypeId, insurerType;
+    private String user_id, companyId, clientId, insurerId, policyTypeID = "0", frequencyId, insurerTypeId, insurerType, is_shared = "0";
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
     private Uri photoURI;
     private File photoFile, generalInsurancePicFolder;
@@ -140,6 +143,7 @@ public class AddGeneralInsurance_Activity extends Activity {
         edt_link = findViewById(R.id.edt_link);
         edt_description = findViewById(R.id.edt_description);
         edt_remark = findViewById(R.id.edt_remark);
+        cb_showClient = findViewById(R.id.cb_showClient);
 
         rb_individual = findViewById(R.id.rb_individual);
         rb_firm = findViewById(R.id.rb_firm);
@@ -435,6 +439,18 @@ public class AddGeneralInsurance_Activity extends Activity {
     @SuppressLint("ClickableViewAccessibility")
     private void setEventHandler() {
 
+        cb_showClient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cb_showClient.isChecked()) {
+                    is_shared = "1";
+                } else {
+                    is_shared = "0";
+                }
+
+            }
+        });
+
         rb_individual.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -552,36 +568,37 @@ public class AddGeneralInsurance_Activity extends Activity {
         edt_enddate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!edt_startdate.getText().toString().trim().equals("")) {
+                //Release 1.4 changes - remove mandatory start date
+                //     if (!edt_startdate.getText().toString().trim().equals("")) {
 
-                    DatePickerDialog dpd1 = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                            edt_enddate.setText(
-                                    changeDateFormat("yyyy-MM-dd",
-                                            "dd/MM/yyyy",
-                                            Utilities.ConvertDateFormat(Utilities.dfDate, dayOfMonth, monthOfYear + 1, year))
+                DatePickerDialog dpd1 = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        edt_enddate.setText(
+                                changeDateFormat("yyyy-MM-dd",
+                                        "dd/MM/yyyy",
+                                        Utilities.ConvertDateFormat(Utilities.dfDate, dayOfMonth, monthOfYear + 1, year))
 
-                            );
+                        );
 
-                            mYear1 = year;
-                            mMonth1 = monthOfYear;
-                            mDay1 = dayOfMonth;
-                        }
-                    }, mYear1, mMonth1, mDay1);
-                    Calendar c = Calendar.getInstance();
-                    c.set(mYear, mMonth, mDay);
-                    try {
-                        dpd1.getDatePicker().setCalendarViewShown(false);
-                        dpd1.getDatePicker().setMinDate(c.getTimeInMillis());
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        mYear1 = year;
+                        mMonth1 = monthOfYear;
+                        mDay1 = dayOfMonth;
                     }
-                    dpd1.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-                    dpd1.show();
-                } else {
-                    Utilities.showSnackBar(ll_parent, "Please Select Start Date");
+                }, mYear1, mMonth1, mDay1);
+                Calendar c = Calendar.getInstance();
+                c.set(mYear, mMonth, mDay);
+                try {
+                    dpd1.getDatePicker().setCalendarViewShown(false);
+                    dpd1.getDatePicker().setMinDate(c.getTimeInMillis());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                dpd1.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+                dpd1.show();
+               /* } else {
+                    Utilities.showSnackBar(ll_parent, "Please Select Start Date");
+                }*/
             }
         });
 
@@ -849,6 +866,7 @@ public class AddGeneralInsurance_Activity extends Activity {
         mainObj.addProperty("policy_status", "0");
         mainObj.addProperty("insurer_name_id", insurerId);
         mainObj.addProperty("insurer_type", insurerType);
+        mainObj.addProperty("is_shared", is_shared);
         mainObj.addProperty("user_id", user_id);
 
         Log.i("GeneralInsuranceJson", mainObj.toString());
@@ -1452,6 +1470,10 @@ public class AddGeneralInsurance_Activity extends Activity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        JSONObject obj = jsonarr.getJSONObject(0);
+                        changeSessionPolicyCount(obj.getString("policyCount"), obj.getString("policyLimit"));
+
 
                         new GeneralInsurance_Fragment.GetGeneralInsurance().execute(user_id);
 
@@ -1477,6 +1499,22 @@ public class AddGeneralInsurance_Activity extends Activity {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void changeSessionPolicyCount(String policyCount, String policyLimit) {
+        JSONArray user_info = null;
+        try {
+            user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            json.put("policyCount", policyCount);
+            json.put("policyLimit", policyLimit);
+            session.updateSession(user_info.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override

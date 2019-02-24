@@ -62,7 +62,7 @@
             layout="@layout/shimmer_twolines_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </FrameLayout>
 
 </LinearLayout>

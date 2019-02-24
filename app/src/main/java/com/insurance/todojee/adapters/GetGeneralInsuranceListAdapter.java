@@ -48,9 +48,9 @@ public class GetGeneralInsuranceListAdapter extends RecyclerView.Adapter<GetGene
 
         String policyNo = (lifeInsuranceDetails.getPolicy_no().equals("")) ? "-" : lifeInsuranceDetails.getPolicy_no();
         String insuranceCompanyAlias = (lifeInsuranceDetails.getInsurance_company_alias().equals("")) ? "-" : lifeInsuranceDetails.getInsurance_company_alias();
-        String startDate = (lifeInsuranceDetails.getStart_date().equals("")) ? "-" : lifeInsuranceDetails.getStart_date();
-        String endDate = (lifeInsuranceDetails.getEnd_date().equals("")) ? "-" : lifeInsuranceDetails.getEnd_date();
-        String frequency = (lifeInsuranceDetails.getFrequency().equals("")) ? "-" : lifeInsuranceDetails.getFrequency();
+        String startDate = (lifeInsuranceDetails.getStart_date() == null || lifeInsuranceDetails.getStart_date().trim().isEmpty()) ? "N/A" : lifeInsuranceDetails.getStart_date();
+        String endDate = (lifeInsuranceDetails.getStart_date() == null || lifeInsuranceDetails.getEnd_date().equals("")) ? "N/A" : lifeInsuranceDetails.getEnd_date();
+        String frequency = (lifeInsuranceDetails.getFrequency().equals("")) ? "N/A" : lifeInsuranceDetails.getFrequency();
 
         holder.tv_name.setText(insurerName);
         holder.tv_policy_number.setText("Policy Number: " + policyNo);

@@ -9,7 +9,6 @@
         android:textSize="14sp"
         android:text="sun"
         android:gravity="center_horizontal"
-        android:padding="5dp">
-    </TextView>
+        android:padding="5dp"></TextView>
 
 </LinearLayout>

@@ -55,6 +55,18 @@ public class UserSessionManager {
         return pref.getBoolean(ApplicationConstants.IS_USER_LOGIN, false);
     }
 
+    public boolean isUserFirstTime() {
+        return pref.getBoolean("first_time", false);
+    }
+
+    public void updateFirstTime() {
+        pref = _context.getSharedPreferences(ApplicationConstants.PREFER_NAME,
+                Context.MODE_PRIVATE);
+        editor = pref.edit();
+        editor.putBoolean("first_time", true);
+        editor.commit();
+    }
+
     public HashMap<String, String> getUserDetails() {
         pref = _context.getSharedPreferences(ApplicationConstants.PREFER_NAME,
                 Context.MODE_PRIVATE);
@@ -90,6 +102,7 @@ public class UserSessionManager {
         editor = pref.edit();
         editor.remove(ApplicationConstants.KEY_LOGIN_INFO);
         editor.remove(ApplicationConstants.IS_USER_LOGIN);
+        editor.remove("first_time");
 
         editor.apply();
         editor.commit();

@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -82,7 +83,7 @@ public class EditLifeInsurance_Activity extends Activity {
     private EditText edt_insurancecompany, edt_clientname, edt_insurername, edt_insurepolicyno, edt_policytype,
             edt_startdate, edt_enddate, edt_frequency, edt_suminsured, edt_premiumamt, edt_policystatus,
             edt_link, edt_description, edt_remark;
-
+    private CheckBox cb_showClient;
     private int mYear, mMonth, mDay;
     private int mYear1, mMonth1, mDay1;
     private int mYear2, mMonth2, mDay2;
@@ -97,7 +98,7 @@ public class EditLifeInsurance_Activity extends Activity {
     private ArrayList<FrequencyListPojo> frequencyList;
     private ArrayList<PolicyStatusListPojo> policyStatusList;
     private UserSessionManager session;
-    private String companyAliasName = "";
+    private String companyAliasName = "", is_shared = "0";
     private String user_id, id, companyId, clientId, insurerId, policyTypeID = "0", frequencyId, policyStatusId = "0";
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
     private Uri photoURI;
@@ -142,7 +143,7 @@ public class EditLifeInsurance_Activity extends Activity {
         edt_link = findViewById(R.id.edt_link);
         edt_description = findViewById(R.id.edt_description);
         edt_remark = findViewById(R.id.edt_remark);
-
+        cb_showClient = findViewById(R.id.cb_showClient);
         ll_maturitydates = findViewById(R.id.ll_maturitydates);
         ll_documents = findViewById(R.id.ll_documents);
 
@@ -225,6 +226,14 @@ public class EditLifeInsurance_Activity extends Activity {
         edt_link.setText(lifeInsuranceDetails.getLink());
 //        edt_description.setText(lifeInsuranceDetails.getDescription());
         edt_remark.setText(lifeInsuranceDetails.getRemark());
+        is_shared = lifeInsuranceDetails.getIs_shared();
+        if (is_shared.equals("1")) {
+            cb_showClient.setChecked(true);
+            is_shared = "1";
+        } else {
+            cb_showClient.setChecked(false);
+            is_shared = "0";
+        }
 
         ArrayList<LifeGeneralInsuranceMainListPojo.MaturityDatesListPojo> maturityDatesList = new ArrayList<>();
         maturityDatesList = lifeInsuranceDetails.getMaturity_date();
@@ -267,7 +276,16 @@ public class EditLifeInsurance_Activity extends Activity {
 
     @SuppressLint("ClickableViewAccessibility")
     private void setEventHandler() {
-
+        cb_showClient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cb_showClient.isChecked()) {
+                    is_shared = "1";
+                } else {
+                    is_shared = "0";
+                }
+            }
+        });
         edt_insurancecompany.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1049,6 +1067,7 @@ public class EditLifeInsurance_Activity extends Activity {
         mainObj.addProperty("insurer_name_id", insurerId);
         mainObj.addProperty("insurer_type", "R");
         mainObj.addProperty("user_id", user_id);
+        mainObj.addProperty("is_shared", is_shared);
         mainObj.addProperty("id", id);
 
         Log.i("LifeInsuranceJson", mainObj.toString());

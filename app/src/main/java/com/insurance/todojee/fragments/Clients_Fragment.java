@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.insurance.todojee.R;
 import com.insurance.todojee.activities.AddClientDetails_Activity;
 import com.insurance.todojee.adapters.GetClientListAdapter;
@@ -28,8 +29,10 @@ import com.insurance.todojee.utilities.Utilities;
 import com.insurance.todojee.utilities.WebServiceCalls;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -117,7 +120,20 @@ public class Clients_Fragment extends Fragment {
         fab_add_client.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(context, AddClientDetails_Activity.class));
+                JSONArray user_info = null;
+                try {
+                    user_info = new JSONArray(session.getUserDetails().get(
+                            ApplicationConstants.KEY_LOGIN_INFO));
+                    JSONObject json = user_info.getJSONObject(0);
+                    if (Integer.parseInt(json.getString("customerCount")) < Integer.parseInt(json.getString("customerLimit"))) {
+                        startActivity(new Intent(context, AddClientDetails_Activity.class));
+                    } else {
+                        Utilities.buildDialogForClientValidation(context);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
