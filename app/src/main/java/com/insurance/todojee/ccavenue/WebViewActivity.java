@@ -1,15 +1,20 @@
 package com.insurance.todojee.ccavenue;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.provider.DocumentsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.google.gson.JsonObject;
 import com.insurance.todojee.R;
+import com.insurance.todojee.models.CCAvenueModel;
 import com.insurance.todojee.utilities.ApplicationConstants;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +26,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.insurance.todojee.utilities.Utilities;
+import com.insurance.todojee.utilities.WebServiceCalls;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -30,10 +37,18 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 
 public class WebViewActivity extends AppCompatActivity {
@@ -87,20 +102,84 @@ public class WebViewActivity extends AppCompatActivity {
                     // process the html source code to get final status of transaction
                     String status = null;
                     if (html.indexOf("Failure") != -1) {
-                        status = "Transaction Declined!";
+                        AlertDialog("Transaction Declined!");
                     } else if (html.indexOf("Success") != -1) {
-                        status = "Transaction Successful!";
+
+                        Document doc = Jsoup.parse(html);
+                        Elements tableElements = doc.select("table");
+                        Elements tableRowElements = tableElements.select(":not(thead) tr");
+                        ArrayList<HashMap<String, String>> arraylist = new ArrayList();
+
+
+                        HashMap<String, String> map1 = new HashMap<String, String>();
+                        HashMap<String, String> map2 = new HashMap<String, String>();
+                        HashMap<String, String> map3 = new HashMap<String, String>();
+                        HashMap<String, String> map4 = new HashMap<String, String>();
+                        HashMap<String, String> map5 = new HashMap<String, String>();
+                        HashMap<String, String> map6 = new HashMap<String, String>();
+                        HashMap<String, String> map7 = new HashMap<String, String>();
+
+                        map1.put("key", "type");
+                        map1.put("value", "buyPlan");
+                        arraylist.add(map1);
+
+                        map2.put("key", "user_id");
+                        map2.put("value", mainIntent.getStringExtra("user_id"));
+                        arraylist.add(map2);
+
+                        map3.put("key", "plan_id");
+                        map3.put("value", mainIntent.getStringExtra("plan_id"));
+                        arraylist.add(map3);
+
+                        map4.put("key", "space");
+                        map4.put("value", mainIntent.getStringExtra("space"));
+                        arraylist.add(map4);
+
+                        map5.put("key", "sms");
+                        map5.put("value", mainIntent.getStringExtra("sms"));
+                        arraylist.add(map5);
+
+                        map6.put("key", "whatsApp_msg");
+                        map6.put("value", mainIntent.getStringExtra("whatsApp_msg"));
+                        arraylist.add(map6);
+
+                        map7.put("key", "expire_date");
+                        map7.put("value", mainIntent.getStringExtra("expire_date"));
+                        arraylist.add(map7);
+
+                        for (int i = 0; i < tableRowElements.size(); i++) {
+                            HashMap<String, String> map = new HashMap<String, String>();
+
+                            Element row = tableRowElements.get(i);
+                            Elements rowItems = row.select("td");
+
+                            map.put("key", rowItems.get(0).text());
+                            map.put("value", rowItems.get(1).text());
+                            arraylist.add(map);
+                        }
+
+
+                        JsonObject mainObj = new JsonObject();
+                        for (HashMap<String, String> entry : arraylist) {
+                            String myID = entry.get("key").toString();
+                            String mySKU = entry.get("value").toString();
+                            mainObj.addProperty(myID, mySKU);
+                        }
+
+                        Log.i("CCAVENUE", mainObj.toString());
+
+                        if (Utilities.isInternetAvailable(WebViewActivity.this)) {
+                            new AddClientDetails().execute(mainObj.toString());
+                        } else {
+                            Utilities.showMessageString(WebViewActivity.this, "Please Check Internet Connection");
+                        }
+
                     } else if (html.indexOf("Aborted") != -1) {
-                        status = "Transaction Cancelled!";
+                        AlertDialog("Transaction Cancelled!");
                     } else {
-                        status = "Status Not Known!";
+                        AlertDialog("Status Not Known!");
                     }
 
-
-                    //Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), StatusActivity.class);
-                    intent.putExtra("transStatus", status);
-                    startActivity(intent);
                 }
             }
 
@@ -206,5 +285,77 @@ public class WebViewActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-}
+    public class AddClientDetails extends AsyncTask<String, Void, String> {
+        ProgressDialog pd;
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(WebViewActivity.this, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = WebServiceCalls.JSONAPICall(ApplicationConstants.PLANLISTAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        JSONObject obj = jsonarr.getJSONObject(0);
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(WebViewActivity.this, R.style.CustomDialogTheme);
+                        builder.setMessage("Plan buy successfully!");
+                        builder.setIcon(R.drawable.ic_success_24dp);
+                        builder.setTitle("Success");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                finish();
+                            }
+                        });
+                        AlertDialog alertD = builder.create();
+                        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+                        alertD.show();
+                    } else {
+
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void AlertDialog(String status) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(WebViewActivity.this, R.style.CustomDialogTheme);
+        builder.setMessage(status);
+        builder.setIcon(R.drawable.ic_alert_red_24dp);
+        builder.setTitle("Fail");
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                finish();
+            }
+        });
+        AlertDialog alertD = builder.create();
+        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+        alertD.show();
+    }
+
+}

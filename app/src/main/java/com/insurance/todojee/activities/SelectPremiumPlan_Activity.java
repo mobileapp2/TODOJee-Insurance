@@ -116,6 +116,15 @@ public class SelectPremiumPlan_Activity extends Activity {
                     intent.putExtra(AvenuesParams.CANCEL_URL, ApplicationConstants.CANCEL_URL);
                     intent.putExtra(AvenuesParams.RSA_KEY_URL, ApplicationConstants.RSA_KEY_URL);
 
+
+                    intent.putExtra("type", plansList.get(lastSelectedPosition).getPlan());
+                    intent.putExtra("user_id", user_id);
+                    intent.putExtra("plan_id", plansList.get(lastSelectedPosition).getId());
+                    intent.putExtra("space", plansList.get(lastSelectedPosition).getSpace());
+                    intent.putExtra("sms", plansList.get(lastSelectedPosition).getSms());
+                    intent.putExtra("whatsApp_msg", plansList.get(lastSelectedPosition).getWhtasApp_msg());
+                    intent.putExtra("expire_date", plansList.get(lastSelectedPosition).getEnd_date());
+
                     startActivity(intent);
                 }
 
