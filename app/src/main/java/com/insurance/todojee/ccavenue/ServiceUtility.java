@@ -12,6 +12,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import static com.insurance.todojee.ccavenue.AvenuesParams.PARAMETER_EQUALS;
+import static com.insurance.todojee.ccavenue.AvenuesParams.PARAMETER_SEP;
+
 public class ServiceUtility {
 
     public java.util.Map readProperties(String pFilePath) throws IOException {
@@ -76,8 +79,8 @@ public class ServiceUtility {
 
     public static String addToPostParams(String paramKey, String paramValue) {
         if (paramValue != null)
-            return paramKey.concat(ApplicationConstants.PARAMETER_EQUALS).concat(paramValue)
-                    .concat(ApplicationConstants.PARAMETER_SEP);
+            return paramKey.concat(PARAMETER_EQUALS).concat(paramValue)
+                    .concat(PARAMETER_SEP);
         return "";
     }
 

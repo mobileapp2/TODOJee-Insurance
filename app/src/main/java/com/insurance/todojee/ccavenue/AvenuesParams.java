@@ -12,4 +12,8 @@ public class AvenuesParams {
     public static final String CANCEL_URL = "cancel_url";
     public static final String RSA_KEY_URL = "rsa_key_url";
 
+    public static final String PARAMETER_SEP = "&";
+    public static final String PARAMETER_EQUALS = "=";
+
+
 }

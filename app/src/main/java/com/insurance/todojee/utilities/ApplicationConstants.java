@@ -9,8 +9,12 @@ public class ApplicationConstants {
     public static final String IS_USER_LOGIN = "IS_USER_LOGIN";
     public static final String KEY_LOGIN_INFO = "KEY_LOGIN_INFO";
     public static final String KEY_ANDROIDTOKETID = "KEY_ANDROIDTOKETID";
-    public static final String BETA_API_LINK = "https://gstkhata.com/QA/todojee_insurance/serverfiles/LIC_Apis/";
-    public static final String LIVE_API_LINK = "https://todojeeinsurance.in/serverfiles/LIC_Apis/";
+
+    // BETA API LINK 
+    public static final String API_LINK = "https://gstkhata.com/QA/todojee_insurance/serverfiles/LIC_Apis/";
+
+    //LIVE API LINK 
+//    public static final String API_LINK = "https://todojeeinsurance.in/serverfiles/LIC_Apis/";
 
 
     //CC AVENUE CONSTANTS    //TEST
@@ -22,48 +26,29 @@ public class ApplicationConstants {
     public static final String RSA_KEY_URL = "https://www.todojeeinsurance.in/includes/GetRSA.php";
     public static final String TRANS_URL = "https://secure.ccavenue.com/transaction/initTrans";
 
-    public static final String PARAMETER_SEP = "&";
-    public static final String PARAMETER_EQUALS = "=";
-
 
     //CC AVENUE CONSTANTS    //LIVE
 
 
-    // BETA API LINK LIST
-    public static final String CLIENTAPI = BETA_API_LINK + "lic_client.php";
-    public static final String INSURANCEAPI = BETA_API_LINK + "lic.php";
-    public static final String LOGINAPI = BETA_API_LINK + "dologin.php";
-    public static final String PROFILEAPI = BETA_API_LINK + "profile.php";
-    public static final String BIRTHDAYANNIVERSARYAPI = BETA_API_LINK + "todays_birthday_anniversary.php";
-    public static final String OTPAPI = BETA_API_LINK + "sendotp.php";
-    public static final String REGISTERAPI = BETA_API_LINK + "dosignup.php";
-    public static final String TODOLISTAPI = BETA_API_LINK + "list.php";
-    public static final String SETTINGSAPI = BETA_API_LINK + "settings.php";
-    public static final String PRODUCTINFOAPI = BETA_API_LINK + "product_info.php";
-    public static final String EVENTSAPI = BETA_API_LINK + "event.php";
-    public static final String UPLOADFILEAPI = BETA_API_LINK + "upload.php";
-    public static final String NOTIFICATIONAPI = BETA_API_LINK + "notification.php";
-    public static final String FAQAPI = BETA_API_LINK + "faq.php";
-    public static final String SIGNATURE = BETA_API_LINK + "signature.php";
-    public static final String PLANLISTAPI = BETA_API_LINK + "buy_plan.php";
 
 
-    //LIVE API LINK LIST
+    // API's LIST
 
-//    public static final String CLIENTAPI = LIVE_API_LINK + "lic_client.php";
-//    public static final String INSURANCEAPI = LIVE_API_LINK + "lic.php";
-//    public static final String LOGINAPI = LIVE_API_LINK + "dologin.php";
-//    public static final String PROFILEAPI = LIVE_API_LINK + "profile.php";
-//    public static final String BIRTHDAYANNIVERSARYAPI = LIVE_API_LINK + "test_todays_birthday_anniversary.php";
-//    public static final String OTPAPI = LIVE_API_LINK + "sendotp.php";
-//    public static final String REGISTERAPI = LIVE_API_LINK + "dosignup.php";
-//    public static final String TODOLISTAPI = LIVE_API_LINK + "list.php";
-//    public static final String SETTINGSAPI = LIVE_API_LINK + "settings.php";
-//    public static final String PRODUCTINFOAPI = LIVE_API_LINK + "product_info.php";
-//    public static final String EVENTSAPI = LIVE_API_LINK + "event.php";
-//    public static final String UPLOADFILEAPI = LIVE_API_LINK + "upload.php";
-//    public static final String NOTIFICATIONAPI = LIVE_API_LINK + "notification.php";
-//    public static final String FAQAPI = LIVE_API_LINK + "faq.php";
-//    public static final String SIGNATURE = LIVE_API_LINK + "signature.php";
-//    public static final String PLANLISTAPI = LIVE_API_LINK + "buy_plan.php";
+    public static final String CLIENTAPI = API_LINK + "lic_client.php";
+    public static final String INSURANCEAPI = API_LINK + "lic.php";
+    public static final String LOGINAPI = API_LINK + "dologin.php";
+    public static final String PROFILEAPI = API_LINK + "profile.php";
+    public static final String BIRTHDAYANNIVERSARYAPI = API_LINK + "todays_birthday_anniversary.php";
+    public static final String OTPAPI = API_LINK + "sendotp.php";
+    public static final String REGISTERAPI = API_LINK + "dosignup.php";
+    public static final String TODOLISTAPI = API_LINK + "list.php";
+    public static final String SETTINGSAPI = API_LINK + "settings.php";
+    public static final String PRODUCTINFOAPI = API_LINK + "product_info.php";
+    public static final String EVENTSAPI = API_LINK + "event.php";
+    public static final String UPLOADFILEAPI = API_LINK + "upload.php";
+    public static final String NOTIFICATIONAPI = API_LINK + "notification.php";
+    public static final String FAQAPI = API_LINK + "faq.php";
+    public static final String SIGNATURE = API_LINK + "signature.php";
+    public static final String PLANLISTAPI = API_LINK + "buy_plan.php";
+    
 }

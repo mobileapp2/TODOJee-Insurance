@@ -122,8 +122,7 @@ public class Clients_Fragment extends Fragment {
             public void onClick(View view) {
                 JSONArray user_info = null;
                 try {
-                    user_info = new JSONArray(session.getUserDetails().get(
-                            ApplicationConstants.KEY_LOGIN_INFO));
+                    user_info = new JSONArray(session.getUserDetails().get(ApplicationConstants.KEY_LOGIN_INFO));
                     JSONObject json = user_info.getJSONObject(0);
                     if (Integer.parseInt(json.getString("customerCount")) < Integer.parseInt(json.getString("customerLimit"))) {
                         startActivity(new Intent(context, AddClientDetails_Activity.class));

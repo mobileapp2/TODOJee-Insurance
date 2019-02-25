@@ -1,5 +1,7 @@
 package com.insurance.todojee.ccavenue;
 
+import android.content.Context;
+import android.provider.DocumentsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -31,6 +33,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 
 public class WebViewActivity extends AppCompatActivity {
@@ -92,6 +95,8 @@ public class WebViewActivity extends AppCompatActivity {
                     } else {
                         status = "Status Not Known!";
                     }
+
+
                     //Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getApplicationContext(), StatusActivity.class);
                     intent.putExtra("transStatus", status);
@@ -202,3 +207,4 @@ public class WebViewActivity extends AppCompatActivity {
     }
 
 }
+
