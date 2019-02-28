@@ -524,7 +524,7 @@ public class PremiumDue_Fragment extends Fragment {
             pd = new ProgressDialog(context, R.style.CustomDialogTheme);
             pd.setMessage("Please wait ...");
             pd.setCancelable(false);
-            pd.show();
+//            pd.show();
         }
 
         @Override
@@ -545,7 +545,7 @@ public class PremiumDue_Fragment extends Fragment {
             super.onPostExecute(result);
             String type = "";
             try {
-                pd.dismiss();
+//                pd.dismiss();
                 if (!result.equals("")) {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
@@ -1216,7 +1216,7 @@ public class PremiumDue_Fragment extends Fragment {
             pd = new ProgressDialog(context);
             pd.setMessage("Please wait ...");
             pd.setCancelable(false);
-            pd.show();
+//            pd.show();
         }
 
 
@@ -1241,7 +1241,7 @@ public class PremiumDue_Fragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            pd.dismiss();
+//            pd.dismiss();
             if (!result.equals("")) {
                 JSONObject mainObj = null;
                 try {

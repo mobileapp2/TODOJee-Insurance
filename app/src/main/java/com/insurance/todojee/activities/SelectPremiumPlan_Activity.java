@@ -94,7 +94,6 @@ public class SelectPremiumPlan_Activity extends Activity {
             new GetPlanList().execute();
         } else {
             Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
-            swipeRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -170,6 +169,7 @@ public class SelectPremiumPlan_Activity extends Activity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             pd.dismiss();
+            swipeRefreshLayout.setRefreshing(false);
             String type = "", message = "";
             try {
                 if (!result.equals("")) {

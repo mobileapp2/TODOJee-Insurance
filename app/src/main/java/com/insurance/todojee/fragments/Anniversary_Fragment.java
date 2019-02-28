@@ -670,7 +670,7 @@ public class Anniversary_Fragment extends Fragment {
             pd = new ProgressDialog(context, R.style.CustomDialogTheme);
             pd.setMessage("Please wait ...");
             pd.setCancelable(false);
-            pd.show();
+//            pd.show();
         }
 
         @Override
@@ -690,7 +690,7 @@ public class Anniversary_Fragment extends Fragment {
             super.onPostExecute(result);
             String type = "", message = "";
             try {
-                pd.dismiss();
+//                pd.dismiss();
                 if (!result.equals("")) {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
@@ -1049,13 +1049,13 @@ public class Anniversary_Fragment extends Fragment {
             pd = new ProgressDialog(context, R.style.CustomDialogTheme);
             pd.setMessage("Please wait ...");
             pd.setCancelable(false);
-            pd.show();
+//            pd.show();
         }
 
 
         @Override
         protected String doInBackground(String... strings) {
-            pd.dismiss();
+//            pd.dismiss();
             String result = "[]";
             JSONObject obj = new JSONObject();
             try {

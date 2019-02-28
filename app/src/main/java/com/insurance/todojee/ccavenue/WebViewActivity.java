@@ -287,6 +287,7 @@ public class WebViewActivity extends AppCompatActivity {
 
     public class AddClientDetails extends AsyncTask<String, Void, String> {
         ProgressDialog pd;
+        private String JSONString = "";
 
         @Override
         protected void onPreExecute() {
@@ -300,6 +301,8 @@ public class WebViewActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String res = "[]";
+
+            JSONString = params[0];
             res = WebServiceCalls.JSONAPICall(ApplicationConstants.PLANLISTAPI, params[0]);
             return res.trim();
         }
@@ -315,8 +318,6 @@ public class WebViewActivity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        JSONArray jsonarr = mainObj.getJSONArray("result");
-                        JSONObject obj = jsonarr.getJSONObject(0);
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(WebViewActivity.this, R.style.CustomDialogTheme);
                         builder.setMessage("Plan buy successfully!");
@@ -331,8 +332,6 @@ public class WebViewActivity extends AppCompatActivity {
                         AlertDialog alertD = builder.create();
                         alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
                         alertD.show();
-                    } else {
-
                     }
 
                 }
