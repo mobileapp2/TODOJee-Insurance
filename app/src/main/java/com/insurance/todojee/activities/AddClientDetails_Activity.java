@@ -149,14 +149,11 @@ public class AddClientDetails_Activity extends Activity {
         relationsList = new ArrayList<>();
 //        relationsIdList = new ArrayList<>();
 
-        if (relationsList.size() == 0) {
-            if (Utilities.isNetworkAvailable(context)) {
-                new GetRelationList().execute(user_id, "0");
-            } else {
-                Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
-            }
+        if (Utilities.isNetworkAvailable(context)) {
+            new GetRelationList().execute(user_id, "0");
+        } else {
+            Utilities.showSnackBar(ll_parent, "Please Check Internet Connection");
         }
-
     }
 
     private void setEventHandler() {

@@ -12,6 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -22,6 +23,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.insurance.todojee.utilities.ParamsPojo;
+import com.insurance.todojee.utilities.UserSessionManager;
 import com.insurance.todojee.utilities.Utilities;
 import com.insurance.todojee.utilities.WebServiceCalls;
 
@@ -36,6 +39,8 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -46,7 +51,8 @@ import org.jsoup.select.Elements;
 public class CCAvenueWebViewActivity extends AppCompatActivity {
     Intent mainIntent;
     String encVal;
-    String vResponse;
+    String vResponse, user_id;
+    private UserSessionManager session;
 
 
     @Override
@@ -54,9 +60,23 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
         super.onCreate(bundle);
         setContentView(R.layout.activity_ccavenue_webview);
         mainIntent = getIntent();
+        session = new UserSessionManager(CCAvenueWebViewActivity.this);
+
+        getSessionData();
 
 //get rsa key method
         get_RSA_key(mainIntent.getStringExtra(AvenuesParams.ACCESS_CODE), mainIntent.getStringExtra(AvenuesParams.ORDER_ID));
+    }
+
+    private void getSessionData() {
+        try {
+            JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            user_id = json.getString("id");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private class RenderView extends AsyncTask<Void, Void, Void> {
@@ -171,7 +191,7 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
                         Log.i("CCAVENUE", mainObj.toString());
 
                         if (Utilities.isInternetAvailable(CCAvenueWebViewActivity.this)) {
-                            new AddClientDetails().execute(mainObj.toString());
+                            new BuyPlan().execute(mainObj.toString());
                         } else {
                             Utilities.showMessageString(CCAvenueWebViewActivity.this, "Please Check Internet Connection");
                         }
@@ -287,7 +307,7 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public class AddClientDetails extends AsyncTask<String, Void, String> {
+    public class BuyPlan extends AsyncTask<String, Void, String> {
         ProgressDialog pd;
         private String JSONString = "";
 
@@ -334,16 +354,85 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
 //                        AlertDialog alertD = builder.create();
 //                        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
 //                        alertD.show();
+                        if (Utilities.isInternetAvailable(CCAvenueWebViewActivity.this)) {
+                            new UpdateCounts().execute(JSONString);
+                        } else {
+                            Utilities.showMessageString(CCAvenueWebViewActivity.this, "Please Check Internet Connection");
+                        }
 
 
-                        startActivity(new Intent(CCAvenueWebViewActivity.this, PlanBuySuccess_Activity.class)
-                                .putExtra("JSONString", JSONString)
-                                .putExtra("validity", getIntent().getStringExtra("validity"))
-                                .putExtra("clients", getIntent().getStringExtra("clients"))
-                                .putExtra("policies", getIntent().getStringExtra("policies")));
-                        finish();
                     }
 
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                finish();
+            }
+        }
+    }
+
+    public class UpdateCounts extends AsyncTask<String, Void, String> {
+        ProgressDialog pd;
+        private String JSONString = "";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(CCAvenueWebViewActivity.this, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            JSONString = params[0];
+            String res = "[]";
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("type", "getCounts"));
+            param.add(new ParamsPojo("user_id", user_id));
+            res = WebServiceCalls.FORMDATAAPICall(ApplicationConstants.PROFILEAPI, param);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonArray = mainObj.getJSONArray("counts");
+                        JSONArray user_info = null;
+                        JSONObject jsonObject = jsonArray.getJSONObject(0);
+                        try {
+                            user_info = new JSONArray(session.getUserDetails().get(
+                                    ApplicationConstants.KEY_LOGIN_INFO));
+                            JSONObject json = user_info.getJSONObject(0);
+                            json.put("smsCount", jsonObject.getString("smsCount"));
+                            json.put("whatsAppCount", jsonObject.getString("whatsAppCount"));
+                            json.put("smsLimit", jsonObject.getString("smsLimit"));
+                            json.put("whatsAppLimit", jsonObject.getString("whatsAppLimit"));
+                            json.put("customerCount", jsonObject.getString("customerCount"));
+                            json.put("customerLimit", jsonObject.getString("customerLimit"));
+                            json.put("policyCount", jsonObject.getString("policyCount"));
+                            json.put("policyLimit", jsonObject.getString("policyLimit"));
+                            session.updateSession(user_info.toString());
+
+                            startActivity(new Intent(CCAvenueWebViewActivity.this, PlanBuySuccess_Activity.class)
+                                    .putExtra("JSONString", JSONString)
+                                    .putExtra("validity", getIntent().getStringExtra("validity"))
+                                    .putExtra("clients", getIntent().getStringExtra("clients"))
+                                    .putExtra("policies", getIntent().getStringExtra("policies")));
+                            finish();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

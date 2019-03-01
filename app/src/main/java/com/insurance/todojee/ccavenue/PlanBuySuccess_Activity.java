@@ -90,7 +90,7 @@ public class PlanBuySuccess_Activity extends Activity {
         btn_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                finish();
             }
         });
     }
