@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.insurance.todojee.R;
+import com.insurance.todojee.ccavenue.PlanBuySuccess_Activity;
 import com.insurance.todojee.utilities.ApplicationConstants;
 import com.insurance.todojee.utilities.ParamsPojo;
 import com.insurance.todojee.utilities.UserSessionManager;
@@ -241,7 +242,7 @@ public class Profile_Activity extends Activity {
         tv_pro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(context, SelectPremiumPlan_Activity.class));
+//                startActivity(new Intent(context, SelectPremiumPlan_Activity.class));
             }
         });
 

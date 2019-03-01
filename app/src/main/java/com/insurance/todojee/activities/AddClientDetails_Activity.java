@@ -814,7 +814,6 @@ public class AddClientDetails_Activity extends Activity {
                         JSONObject obj = jsonarr.getJSONObject(0);
                         changeSessionClientCount(obj.getString("customerCount"), obj.getString("customerLimit"));
 
-
                         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                         builder.setMessage("Client Details Saved Successfully");
                         builder.setIcon(R.drawable.ic_success_24dp);

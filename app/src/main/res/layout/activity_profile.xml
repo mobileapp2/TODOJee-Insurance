@@ -74,7 +74,8 @@
                             android:text="PRO"
                             android:textColor="@color/black"
                             android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:visibility="gone" />
 
                     </android.support.v7.widget.CardView>
 

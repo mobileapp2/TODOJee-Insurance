@@ -1,17 +1,13 @@
 package com.insurance.todojee.ccavenue;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.provider.DocumentsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.google.gson.JsonObject;
 import com.insurance.todojee.R;
-import com.insurance.todojee.models.CCAvenueModel;
 import com.insurance.todojee.utilities.ApplicationConstants;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -35,15 +31,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -51,7 +43,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 
-public class WebViewActivity extends AppCompatActivity {
+public class CCAvenueWebViewActivity extends AppCompatActivity {
     Intent mainIntent;
     String encVal;
     String vResponse;
@@ -60,7 +52,7 @@ public class WebViewActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        setContentView(R.layout.activity_web_view);
+        setContentView(R.layout.activity_ccavenue_webview);
         mainIntent = getIntent();
 
 //get rsa key method
@@ -72,7 +64,7 @@ public class WebViewActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             // Showing progress dialog
-            LoadingDialog.showLoadingDialog(WebViewActivity.this, "Loading...");
+            LoadingDialog.showLoadingDialog(CCAvenueWebViewActivity.this, "Loading...");
 
         }
 
@@ -118,6 +110,8 @@ public class WebViewActivity extends AppCompatActivity {
                         HashMap<String, String> map5 = new HashMap<String, String>();
                         HashMap<String, String> map6 = new HashMap<String, String>();
                         HashMap<String, String> map7 = new HashMap<String, String>();
+                        HashMap<String, String> map8 = new HashMap<String, String>();
+                        HashMap<String, String> map9 = new HashMap<String, String>();
 
                         map1.put("key", "type");
                         map1.put("value", "buyPlan");
@@ -147,6 +141,14 @@ public class WebViewActivity extends AppCompatActivity {
                         map7.put("value", mainIntent.getStringExtra("expire_date"));
                         arraylist.add(map7);
 
+                        map8.put("key", "cc_bank_ref_no");
+                        map8.put("value", "");
+                        arraylist.add(map8);
+
+                        map9.put("key", "record_status");
+                        map9.put("value", "");
+                        arraylist.add(map9);
+
                         for (int i = 0; i < tableRowElements.size(); i++) {
                             HashMap<String, String> map = new HashMap<String, String>();
 
@@ -168,10 +170,10 @@ public class WebViewActivity extends AppCompatActivity {
 
                         Log.i("CCAVENUE", mainObj.toString());
 
-                        if (Utilities.isInternetAvailable(WebViewActivity.this)) {
+                        if (Utilities.isInternetAvailable(CCAvenueWebViewActivity.this)) {
                             new AddClientDetails().execute(mainObj.toString());
                         } else {
-                            Utilities.showMessageString(WebViewActivity.this, "Please Check Internet Connection");
+                            Utilities.showMessageString(CCAvenueWebViewActivity.this, "Please Check Internet Connection");
                         }
 
                     } else if (html.indexOf("Aborted") != -1) {
@@ -199,7 +201,7 @@ public class WebViewActivity extends AppCompatActivity {
                 @Override
                 public void onPageStarted(WebView view, String url, Bitmap favicon) {
                     super.onPageStarted(view, url, favicon);
-                    LoadingDialog.showLoadingDialog(WebViewActivity.this, "Loading...");
+                    LoadingDialog.showLoadingDialog(CCAvenueWebViewActivity.this, "Loading...");
                 }
             });
 
@@ -215,13 +217,13 @@ public class WebViewActivity extends AppCompatActivity {
     }
 
     public void get_RSA_key(final String ac, final String od) {
-        LoadingDialog.showLoadingDialog(WebViewActivity.this, "Loading...");
+        LoadingDialog.showLoadingDialog(CCAvenueWebViewActivity.this, "Loading...");
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, mainIntent.getStringExtra(AvenuesParams.RSA_KEY_URL),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Toast.makeText(WebViewActivity.this,response,Toast.LENGTH_LONG).show();
+                        //Toast.makeText(CCAvenueWebViewActivity.this,response,Toast.LENGTH_LONG).show();
                         LoadingDialog.cancelLoading();
 
                         if (response != null && !response.equals("")) {
@@ -242,7 +244,7 @@ public class WebViewActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         LoadingDialog.cancelLoading();
-                        //Toast.makeText(WebViewActivity.this,error.toString(),Toast.LENGTH_LONG).show();
+                        //Toast.makeText(CCAvenueWebViewActivity.this,error.toString(),Toast.LENGTH_LONG).show();
                     }
                 }) {
             @Override
@@ -264,7 +266,7 @@ public class WebViewActivity extends AppCompatActivity {
 
     public void show_alert(String msg) {
         AlertDialog alertDialog = new AlertDialog.Builder(
-                WebViewActivity.this).create();
+                CCAvenueWebViewActivity.this).create();
 
         alertDialog.setTitle("Error!!!");
         if (msg.contains("\n"))
@@ -292,7 +294,7 @@ public class WebViewActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(WebViewActivity.this, R.style.CustomDialogTheme);
+            pd = new ProgressDialog(CCAvenueWebViewActivity.this, R.style.CustomDialogTheme);
             pd.setMessage("Please wait ...");
             pd.setCancelable(false);
             pd.show();
@@ -319,30 +321,39 @@ public class WebViewActivity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(WebViewActivity.this, R.style.CustomDialogTheme);
-                        builder.setMessage("Plan buy successfully!");
-                        builder.setIcon(R.drawable.ic_success_24dp);
-                        builder.setTitle("Success");
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                finish();
-                            }
-                        });
-                        AlertDialog alertD = builder.create();
-                        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-                        alertD.show();
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(CCAvenueWebViewActivity.this, R.style.CustomDialogTheme);
+//                        builder.setMessage("Plan buy successfully!");
+//                        builder.setIcon(R.drawable.ic_success_24dp);
+//                        builder.setTitle("Success");
+//                        builder.setCancelable(false);
+//                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                                finish();
+//                            }
+//                        });
+//                        AlertDialog alertD = builder.create();
+//                        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
+//                        alertD.show();
+
+
+                        startActivity(new Intent(CCAvenueWebViewActivity.this, PlanBuySuccess_Activity.class)
+                                .putExtra("JSONString", JSONString)
+                                .putExtra("validity", getIntent().getStringExtra("validity"))
+                                .putExtra("clients", getIntent().getStringExtra("clients"))
+                                .putExtra("policies", getIntent().getStringExtra("policies")));
+                        finish();
                     }
 
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                finish();
             }
         }
     }
 
     private void AlertDialog(String status) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(WebViewActivity.this, R.style.CustomDialogTheme);
+        AlertDialog.Builder builder = new AlertDialog.Builder(CCAvenueWebViewActivity.this, R.style.CustomDialogTheme);
         builder.setMessage(status);
         builder.setIcon(R.drawable.ic_alert_red_24dp);
         builder.setTitle("Fail");

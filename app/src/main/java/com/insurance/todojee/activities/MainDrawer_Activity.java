@@ -25,6 +25,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 import com.insurance.todojee.R;
 import com.insurance.todojee.adapters.BotNavViewPagerAdapter;
+import com.insurance.todojee.ccavenue.PlanBuySuccess_Activity;
 import com.insurance.todojee.utilities.ApplicationConstants;
 import com.insurance.todojee.utilities.ParamsPojo;
 import com.insurance.todojee.utilities.UserSessionManager;
@@ -223,6 +224,8 @@ public class MainDrawer_Activity extends AppCompatActivity implements Navigation
 
         if (id == R.id.menu_profile) {
             startActivity(new Intent(context, Profile_Activity.class));
+        } else if (id == R.id.menu_pro) {
+                startActivity(new Intent(context, SelectPremiumPlan_Activity.class));
         } else if (id == R.id.menu_masters) {
             startActivity(new Intent(context, Masters_Activity.class));
         } else if (id == R.id.menu_settings) {

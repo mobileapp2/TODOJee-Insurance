@@ -2,7 +2,6 @@ package com.insurance.todojee.activities;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -24,7 +23,7 @@ import com.google.gson.Gson;
 import com.insurance.todojee.R;
 import com.insurance.todojee.ccavenue.AvenuesParams;
 import com.insurance.todojee.ccavenue.ServiceUtility;
-import com.insurance.todojee.ccavenue.WebViewActivity;
+import com.insurance.todojee.ccavenue.CCAvenueWebViewActivity;
 import com.insurance.todojee.models.PremiumPlanModel;
 import com.insurance.todojee.models.PremiumPlanPojo;
 import com.insurance.todojee.utilities.ApplicationConstants;
@@ -105,7 +104,7 @@ public class SelectPremiumPlan_Activity extends Activity {
                 if (lastSelectedPosition == -1) {
                     Utilities.showAlertDialog(context, "Alert", "Please Select Any One Details", false);
                 } else {
-                    Intent intent = new Intent(context, WebViewActivity.class);
+                    Intent intent = new Intent(context, CCAvenueWebViewActivity.class);
                     intent.putExtra(AvenuesParams.ACCESS_CODE, ApplicationConstants.ACCESS_CODE);
                     intent.putExtra(AvenuesParams.MERCHANT_ID, ApplicationConstants.MERCHANT_ID);
                     intent.putExtra(AvenuesParams.ORDER_ID, randomNum.toString());
@@ -115,7 +114,6 @@ public class SelectPremiumPlan_Activity extends Activity {
                     intent.putExtra(AvenuesParams.CANCEL_URL, ApplicationConstants.CANCEL_URL);
                     intent.putExtra(AvenuesParams.RSA_KEY_URL, ApplicationConstants.RSA_KEY_URL);
 
-
                     intent.putExtra("type", plansList.get(lastSelectedPosition).getPlan());
                     intent.putExtra("user_id", user_id);
                     intent.putExtra("plan_id", plansList.get(lastSelectedPosition).getId());
@@ -123,6 +121,9 @@ public class SelectPremiumPlan_Activity extends Activity {
                     intent.putExtra("sms", plansList.get(lastSelectedPosition).getSms());
                     intent.putExtra("whatsApp_msg", plansList.get(lastSelectedPosition).getWhtasApp_msg());
                     intent.putExtra("expire_date", plansList.get(lastSelectedPosition).getEnd_date());
+                    intent.putExtra("validity", plansList.get(lastSelectedPosition).getValidity());
+                    intent.putExtra("clients", plansList.get(lastSelectedPosition).getCustomers());
+                    intent.putExtra("policies", plansList.get(lastSelectedPosition).getPolicies());
 
                     startActivity(intent);
                 }
@@ -143,7 +144,6 @@ public class SelectPremiumPlan_Activity extends Activity {
             }
         });
     }
-
 
     public class GetPlanList extends AsyncTask<String, Void, String> {
 
@@ -190,7 +190,6 @@ public class SelectPremiumPlan_Activity extends Activity {
             }
         }
     }
-
 
     public static class PremiumPlansListAdapter extends RecyclerView.Adapter<PremiumPlansListAdapter.MyViewHolder> {
 
@@ -275,7 +274,6 @@ public class SelectPremiumPlan_Activity extends Activity {
             }
         }
     }
-
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
