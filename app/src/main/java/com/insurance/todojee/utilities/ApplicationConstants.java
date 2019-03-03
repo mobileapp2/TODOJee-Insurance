@@ -11,13 +11,13 @@ public class ApplicationConstants {
     public static final String KEY_ANDROIDTOKETID = "KEY_ANDROIDTOKETID";
 
     // BETA API LINK 
-    public static final String API_LINK = "https://gstkhata.com/QA/todojee_insurance/serverfiles/LIC_Apis/";
+//    public static final String API_LINK = "https://gstkhata.com/QA/todojee_insurance/serverfiles/LIC_Apis/";
 
     //LIVE API LINK 
-//    public static final String API_LINK = "https://todojeeinsurance.in/serverfiles/LIC_Apis/";
+    private static final String API_LINK = "https://todojeeinsurance.in/serverfiles/LIC_Apis/";
 
 
-    //CC AVENUE CONSTANTS    //TEST
+    //CC AVENUE CONSTANTS
     public static final String ACCESS_CODE = "AVHT83GB59BP46THPB";
     public static final String MERCHANT_ID = "153211";
     public static final String CURRENCY = "INR";
@@ -25,9 +25,6 @@ public class ApplicationConstants {
     public static final String CANCEL_URL = "https://www.todojeeinsurance.in/includes/ccavResponseHandler.php";
     public static final String RSA_KEY_URL = "https://www.todojeeinsurance.in/includes/GetRSA.php";
     public static final String TRANS_URL = "https://secure.ccavenue.com/transaction/initTrans";
-
-
-    //CC AVENUE CONSTANTS    //LIVE
 
 
 

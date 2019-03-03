@@ -126,6 +126,7 @@ public class SelectPremiumPlan_Activity extends Activity {
                     intent.putExtra("policies", plansList.get(lastSelectedPosition).getPolicies());
 
                     startActivity(intent);
+                    finish();
                 }
 
             }

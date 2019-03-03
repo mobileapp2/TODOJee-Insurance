@@ -12,7 +12,7 @@
         <item
             android:id="@+id/menu_pro"
             android:icon="@drawable/icon_pro"
-            android:title="Pro" />
+            android:title="Buy Pro" />
         <item
             android:id="@+id/menu_masters"
             android:icon="@drawable/icon_mastersthin"

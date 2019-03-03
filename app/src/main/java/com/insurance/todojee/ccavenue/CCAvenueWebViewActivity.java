@@ -35,6 +35,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -53,6 +54,7 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
     String encVal;
     String vResponse, user_id;
     private UserSessionManager session;
+    private int showWebview = 1;
 
 
     @Override
@@ -111,6 +113,7 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
             class MyJavaScriptInterface {
                 @JavascriptInterface
                 public void processHTML(String html) {
+                    showWebview = 2;
                     // process the html source code to get final status of transaction
                     String status = null;
                     if (html.indexOf("Failure") != -1) {
@@ -132,6 +135,8 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
                         HashMap<String, String> map7 = new HashMap<String, String>();
                         HashMap<String, String> map8 = new HashMap<String, String>();
                         HashMap<String, String> map9 = new HashMap<String, String>();
+                        HashMap<String, String> map10 = new HashMap<String, String>();
+                        HashMap<String, String> map11 = new HashMap<String, String>();
 
                         map1.put("key", "type");
                         map1.put("value", "buyPlan");
@@ -168,6 +173,14 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
                         map9.put("key", "record_status");
                         map9.put("value", "");
                         arraylist.add(map9);
+
+                        map10.put("key", "customers");
+                        map10.put("value", mainIntent.getStringExtra("clients"));
+                        arraylist.add(map10);
+
+                        map11.put("key", "policies");
+                        map11.put("value", mainIntent.getStringExtra("policies"));
+                        arraylist.add(map11);
 
                         for (int i = 0; i < tableRowElements.size(); i++) {
                             HashMap<String, String> map = new HashMap<String, String>();
@@ -215,6 +228,7 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
                     LoadingDialog.cancelLoading();
                     if (url.indexOf("/ccavResponseHandler.php") != -1) {
                         webview.loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");
+                        webview.setVisibility(View.GONE);
                     }
                 }
 
